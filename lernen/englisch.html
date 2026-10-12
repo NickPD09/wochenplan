@@ -1,0 +1,359 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Check-Up Unit 11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column, sticky tab bar; Austrian red-white-red as the only accent */
+:root{
+  --bg:#f7f5f5; --surface:#ffffff; --fg:#1d1a1b; --muted:#6b6264; --line:#e4dcdd;
+  --accent:#c8102e; --accent-soft:#fbe7ea; --ok:#1d7a4a; --ok-soft:#e3f3ea; --bad:#b3261e; --bad-soft:#fbe9e7;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161314; --surface:#211d1e; --fg:#f1ecec; --muted:#a89fa1; --line:#3a3335;
+  --accent:#ff5468; --accent-soft:#3a1a20; --ok:#5ccf8e; --ok-soft:#173226; --bad:#ff7a6e; --bad-soft:#3a1c19; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161314; --surface:#211d1e; --fg:#f1ecec; --muted:#a89fa1; --line:#3a3335;
+  --accent:#ff5468; --accent-soft:#3a1a20; --ok:#5ccf8e; --ok-soft:#173226; --bad:#ff7a6e; --bad-soft:#3a1c19; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:760px;margin:0 auto}
+header{padding-block:28px 12px;display:grid;gap:4px}
+.flag{display:flex;width:54px;height:12px;border-radius:2px;overflow:hidden}
+.flag i{flex:1;background:var(--accent)} .flag i:nth-child(2){background:var(--surface);border-block:1px solid var(--line)}
+h1{font:800 clamp(28px,6vw,40px)/1.1 var(--display);margin:6px 0 0;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:4px;overflow-x:auto;padding-block:10px;margin-bottom:20px}
+nav button{font:700 14px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--fg);
+  border-radius:999px;padding:7px 14px;white-space:nowrap;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h2{font:800 26px/1.2 var(--display);margin:8px 0 6px;text-wrap:balance}
+h3{font:600 19px/1.3 var(--display);margin:22px 0 8px}
+p{margin:0 0 10px} .muted{color:var(--muted)}
+.tip{background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin:12px 0}
+.tip b{color:var(--accent)}
+/* definition cards: click to reveal */
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+summary{cursor:pointer;padding:12px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"zeigen";font-weight:400;font-size:13px;color:var(--muted);flex-shrink:0}
+details[open] summary::after{content:"verstecken"}
+details>div{padding:0 14px 14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+.box h4{margin:0 0 8px;font:600 17px var(--display)}
+.box ul{margin:0;padding-left:18px} .box li{margin-bottom:4px}
+.pro h4{color:var(--ok)} .con h4{color:var(--bad)}
+.tbl{overflow-x:auto} table{border-collapse:collapse;width:100%;min-width:520px;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft);font-size:14px}
+.formula{font-family:ui-monospace,Consolas,monospace;font-size:14px}
+.quiz{display:grid;gap:10px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
+.q input{font:16px var(--body);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);width:100%}
+.q .res{font-size:14px;min-height:1em}
+.q.right{border-color:var(--ok);background:var(--ok-soft)} .q.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.btn{font:700 15px var(--body);border:none;border-radius:10px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff}
+.btn.ghost{background:var(--surface);color:var(--fg);border:1px solid var(--line)}
+.btn.ok{background:var(--ok)} .btn.bad{background:var(--bad)}
+/* flashcards */
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.ctl{display:flex;align-items:center;gap:6px}
+select{font:15px var(--body);padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.stats{display:flex;gap:16px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.card{perspective:1200px;height:230px;margin:14px 0;cursor:pointer}
+.inner{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.card.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;border:1px solid var(--line);background:var(--surface);
+  display:grid;place-content:center;text-align:center;padding:20px;gap:8px;box-shadow:0 6px 22px rgb(0 0 0 / .07)}
+.face.back{transform:rotateY(180deg);border-top:6px solid var(--accent)}
+.word{font:800 clamp(22px,5vw,32px)/1.2 var(--display);text-wrap:balance}
+.ipa{color:var(--muted);font-size:15px}
+.hint{font-size:13px;color:var(--muted)}
+.tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.answer{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer .btn{padding:14px}
+.done{text-align:center;padding:30px 10px}
+.list td:first-child{font-weight:700}
+@media (prefers-reduced-motion: reduce){.inner{transition:none}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="flag" aria-hidden="true"><i></i><i></i><i></i></div>
+  <h1>Check-Up Unit 11</h1>
+  <p class="sub">Migration to the EU · Context@HTL3 · 13 October 2026</p>
+</header>
+
+<nav role="tablist" id="tabs">
+  <button role="tab" data-t="start">Start</button>
+  <button role="tab" data-t="terms">1 Begriffe</button>
+  <button role="tab" data-t="aut">2 Leben in AUT</button>
+  <button role="tab" data-t="slave">3 Slave trade</button>
+  <button role="tab" data-t="if">4 If sentences</button>
+  <button role="tab" data-t="cards">Karteikarten</button>
+  <button role="tab" data-t="list">Vokabelliste</button>
+</nav>
+
+<section data-p="start">
+  <h2>Was kommt beim Check-Up?</h2>
+  <div class="grid2">
+    <div class="box"><h4>Vocabulary U11</h4>153 Wörter (Liste S. 47–51). → <b>Karteikarten</b></div>
+    <div class="box"><h4>Migration to the EU</h4>Begriffe definieren können: EU citizen, Red-White-Red Card, temporary residence, fixed visa, immigrate/emigrate.</div>
+    <div class="box"><h4>Living &amp; working in AUT</h4>Pros und cons nennen und begründen.</div>
+    <div class="box"><h4>The new slave trade</h4>Push/pull factors, effects of people smuggling, forced labour.</div>
+    <div class="box"><h4>If sentences</h4>Conditionals 0, I, II, III bilden.</div>
+  </div>
+  <div class="tip"><b>Lernplan (≈ 60 min):</b> 15 min Begriffe → 10 min AUT + Slave trade → 10 min If-Quiz → 25 min Karteikarten, bis alle grün sind.</div>
+</section>
+
+<section data-p="terms" hidden>
+  <h2>1 Migration to the EU</h2>
+  <p class="muted">Erst selbst laut definieren, dann aufklappen und vergleichen.</p>
+  <details><summary>EU citizen</summary><div>A person who has the <b>nationality of an EU member state</b>. EU citizens have <b>freedom of movement</b>: they can live, work and study in any EU country <b>without a visa or work permit</b>.<br><span class="muted">DE: EU-Bürger/in</span></div></details>
+  <details><summary>Red-White-Red Card</summary><div>An Austrian <b>residence and work permit</b> for <b>qualified workers from non-EU countries</b> (third-country nationals). It uses a <b>points system</b>: qualifications, work experience, age and language skills (German/English).<br>Groups: very highly qualified workers, skilled workers in <b>shortage occupations</b> (skills shortage), other key workers, graduates of Austrian universities, self-employed key workers, start-up founders.<br>Valid for <b>2 years</b>, then <b>Red-White-Red Card plus</b> (free access to the job market).<br><span class="muted">DE: Rot-Weiß-Rot-Karte</span></div></details>
+  <details><summary>temporary residence</summary><div>Permission to live in a country for a <b>limited time</b> and a <b>specific purpose</b> (studying, seasonal work, being posted by a company). You may <b>not settle permanently</b>.<br>Opposite: <b>permanent residency</b>.<br><span class="muted">DE: befristeter Aufenthalt</span></div></details>
+  <details><summary>fixed (fixed-term) visa</summary><div>A visa that is valid only for a <b>fixed period</b> and purpose, e.g. a working holiday, <b>seasonal work</b> or <b>fixed-term employment</b>. When it expires you must leave or apply again.<br>Schengen: <b>Visa C</b> = short stay (max. 90 days) · <b>Visa D</b> = longer stay (up to 6 months).</div></details>
+  <details><summary>to immigrate / immigrant / immigration</summary><div>To <b>come into</b> a foreign country to live there permanently. An <b>immigrant</b> is a person who does this.<br><span class="muted">DE: einwandern / Einwanderer / Einwanderung</span></div></details>
+  <details><summary>to emigrate / emigrant / emigration</summary><div>To <b>leave your own country</b> to live in another one. An <b>emigrant</b> is a person who does this.<br><span class="muted">DE: auswandern / Auswanderer / Auswanderung</span></div></details>
+  <div class="tip"><b>Merktrick:</b> <b>I</b>mmigrate = <b>I</b>n · <b>E</b>migrate = <b>E</b>xit.<br>He emigrated <b>from</b> Austria and immigrated <b>to</b> Canada.</div>
+  <h3>Auch wichtig</h3>
+  <details><summary>migrant</summary><div>Anyone who moves from one place/country to another, <b>for whatever reason</b> (IOM definition).</div></details>
+  <details><summary>refugee</summary><div>Someone who has to <b>flee</b> their country because of war, persecution or disaster.</div></details>
+  <details><summary>asylum seeker</summary><div>Someone who has <b>applied for protection</b> (asylum) in another country and is waiting for the decision.</div></details>
+  <details><summary>net immigration</summary><div>Number of immigrants <b>minus</b> number of emigrants.</div></details>
+  <details><summary>skills shortage</summary><div>There are not enough qualified workers in a job area (→ that's why the Red-White-Red Card exists).</div></details>
+  <details><summary>to be eligible for sth.</summary><div>To have the right to get or do something, because you fulfil the criteria. <i>Graduates are eligible for the RWR Card.</i></div></details>
+</section>
+
+<section data-p="aut" hidden>
+  <h2>2 Living and working in Austria</h2>
+  <div class="grid2">
+    <div class="box pro"><h4>Pros</h4><ul>
+      <li>high <b>standard of living</b>, safe country</li>
+      <li>good <b>social security</b> and <b>health insurance</b></li>
+      <li>strong <b>unions</b>, good <b>working conditions</b></li>
+      <li><b>perks</b>: 13th and 14th salary (bonus), 5 weeks holiday</li>
+      <li><b>stunning</b> nature: mountains, lakes, <b>lush meadows</b>, <b>skiing</b></li>
+      <li><b>laid-back</b> lifestyle, long <b>lunch breaks</b>, coffee houses</li>
+      <li><b>bang in the middle</b> of Europe → easy to travel</li>
+    </ul></div>
+    <div class="box con"><h4>Cons</h4><ul>
+      <li>lots of <b>bureaucracy / paperwork</b></li>
+      <li>German + dialects are hard for foreigners</li>
+      <li>shops closed on Sundays (<i>annoyingly</i>)</li>
+      <li>high taxes, expensive flats in cities</li>
+      <li>foreign qualifications not always recognised (<b>recognition</b>)</li>
+      <li>people can seem grumpy or <b>smug</b>; hard to make friends</li>
+      <li>some jobs are <b>precarious</b>; <b>freelance</b> = less security</li>
+    </ul></div>
+  </div>
+  <h3>So formulierst du es</h3>
+  <div class="box"><ul>
+    <li>On the one hand, … On the other hand, …</li>
+    <li>One major advantage / drawback is that …</li>
+    <li><b>Admittedly</b>, the paperwork is <b>exhausting</b>, but …</li>
+    <li>Austria has great nature, <b>whereas</b> / <b>whilst</b> the bureaucracy is annoying.</li>
+    <li>All in all, I think the pros outweigh the cons.</li>
+  </ul></div>
+  <div class="tip"><b>Beispielsatz:</b> One major advantage of living in Austria is the high standard of living. Admittedly, the paperwork can be exhausting, but the social security system is very good.</div>
+</section>
+
+<section data-p="slave" hidden>
+  <h2>3 The new slave trade</h2>
+  <p><b>Slavery</b> = people are treated as <b>property</b>; they can't <b>withdraw</b> and work <b>without pay</b>. It is illegal under international law, but still widely practised.</p>
+  <div class="grid2">
+    <div class="box"><h4>Push factors</h4><p class="muted">drücken Menschen <b>aus</b> dem Heimatland</p><ul>
+      <li><b>insufficient economic opportunities</b> (no jobs, no <b>prospects</b>)</li>
+      <li><b>poor governance</b>, corruption</li>
+      <li>conflicts, war, <b>civil strife</b></li>
+      <li>lack of social security, disasters</li></ul></div>
+    <div class="box"><h4>Pull factors</h4><p class="muted">ziehen Menschen <b>ins</b> Zielland</p><ul>
+      <li><b>better pay</b> and job prospects</li>
+      <li><b>large diaspora</b> that helps them settle in</li>
+      <li>safety, peace, democracy</li>
+      <li>education, health care</li></ul></div>
+  </div>
+  <h3>Smuggling vs. trafficking</h3>
+  <div class="tbl"><table>
+    <tr><th></th><th>people smuggling</th><th>human trafficking</th></tr>
+    <tr><td><b>What?</b></td><td>bringing people across a border <b>illegally</b> (in an irregular fashion) for money</td><td>recruiting/moving people with <b>force, threats or lies</b> to <b>exploit</b> them</td></tr>
+    <tr><td><b>Consent?</b></td><td>migrant usually agrees</td><td>no real consent</td></tr>
+    <tr><td><b>Ends?</b></td><td>at arrival</td><td>exploitation continues</td></tr>
+    <tr><td><b>Person</b></td><td>smuggler</td><td>trafficker</td></tr>
+  </table></div>
+  <h3>Effects of people smuggling</h3>
+  <div class="tbl"><table>
+    <tr><th>on migrants</th><td>harm to physical &amp; mental <b>well-being</b>, dangerous journeys (many die), illegal → no rights, <b>debt bondage</b>, <b>forced labour</b></td></tr>
+    <tr><th>on host countries</th><td>bad reputation of migration, loss of trust, loss of control over borders</td></tr>
+    <tr><th>on criminal networks</th><td>they <b>make billions of dollars</b></td></tr>
+  </table></div>
+  <h3>Forced labour</h3>
+  <p>Work people do <b>involuntarily</b>, under threat of punishment. Typical: documents <b>seized</b>, wages kept, <b>intimidation</b>, violence, <b>debt bondage</b> (a “debt” you can never pay back).</p>
+  <h3>Case studies (p. 146)</h3>
+  <details><summary>Food supplier</summary><div>Lithuanian workers caught chickens; the eggs went to big UK retailers and restaurants. <b>Appalling</b> conditions, threats, mattresses full of insects, <b>debt bondage</b>. Called “one of the worst cases of exploitation ever uncovered in the <b>food supply chain</b>”.</div></details>
+  <details><summary>Forced labour – 4 Czech men</summary><div>Worked in a bread factory. The <b>gangmaster</b> <b>seized</b> their documents and all wages; one man was <b>chained</b> to a radiator, beaten, burned. They escaped when one <b>feigned</b> illness in the van and all ran away.</div></details>
+  <details><summary>Ben</summary><div>Unemployed, homeless, socially isolated British man. A couple offered work + accommodation; he had to <b>pave</b> driveways for little or no pay, suffered <b>intimidation</b> and violence and was <b>terrified</b> to leave.</div></details>
+</section>
+
+<section data-p="if" hidden>
+  <h2>4 If sentences</h2>
+  <div class="tbl"><table>
+    <tr><th>Type</th><th>if-clause</th><th>main clause</th><th>Example</th></tr>
+    <tr><td><b>0</b> facts</td><td class="formula">present</td><td class="formula">present</td><td>If you heat ice, it melts.</td></tr>
+    <tr><td><b>I</b> real</td><td class="formula">present</td><td class="formula">will + inf</td><td>If I study, I will pass.</td></tr>
+    <tr><td><b>II</b> unreal now</td><td class="formula">past</td><td class="formula">would + inf</td><td>If I had a visa, I would work in Canada.</td></tr>
+    <tr><td><b>III</b> unreal past</td><td class="formula">had + 3rd form</td><td class="formula">would have + 3rd form</td><td>If I had learned, I would have passed.</td></tr>
+  </table></div>
+  <div class="tip"><b>Regeln:</b> nie <b>will/would</b> im if-Teil · Typ II: <b>If I were</b> you … · <b>unless</b> = if not · if-Teil zuerst → <b>Komma</b></div>
+  <h3>Quiz</h3>
+  <div class="quiz" id="quiz"></div>
+  <p style="margin-top:12px"><button class="btn" id="checkQuiz">Prüfen</button> <button class="btn ghost" id="resetQuiz">Nochmal</button> <span id="quizScore" class="muted"></span></p>
+</section>
+
+<section data-p="cards" hidden>
+  <h2>Karteikarten</h2>
+  <div class="controls">
+    <span class="ctl"><label for="dir" class="hint">Richtung</label>
+    <select id="dir"><option value="en">EN → DE</option><option value="de">DE → EN</option></select></span>
+    <span class="ctl"><label for="sec" class="hint">Teil</label>
+    <select id="sec"><option value="all">Alle 153</option><option>Words in context</option><option>A Living and working in Austria</option><option>B The new slave trade</option></select></span>
+    <span class="ctl"><label for="mode" class="hint">Karten</label>
+    <select id="mode"><option value="all">alle</option><option value="hard">nur nicht gewusste</option></select></span>
+  </div>
+  <div class="bar"><i id="barFill"></i></div>
+  <div class="stats"><span id="sLeft"></span><span id="sKnown"></span><span id="sTotal"></span></div>
+  <div id="cardArea">
+    <div class="card" id="card" tabindex="0" role="button" aria-label="Karte umdrehen">
+      <div class="inner">
+        <div class="face front"><span class="tag" id="fTag"></span><div class="word" id="fWord"></div><div class="ipa" id="fIpa"></div><div class="hint">Tippen zum Umdrehen · Leertaste</div></div>
+        <div class="face back"><span class="tag" id="bTag"></span><div class="word" id="bWord"></div><div class="ipa" id="bIpa"></div></div>
+      </div>
+    </div>
+    <div class="answer">
+      <button class="btn bad" id="no">Nochmal (1)</button>
+      <button class="btn ok" id="yes">Gewusst (2)</button>
+    </div>
+  </div>
+  <div class="done box" id="done" hidden>
+    <h3>Runde fertig 🎉</h3>
+    <p id="doneTxt"></p>
+    <button class="btn" id="again">Neue Runde</button>
+  </div>
+  <p style="margin-top:14px"><button class="btn ghost" id="resetAll">Fortschritt zurücksetzen</button></p>
+  <p class="hint">Nicht gewusste Karten kommen in derselben Runde nochmal. Dein Fortschritt wird in diesem Browser gespeichert.</p>
+</section>
+
+<section data-p="list" hidden>
+  <h2>Vokabelliste Unit 11</h2>
+  <div class="tbl list"><table id="vlist"><tr><th>English</th><th>Deutsch</th></tr></table></div>
+</section>
+</div>
+
+<script>
+const V = [["standard of living", "[ˌstændəd əv ˈlɪvɪŋ]", "Lebensstandard", "Words in context"], ["social services", "[ˈsəʊʃl sɜːvɪsɪz]", "Sozialwesen", "Words in context"], ["net immigration", "[ˌnet ˌɪmɪˈɡreɪʃn]", "Nettozuwanderung", "Words in context"], ["emigrant", "[ˈemɪɡrənt]", "Auswanderer/Auswanderin", "Words in context"], ["to migrate", "[maɪˈɡreɪt]", "(aus-/ab-)wandern, ziehen", "Words in context"], ["residence", "[ˈrezɪdəns]", "Wohnort, Wohnsitz", "Words in context"], ["national", "[ˈnæʃnəl]", "StaatsbürgerIn", "Words in context"], ["asylum seeker", "[əˈsaɪləm siːkə]", "Asylsuchende/r, AsylbewerberIn", "Words in context"], ["refugee", "[ˌrefjuˈdʒiː]", "Flüchtling", "Words in context"], ["legal", "[ˈliːɡl]", "legal, gesetzlich", "Words in context"], ["settled", "[ˈsetld]", "sesshaft", "Words in context"], ["criterion, pl. criteria", "[kraɪˈtɪəriən, kraɪˈtɪəriə]", "Kriterium", "Words in context"], ["regulation", "[ˌreɡjuˈleɪʃn]", "Regulierung, Reglementierung", "Words in context"], ["bureaucratic", "[ˌbjʊərəˈkrætɪk]", "bürokratisch", "Words in context"], ["paperwork", "[ˈpeɪpəwɜːk]", "Büroarbeit, Schreibarbeit", "Words in context"], ["migrant", "[ˈmaɪɡrənt]", "MigrantIn, Zuwanderer/Zuwanderin", "Words in context"], ["recognition", "[ˌrekəɡˈnɪʃn]", "Anerkennung", "Words in context"], ["permanent residency", "[ˌpɜːmənənt ˈrezɪdənsi]", "dauerhafter Wohnsitz", "Words in context"], ["permission to work", "[pəˌmɪʃn tə ˈwɜːk]", "Arbeitserlaubnis", "Words in context"], ["valid", "[ˈvælɪd]", "gültig", "Words in context"], ["application", "[ˌæplɪˈkeɪʃn]", "Bewerbung, Antrag", "Words in context"], ["applicant", "[ˈæplɪkənt]", "BewerberIn", "Words in context"], ["to be eligible (for sth. / to do sth.)", "[ˈelɪdʒəbl]", "berechtigt sein (zu etw. / etw. zu tun)", "Words in context"], ["skilled", "[skɪld]", "erfahren, geübt", "Words in context"], ["skills shortage", "[ˈskɪlz ʃɔːtɪdʒ]", "Fachkräftemangel", "Words in context"], ["graduate", "[ˈɡrædʒuət]", "AbsolventIn", "Words in context"], ["self-employed", "[ˌself ɪmˈplɔɪd]", "selbstständig, freiberuflich", "Words in context"], ["temporary residence", "[ˈtemprəri rezɪdəns]", "befristeter Aufenthalt", "Words in context"], ["requirement", "[rɪˈkwaɪəmənt]", "Anforderung", "Words in context"], ["stringent formal", "[ˈstrɪndʒənt]", "streng, strikt", "Words in context"], ["category", "[ˈkætəɡəri]", "Kategorie", "Words in context"], ["visa", "[ˈviːzə]", "Visum", "Words in context"], ["intended for", "[ɪnˈtendɪd fə]", "gedacht für", "Words in context"], ["working holiday", "[ˈwɜːkɪŋ hɒlədeɪ]", "Arbeitsurlaub, Ferienarbeit", "Words in context"], ["adequate", "[ˈædɪkwət]", "angemessen", "Words in context"], ["health insurance", "[ˈhelθ ɪnʃʊərəns]", "Krankenversicherung", "Words in context"], ["fixed-term employment", "[ˌfɪkst tɜːm ɪmˈplɔɪmənt]", "befristete Beschäftigung", "Words in context"], ["seasonal worker", "[ˌsiːzənl ˈwɜːkə]", "SaisonarbeiterIn", "Words in context"], ["to hire sb. out", "[ˌhaɪə ˈaʊt]", "jdn. (als Arbeitskraft) vermieten", "Words in context"], ["to post sb.", "[pəʊst]", "jdn. entsenden", "Words in context"], ["to fulfil", "[fʊlˈfɪl]", "erfüllen", "Words in context"], ["assignment", "[əˈsaɪnmənt]", "Auftrag, Einsatz", "Words in context"], ["to adopt", "[əˈdɒpt]", "annehmen", "A Living and working in Austria"], ["for better or (for) worse", "[fə ˌbetə ɔː fə ˈwɜːs]", "auf Gedeih und Verderb, was auch geschieht", "A Living and working in Austria"], ["foreigner", "[ˈfɒrənə]", "AusländerIn", "A Living and working in Austria"], ["veteran", "[ˈvetərən]", "erfahren, altgedient", "A Living and working in Austria"], ["expat infml.", "[ˌeksˈpæt]", "Auswanderer/Auswanderin", "A Living and working in Austria"], ["shift", "[ʃɪft]", "Verschiebung", "A Living and working in Austria"], ["to down sth.", "[daʊn]", "etw. niederlegen", "A Living and working in Austria"], ["to chill infml.", "[tʃɪl]", "sich entspannen", "A Living and working in Austria"], ["freelance", "[ˈfriːlɑːns]", "selbstständig, freiberuflich", "A Living and working in Austria"], ["laid-back infml.", "[ˌleɪd ˈbæk]", "gelassen, locker, entspannt", "A Living and working in Austria"], ["working hours pl.", "[ˌwɜːkɪŋ ˈaʊəz]", "Arbeitszeiten", "A Living and working in Austria"], ["annoyingly", "[əˈnɔɪɪŋli]", "ärgerlicherweise, irritierenderweise", "A Living and working in Austria"], ["pleased", "[pliːzd]", "froh, zufrieden", "A Living and working in Austria"], ["reliant on", "[rɪˈlaɪənt ɒn]", "angewiesen auf, abhängig von", "A Living and working in Austria"], ["processed food", "[ˈprəʊsest fuːd]", "industriell verarbeitete Lebensmittel", "A Living and working in Austria"], ["soda", "[ˈsəʊdə]", "Limonade", "A Living and working in Austria"], ["skiing", "[ˈskiːɪŋ]", "Skifahren", "A Living and working in Austria"], ["working conditions pl.", "[ˌwɜːkɪŋ kənˈdɪʃnz]", "Arbeitsbedingungen", "A Living and working in Austria"], ["precarious", "[prɪˈkeəriəs]", "prekär, unsicher, heikel, bedenklich", "A Living and working in Austria"], ["coveted", "[ˈkʌvətɪd]", "heißbegehrt", "A Living and working in Austria"], ["bonus", "[ˈbəʊnəs]", "Bonus, Draufgabe", "A Living and working in Austria"], ["perks pl.", "[pɜːks]", "Zusatzvergünstigungen, freiwillige Sonder-/Sozialleistungen", "A Living and working in Austria"], ["union", "[ˈjuːniən]", "Gewerkschaft", "A Living and working in Austria"], ["par for the course", "[ˌpɑː fə ðə ˈkɔːs]", "zu erwarten, normal", "A Living and working in Austria"], ["rushed", "[rʌʃt]", "gehetzt", "A Living and working in Austria"], ["bang in the middle infml.", "[ˌbæŋ ɪn ðə ˈmɪdl]", "mitten (drin)", "A Living and working in Austria"], ["whilst", "[waɪlst]", "während", "A Living and working in Austria"], ["pretty much", "[ˌprɪti ˈmʌtʃ]", "(so) ziemlich, fast", "A Living and working in Austria"], ["obliged", "[əˈblaɪdʒd]", "verpflichtet", "A Living and working in Austria"], ["reachable", "[ˈriːtʃəbl]", "erreichbar", "A Living and working in Austria"], ["stunning", "[ˈstʌnɪŋ]", "phantastisch, verblüffend", "A Living and working in Austria"], ["lush", "[lʌʃ]", "üppig", "A Living and working in Austria"], ["meadow", "[ˈmedəʊ]", "Wiese", "A Living and working in Austria"], ["smug", "[smʌɡ]", "selbstgefällig", "A Living and working in Austria"], ["lunch break", "[ˈlʌntʃ breɪk]", "Mittagspause", "A Living and working in Austria"], ["pros and cons pl.", "[ˌprəʊz ənd ˈkɒnz]", "Für und Wider, Pro und Contra", "A Living and working in Austria"], ["to get sth. right", "[ˌɡet ˈraɪt]", "etw. richtig machen", "A Living and working in Austria"], ["admittedly", "[ədˈmɪtɪdli]", "zugegebenermaßen", "A Living and working in Austria"], ["exhausting", "[ɪɡˈzɔːstɪŋ]", "anstrengend", "A Living and working in Austria"], ["vegan", "[ˈviːɡən]", "vegan, VeganerIn", "A Living and working in Austria"], ["nowhere near", "[ˌnəʊweə ˈnɪə]", "bei weitem nicht, nicht annähernd", "A Living and working in Austria"], ["fattening", "[ˈfætnɪŋ]", "dick machend", "A Living and working in Austria"], ["to put on weight", "[ˌpʊt ɒn ˈweɪt]", "zunehmen", "A Living and working in Austria"], ["social security", "[ˌsəʊʃl sɪˈkjʊərəti]", "soziale Absicherung, Sozialversicherung", "A Living and working in Austria"], ["typo infml.", "[ˈtaɪpəʊ]", "Tippfehler", "A Living and working in Austria"], ["passport", "[ˈpɑːspɔːt]", "Reisepass", "A Living and working in Austria"], ["surfing", "[ˈsɜːfɪŋ]", "Surfen", "A Living and working in Austria"], ["radiographer", "[ˌreɪdiˈɒɡrəfə]", "RöntgenassistentIn", "A Living and working in Austria"], ["to X-ray", "[ˈeks reɪ]", "röntgen", "A Living and working in Austria"], ["slave trade", "[ˈsleɪv treɪd]", "Sklavenhandel", "B The new slave trade"], ["slavery", "[ˈsleɪvəri]", "Sklaverei", "B The new slave trade"], ["to withdraw (withdrew, withdrawn)", "[wɪðˈdrɔː]", "ausscheiden, sich zurückziehen", "B The new slave trade"], ["clandestine formal", "[klænˈdestɪn, ˈklændəstaɪn]", "geheim, verborgen", "B The new slave trade"], ["exploitation", "[ˌeksplɔɪˈteɪʃn]", "Ausbeutung", "B The new slave trade"], ["to hover (around sth.)", "[ˈhʌvə]", "(um etw.) schwanken", "B The new slave trade"], ["to force", "[fɔːs]", "zwingen", "B The new slave trade"], ["based in", "[ˈbeɪst ɪn]", "ansässig", "B The new slave trade"], ["spokesperson, pl. spokespersons/spokespeople", "[ˈspəʊkspɜːsn]", "SprecherIn (einer Gruppe/Organisation)", "B The new slave trade"], ["broad", "[brɔːd]", "breit, weit", "B The new slave trade"], ["spectrum, pl. spectra", "[ˈspektrəm]", "Spektrum", "B The new slave trade"], ["to smuggle", "[ˈsmʌɡl]", "schmuggeln", "B The new slave trade"], ["in an irregular fashion", "[ɪn ən ɪˌreɡjələ ˈfæʃn]", "in ordnungswidriger Weise", "B The new slave trade"], ["exploitative", "[ɪkˈsplɔɪtətɪv]", "ausbeuterisch", "B The new slave trade"], ["sexual exploitation", "[ˌsekʃuəl ˌeksplɔɪˈteɪʃn]", "sexuelle Ausbeutung", "B The new slave trade"], ["to class", "[klɑːs]", "einstufen, klassifizieren", "B The new slave trade"], ["unaffected (by)", "[ˌʌnəˈfektɪd]", "nicht betroffen (von)", "B The new slave trade"], ["country of origin", "[ˌkʌntri əv ˈɒrɪdʒɪn]", "Ursprungsland, Herkunftsland", "B The new slave trade"], ["simultaneous", "[ˌsɪmlˈteɪniəs]", "gleichzeitig", "B The new slave trade"], ["temporary", "[ˈtemprəri]", "vorübergehend, befristet", "B The new slave trade"], ["to exploit", "[ɪkˈsplɔɪt]", "benutzen, ausnutzen, ausbeuten", "B The new slave trade"], ["to classify", "[ˈklæsɪfaɪ]", "klassifizieren, einteilen", "B The new slave trade"], ["unknown", "[ˌʌnˈnəʊn]", "unbekannt", "B The new slave trade"], ["it is believed to be …", "[bɪˈliːvd tə]", "man glaubt, dass es … ist / es soll … sein", "B The new slave trade"], ["staggering", "[ˈstæɡərɪŋ]", "erstaunlich", "B The new slave trade"], ["prospect", "[ˈprɒspekt]", "Aussicht, Perspektive", "B The new slave trade"], ["civil strife", "[ˌsɪvɪl ˈstraɪf]", "innere Unruhen", "B The new slave trade"], ["diaspora", "[daɪˈæspərə]", "Diaspora (Verstreuung eines Volks)", "B The new slave trade"], ["to facilitate sth.", "[fəˈsɪlɪteɪt]", "etw. ermöglichen, vermitteln, vereinfachen", "B The new slave trade"], ["governance", "[ˈɡʌvənəns]", "Regierung", "B The new slave trade"], ["to flee", "[fliː]", "flüchten, fliehen", "B The new slave trade"], ["pull factor", "[ˈpʊll fæktə]", "Motivationsfaktor (für eine Einwanderung in ein bestimmtes Land)", "B The new slave trade"], ["push factor", "[ˈpʊʃ fæktə]", "Motivationsfaktor (für eine Auswanderung)", "B The new slave trade"], ["smuggler", "[ˈsmʌɡlə]", "SchmugglerIn", "B The new slave trade"], ["trafficker", "[ˈtræfɪkə]", "SchleuserIn, MenschenhändlerIn", "B The new slave trade"], ["in a way", "[ɪn ə ˈweɪ]", "in gewisser Weise", "B The new slave trade"], ["insufficient", "[ˌɪnsəˈfɪʃnt]", "unzureichend", "B The new slave trade"], ["Lithuania", "[ˌlɪθjuˈeɪniə]", "Litauen", "B The new slave trade"], ["appalling", "[əˈpɔːlɪŋ]", "entsetzlich, schrecklich", "B The new slave trade"], ["to subject sb. to sth.", "[ˈsʌbdʒɪkt]", "jdn. etw. aussetzen", "B The new slave trade"], ["prominent", "[ˈprɒmɪnənt]", "prominent, hervorstechend", "B The new slave trade"], ["labour provider", "[ˌleɪbə prəˈvaɪdə]", "Arbeitgeber", "B The new slave trade"], ["debt bondage", "[ˌdet ˈbɒndɪdʒ]", "Schuldknechtschaft", "B The new slave trade"], ["mattress", "[ˈmætrəs]", "Matratze", "B The new slave trade"], ["to arrest", "[əˈrest]", "verhaften", "B The new slave trade"], ["offence", "[əˈfens]", "Straftat, Vergehen", "B The new slave trade"], ["to uncover", "[ʌnˈkʌvə]", "freilegen, aufdecken", "B The new slave trade"], ["food supply chain", "[ˌfuːd səˈplaɪ tʃeɪn]", "Lebensmittelversorgungskette", "B The new slave trade"], ["gangmaster", "[ˈɡæŋmɑːstə]", "AnführerIn einer Schlepperbande", "B The new slave trade"], ["to seize", "[siːz]", "beschlagnahmen, konfiszieren", "B The new slave trade"], ["wage", "[weɪdʒ]", "Lohn", "B The new slave trade"], ["to chain", "[tʃeɪn]", "anketten", "B The new slave trade"], ["to feign sth.", "[feɪn]", "etw. vortäuschen", "B The new slave trade"], ["to pave", "[peɪv]", "pflastern", "B The new slave trade"], ["intimidation", "[ɪnˌtɪmɪˈdeɪʃn]", "Einschüchterung", "B The new slave trade"], ["to be terrified (of)", "[ˈterɪfaɪd əv]", "schreckliche Angst haben (vor)", "B The new slave trade"], ["to submit to sth.", "[səbˈmɪt]", "sich in etw. fügen, sich etw. unterwerfen", "B The new slave trade"], ["to profit", "[ˈprɒfɪt]", "profitieren", "B The new slave trade"], ["victim", "[ˈvɪktɪm]", "Opfer", "B The new slave trade"], ["forced marriage", "[ˌfɔːst ˈmæridʒ]", "Zwangsheirat, Zwangsehe", "B The new slave trade"], ["military service", "[ˈmɪlətri sɜːvɪs]", "Militärdienst", "B The new slave trade"], ["organ", "[ˈɔːɡən]", "Organ", "B The new slave trade"]];
+const $ = id => document.getElementById(id);
+const store = { get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d }catch(e){ return d } },
+                set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch(e){} } };
+
+// tabs
+const tabs = [...document.querySelectorAll('#tabs button')];
+function show(t){
+  tabs.forEach(b => b.setAttribute('aria-selected', b.dataset.t === t));
+  document.querySelectorAll('section[data-p]').forEach(s => s.hidden = s.dataset.p !== t);
+  store.set('tab', t);
+}
+tabs.forEach(b => b.onclick = () => { show(b.dataset.t); window.scrollTo({top:0}) });
+show(location.hash.slice(1) || store.get('tab', 'start'));
+
+// vocab list
+const vl = $('vlist'); let last = '';
+V.forEach(([en, ipa, de, sec]) => {
+  if (sec !== last){ vl.insertAdjacentHTML('beforeend', `<tr><th colspan="2">${sec}</th></tr>`); last = sec }
+  const tr = vl.insertRow(); tr.insertCell().textContent = en; tr.insertCell().textContent = de;
+});
+
+// if-quiz: answers separated by | are all accepted
+const Q = [
+ ['If she ___ (get) the Red-White-Red Card, she will move to Linz.', 'gets'],
+ ['If I ___ (be) an EU citizen, I wouldn\'t need a work permit.', 'were|was'],
+ ['If they ___ (not pay) the smugglers, they would have stayed at home.', "hadn't paid|had not paid"],
+ ['If you heat water to 100 °C, it ___ (boil).', 'boils'],
+ ['Unless the company ___ (find) skilled workers, it will hire from abroad.', 'finds'],
+ ['If he had known the risks, he ___ (not emigrate).', "wouldn't have emigrated|would not have emigrated"],
+ ['If Austria ___ (have) more skilled workers, there would be no skills shortage.', 'had'],
+ ['If you apply for a visa today, you ___ (get) it next month.', "will get|'ll get"],
+ ['If the workers ___ (not escape), they would still be in debt bondage.', "hadn't escaped|had not escaped"],
+ ['If I worked abroad, I ___ (feel) homesick.', 'would feel|\'d feel'],
+];
+const norm = s => s.trim().toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, ' ');
+function buildQuiz(){
+  $('quiz').innerHTML = Q.map((q, i) => `<div class="q" id="q${i}"><label for="a${i}">${i+1}. ${q[0]}</label><input id="a${i}" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="res"></div></div>`).join('');
+  $('quizScore').textContent = '';
+}
+buildQuiz();
+$('checkQuiz').onclick = () => {
+  let n = 0;
+  Q.forEach((q, i) => {
+    const box = $('q' + i), ok = q[1].split('|').includes(norm($('a' + i).value));
+    box.className = 'q ' + (ok ? 'right' : 'wrong'); n += ok;
+    box.querySelector('.res').textContent = ok ? '✔ richtig' : '✘ richtig wäre: ' + q[1].split('|')[0];
+  });
+  $('quizScore').textContent = `${n} / ${Q.length}`;
+};
+$('resetQuiz').onclick = buildQuiz;
+
+// flashcards: known[en] = true once answered right; wrong cards re-enter the queue 3 places later
+let known = store.get('known', {}), queue = [], cur = null, roundKnown = 0;
+const card = $('card');
+function deck(){
+  const s = $('sec').value, m = $('mode').value;
+  return V.filter(w => (s === 'all' || w[3] === s) && (m === 'all' || !known[w[0]]));
+}
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]] } return a }
+function start(){ queue = shuffle(deck()); roundKnown = 0; next() }
+function stats(){
+  const d = V.filter(w => $('sec').value === 'all' || w[3] === $('sec').value);
+  const k = d.filter(w => known[w[0]]).length;
+  $('barFill').style.width = (d.length ? k / d.length * 100 : 0) + '%';
+  $('sLeft').textContent = `Noch in der Runde: ${queue.length + (cur ? 1 : 0)}`;
+  $('sKnown').textContent = `Gewusst: ${k} / ${d.length}`;
+}
+function next(){
+  card.classList.remove('flipped');
+  cur = queue.shift() || null;
+  $('cardArea').hidden = !cur; $('done').hidden = !!cur;
+  if (!cur){
+    $('doneTxt').textContent = $('mode').value === 'hard' && !deck().length ? 'Alle Wörter in diesem Teil gewusst – stark!' : `Diese Runde: ${roundKnown} gewusst.`;
+    return stats();
+  }
+  const [en, ipa, de, sec] = cur, enFirst = $('dir').value === 'en';
+  $('fTag').textContent = $('bTag').textContent = sec.replace(/^[AB] /, '');
+  $('fWord').textContent = enFirst ? en : de; $('fIpa').textContent = enFirst ? ipa : '';
+  // set back after flip animation starts so the answer isn't visible mid-turn
+  setTimeout(() => { $('bWord').textContent = enFirst ? de : en; $('bIpa').textContent = enFirst ? '' : ipa }, 250);
+  stats();
+}
+function answer(ok){
+  if (!cur) return;
+  if (ok){ known[cur[0]] = true; roundKnown++ } else { delete known[cur[0]]; queue.splice(Math.min(3, queue.length), 0, cur) }
+  store.set('known', known); cur = null; next();
+}
+card.onclick = () => card.classList.toggle('flipped');
+$('yes').onclick = () => answer(true); $('no').onclick = () => answer(false);
+$('again').onclick = start;
+['dir', 'sec', 'mode'].forEach(id => $(id).onchange = start);
+$('resetAll').onclick = () => { known = {}; store.set('known', known); start() };
+document.addEventListener('keydown', e => {
+  if ($('cardArea').hidden || document.querySelector('section[data-p="cards"]').hidden || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.code === 'Space'){ e.preventDefault(); card.classList.toggle('flipped') }
+  if (e.key === '1') answer(false); if (e.key === '2') answer(true);
+});
+start();
+</script>
+
+</body></html>
