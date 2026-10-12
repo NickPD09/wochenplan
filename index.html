@@ -133,6 +133,13 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
 .addform input:focus,.addform textarea:focus{outline:2px solid var(--hot);outline-offset:1px}
 .addform button{justify-self:start;font-family:var(--f-display);font-weight:800;padding:10px 18px;border:0;border-radius:10px;background:linear-gradient(90deg,var(--hot),var(--gold));color:#0c0b1a;cursor:pointer}
 .foot{display:flex;flex-wrap:wrap;gap:10px}
+.filter{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+.filter button{font-family:var(--f-display);font-weight:800;font-size:.82rem;padding:8px 16px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
+.filter button:hover{color:var(--fg)}
+.filter button[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.filter button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.filter small{font-family:var(--f-mono);font-weight:500;opacity:.7;margin-left:4px}
+.empty{grid-column:1/-1;background:var(--panel);border:1px dashed var(--line);border-radius:16px;padding:22px;color:var(--muted);text-align:center}
 .learn{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:.8rem;padding:8px 14px;border-radius:10px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--fg);cursor:pointer}
 .learn:hover{background:color-mix(in srgb,var(--c) 30%,transparent)}
 .learn:focus-visible{outline:2px solid var(--c);outline-offset:2px}
@@ -184,6 +191,7 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
   <div class="eyebrow">Tag antippen für Details</div>
   <section class="week" id="week" aria-label="Tagesplan"></section>
   <section class="dayview" id="dayview" hidden aria-live="polite"></section>
+  <div class="filter" id="filter" aria-label="Ansicht"></div>
   <section class="cards" id="cards"></section>
   <details class="addbox" id="addbox">
     <summary>+ Eigene Aufgabe hinzufügen</summary>
@@ -246,6 +254,9 @@ const DAYS=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Sam
 const items=()=>DATA.filter(c=>!(st._hidden||[]).includes(c.id)).concat(st._custom||[]);
 const byId=id=>items().find(c=>c.id===id);
 const esc=x=>String(x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const isOwn=c=>(st._custom||[]).includes(c);
+let view="all";try{view=localStorage.getItem(KEY+":view")||"all"}catch(e){}
+const VIEWS=[["all","Alle"],["pub","Klasse"],["own","Meine"]];
 const dm=d=>d.getDate()+"."+(d.getMonth()+1)+".";
 let sel=null; // ausgewählter Tag
 const XP=10, RANKS=["Rookie","Lernender","Grinder","Streber","Boss-Killer"];
@@ -334,7 +345,10 @@ function render(){
 
   // Quest-Karten (bei ausgewähltem Tag nur die Fächer dieses Tages)
   const ids=sel?new Set([...IT.filter(c=>c.due===sel).map(c=>c.id),...(PLAN[sel]||[]).map(x=>x[0])]):null;
-  const shown=ids?IT.filter(c=>ids.has(c.id)):IT;
+  const own=IT.filter(isOwn),pub=IT.filter(c=>!isOwn(c));
+  $("filter").innerHTML=VIEWS.map(([v,l])=>'<button type="button" data-view="'+v+'" aria-pressed="'+(view===v)+'">'+l+"<small>"+(v==="all"?IT:v==="own"?own:pub).length+"</small></button>").join("");
+  const base=view==="own"?own:view==="pub"?pub:IT;
+  const shown=ids?base.filter(c=>ids.has(c.id)):base;
   let all=0,done=0;
   IT.forEach(c=>{all+=c.tasks.length;done+=doneN(c)});
   $("cards").innerHTML=shown.map(c=>{
@@ -342,13 +356,13 @@ function render(){
     const dd=days(c.due),dt=new Date(c.due+"T00:00");
     const chip=fin?'<span class="chip ok">besiegt ✓</span>':'<span class="chip'+(dd<=1&&dd>=0?" soon":"")+'">'+wd[dt.getDay()]+" "+dm(dt)+" · "+rel(dd)+"</span>";
     return'<article class="card'+(fin?" done":"")+'" style="--c:var('+c.c+')">'+
-      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+'</span></div></div><button type="button" class="hide" data-hide="'+c.id+'" title="Nur für dich entfernen">✕</button></div>'+
+      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':"")+'</div></div><button type="button" class="hide" data-hide="'+c.id+'" title="Nur für dich entfernen">✕</button></div>'+
       '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+
       (c.note?'<p class="note">'+c.note+"</p>":"")+
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
       '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+esc(t)+'</span><span class="xpTag">+'+XP+" XP</span></label></li>").join("")+
       "</ul></div></article>";
-  }).join("");
+  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Unten bei „+ Eigene Aufgabe hinzufügen“ anlegen.":"Hier ist nichts.")+"</div>";
 
   // XP + Rang
   const p=all?done/all:0,r=RANKS[Math.min(RANKS.length-1,Math.floor(p*RANKS.length))];
@@ -379,6 +393,11 @@ $("cards").addEventListener("click",e=>{
   if(own){st._custom=st._custom.filter(c=>c!==own);own.tasks.forEach((_,i)=>delete st[id+i])}
   else st._hidden=[...(st._hidden||[]),id];
   save();render();toast("Entfernt (nur bei dir)");
+});
+$("filter").addEventListener("click",e=>{
+  const b=e.target.closest("[data-view]");if(!b)return;
+  view=b.dataset.view;try{localStorage.setItem(KEY+":view",view)}catch(_){}
+  render();document.querySelector('[data-view="'+view+'"]')?.focus();
 });
 $("restore").addEventListener("click",()=>{st._hidden=[];save();render();toast("Wieder da")});
 $("addForm").addEventListener("submit",e=>{
