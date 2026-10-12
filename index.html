@@ -157,8 +157,9 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
   <form class="lcard" id="loginForm">
     <div class="eyebrow">Boss Week · Login</div>
     <h2>Wer spielt?</h2>
-    <p class="note">Kein Passwort nötig. Neuer Name = neuer Account. Gleicher Name = dein Fortschritt kommt zurück.</p>
+    <p class="note">Neuer Name = neuer Account mit deinem PIN. Ein vergebener Name geht nur mit dem richtigen PIN.</p>
     <input id="nameIn" maxlength="30" autocomplete="nickname" placeholder="Dein Name" aria-label="Name" required>
+    <input id="pinIn" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="4-stelliger PIN" aria-label="PIN" required>
     <button type="submit" id="loginBtn">Los geht's</button>
     <p class="err" id="loginErr" hidden></p>
   </form>
@@ -269,11 +270,17 @@ let user=null,st={};
 const setSync=t=>document.getElementById("sync").textContent=t;
 const local=(id,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(KEY+":"+id))||{};localStorage.setItem(KEY+":"+id,JSON.stringify(v))}catch(e){return{}}};
 
-async function load(id){
-  if(!ONLINE)return local(id);
-  const r=await fetch(SUPABASE_URL+"/rest/v1/progress?select=data&name=eq."+encodeURIComponent(id),{headers:{apikey:SUPABASE_KEY},signal:AbortSignal.timeout(8000)});
+let pin=null;
+// PIN wird in der Datenbank geprüft (Funktionen wp_login / wp_save), die Tabelle selbst ist für die Seite nicht lesbar
+const rpc=async(fn,body)=>{
+  const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",signal:AbortSignal.timeout(8000),
+    headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error("HTTP "+r.status+" "+(await r.text()).slice(0,140));
-  return (await r.json())[0]?.data||{};
+  return r.json();
+};
+async function load(id,p){
+  if(!ONLINE)return {status:"ok",data:local(id)};
+  return rpc("wp_login",{p_name:id,p_pin:p});
 }
 let saveT;
 function save(){
@@ -282,21 +289,27 @@ function save(){
   setSync("speichert …");clearTimeout(saveT);
   saveT=setTimeout(async()=>{
     try{
-      const r=await fetch(SUPABASE_URL+"/rest/v1/progress",{method:"POST",signal:AbortSignal.timeout(8000),
-        headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
-        body:JSON.stringify({name:user,data:st,updated_at:new Date().toISOString()})});
-      setSync(r.ok?"online gespeichert ✓":"Fehler beim Speichern ("+r.status+")");
+      const ok=await rpc("wp_save",{p_name:user,p_pin:pin,p_data:st});
+      setSync(ok?"online gespeichert ✓":"PIN passt nicht mehr, bitte neu einloggen");
     }catch(e){setSync("offline, nicht gespeichert!")}
   },400);
 }
-async function login(raw){
+async function login(raw,p){
   const name=raw.trim();
   if(!/^[\p{L}\p{N} _-]{1,30}$/u.test(name)){showErr("Nur Buchstaben, Zahlen, Leerzeichen, - und _ (max. 30).");return}
+  if(!/^[0-9]{4}$/.test(p)){showErr("Der PIN muss genau 4 Ziffern haben.");return}
   const id=name.toLowerCase();
   document.getElementById("loginBtn").disabled=true;
-  try{st=await load(id)}catch(e){showErr("Fehler: "+e.message);document.getElementById("loginBtn").disabled=false;return}
-  user=id;
-  try{localStorage.setItem(KEY+":last",name)}catch(e){}
+  let res;
+  try{res=await load(id,p)}catch(e){showErr("Fehler: "+e.message);document.getElementById("loginBtn").disabled=false;return}
+  if(res.status==="wrong"){
+    showErr("„"+name+"“ ist schon vergeben. Falscher PIN.");
+    try{localStorage.removeItem(KEY+":last")}catch(e){}
+    document.getElementById("loginBtn").disabled=false;$("login").hidden=false;return;
+  }
+  st=res.data||{};user=id;pin=p;
+  if(res.status==="new")setTimeout(()=>toast("Account erstellt. Merk dir deinen PIN!"),300);
+  try{localStorage.setItem(KEY+":last",JSON.stringify([name,p]))}catch(e){}
   document.getElementById("who").textContent=name;
   setSync(ONLINE?"online":"nur lokal");
   document.getElementById("login").hidden=true;
@@ -439,12 +452,13 @@ function pick(k){
 $("week").addEventListener("click",e=>{const d=e.target.closest(".day");if(d)pick(d.dataset.d)});
 $("week").addEventListener("keydown",e=>{const d=e.target.closest(".day");if(d&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pick(d.dataset.d)}});
 $("dayview").addEventListener("click",e=>{if(e.target.closest("[data-all]")){const k=sel;sel=null;render();document.querySelector('.day[data-d="'+k+'"]')?.focus()}});
-$("loginForm").addEventListener("submit",e=>{e.preventDefault();login($("nameIn").value)});
+$("loginForm").addEventListener("submit",e=>{e.preventDefault();login($("nameIn").value,$("pinIn").value)});
 $("logout").addEventListener("click",()=>{
   try{localStorage.removeItem(KEY+":last")}catch(e){}
-  user=null;st={};$("nameIn").value="";$("loginErr").hidden=true;$("login").hidden=false;render();$("nameIn").focus();
+  user=null;pin=null;st={};$("nameIn").value="";$("pinIn").value="";$("loginErr").hidden=true;$("login").hidden=false;render();$("nameIn").focus();
 });
 render();
 let last=null;try{last=localStorage.getItem(KEY+":last")}catch(e){}
-if(last)login(last);else $("nameIn").focus();
+try{last=JSON.parse(last)}catch(e){last=null} // alte Einträge (nur Name) → neu einloggen
+if(Array.isArray(last))login(last[0],last[1]);else $("nameIn").focus();
 </script>
