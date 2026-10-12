@@ -179,7 +179,7 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
   <div class="userbar"><span>Spieler: <b id="who">–</b> · <span id="sync"></span></span><button type="button" id="logout">Ausloggen</button></div>
   <header class="hero">
     <div>
-      <div class="eyebrow">4AHIT · KW 42 · 12.–16. Okt</div>
+      <div class="eyebrow" id="weekLabel">4AHIT</div>
       <h1>Boss Week <span>4AHIT</span></h1>
     </div>
     <div class="boss" id="boss"></div>
@@ -321,6 +321,11 @@ const today=new Date();today.setHours(0,0,0,0);
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const days=s=>Math.round((new Date(s+"T00:00")-today)/864e5);
 const wd=["So","Mo","Di","Mi","Do","Fr","Sa"];
+const MON=["Jänner","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+// Aktuelle Schulwoche Mo–Fr; am Wochenende schon die nächste
+const WEEK=(()=>{const m=new Date(today),dow=(m.getDay()+6)%7;m.setDate(m.getDate()-dow+(dow>=5?7:0));
+  return [0,1,2,3,4].map(i=>{const d=new Date(m);d.setDate(m.getDate()+i);return iso(d)})})();
+const kw=s=>{const d=new Date(s+"T00:00");d.setDate(d.getDate()+3-(d.getDay()+6)%7);const j=new Date(d.getFullYear(),0,4);return 1+Math.round(((d-j)/864e5-3+(j.getDay()+6)%7)/7)};
 const $=id=>document.getElementById(id);
 const doneN=c=>c.tasks.filter((_,i)=>st[c.id+i]).length;
 const rel=n=>n<0?"vorbei":n===0?"heute":n===1?"morgen":"in "+n+" Tagen";
@@ -335,18 +340,20 @@ function render(){
   }else $("boss").innerHTML='<div class="eyebrow">Status</div><div class="big">GG</div><div class="who">Alles erledigt</div>';
 
   // Wochenleiste
-  $("week").innerHTML=Object.keys(PLAN).map(k=>{
+  {const a=new Date(WEEK[0]+"T00:00"),b=new Date(WEEK[4]+"T00:00");
+   $("weekLabel").textContent="4AHIT · KW "+kw(WEEK[0])+" · "+dm(a)+"–"+dm(b);}
+  $("week").innerHTML=WEEK.map(k=>{
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
-    const plan=PLAN[k].filter(x=>byId(x[0])).map(x=>'<li class="do">'+x[1]+"</li>").join("");
-    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":d.getDate()+".10.")+"</small></div><ul>"+due+plan+"</ul></div>";
+    const plan=(PLAN[k]||[]).filter(x=>byId(x[0])).map(x=>'<li class="do">'+x[1]+"</li>").join("");
+    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+due+plan+"</ul></div>";
   }).join("");
 
   // Tagesansicht
   const dv=$("dayview");
   if(sel){
     const d=new Date(sel+"T00:00"),dueC=IT.filter(c=>c.due===sel);
-    dv.innerHTML='<div class="dvhead"><div><div class="eyebrow">'+rel(days(sel))+'</div><h2>'+DAYS[d.getDay()]+", "+d.getDate()+'. Oktober</h2></div><button type="button" data-all>× Alle Fächer zeigen</button></div>'+
+    dv.innerHTML='<div class="dvhead"><div><div class="eyebrow">'+rel(days(sel))+'</div><h2>'+DAYS[d.getDay()]+", "+d.getDate()+". "+MON[d.getMonth()]+'</h2></div><button type="button" data-all>× Alle Fächer zeigen</button></div>'+
       '<div class="dvcols"><div><div class="eyebrow">Prüfung / Abgabe</div><ul class="dvlist">'+
       (dueC.length?dueC.map(c=>{const n=doneN(c),f=n===c.tasks.length;return'<li style="--c:var('+c.c+')"><span class="dot"></span>'+esc(c.t)+'<span class="chip'+(f?" ok":"")+'">'+(f?"besiegt ✓":n+"/"+c.tasks.length)+"</span></li>"}).join(""):'<li class="none">Nichts fällig</li>')+
       '</ul></div><div><div class="eyebrow">To-do an dem Tag</div><ul class="dvlist">'+
