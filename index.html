@@ -133,6 +133,33 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
 .addform input:focus,.addform textarea:focus{outline:2px solid var(--hot);outline-offset:1px}
 .addform button{justify-self:start;font-family:var(--f-display);font-weight:800;padding:10px 18px;border:0;border-radius:10px;background:linear-gradient(90deg,var(--hot),var(--gold));color:#0c0b1a;cursor:pointer}
 .foot{display:flex;flex-wrap:wrap;gap:10px}
+.login{overflow-y:auto}
+.lcard.wide{width:min(760px,100%)}
+.gbtns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.lcard .gbtns button{display:grid;gap:2px;padding:10px 4px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);font-size:1.4rem}
+.lcard .gbtns button small{font-family:var(--f-body);font-weight:600;font-size:.62rem;color:var(--muted)}
+.lcard .gbtns button:hover,.lcard .gbtns button:focus-visible{border-color:var(--gold);outline:none}
+.lcard .gbtns button[aria-pressed="true"]{background:linear-gradient(90deg,var(--hot),var(--gold));color:#0c0b1a;border-color:transparent}
+.lcard .gbtns button[aria-pressed="true"] small{color:#0c0b1a}
+.grow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.gchip{font:inherit;font-size:.8rem;border:1px solid var(--line);background:var(--panel2);color:var(--fg);border-radius:99px;padding:4px 10px;cursor:pointer}
+.gchip b{font-family:var(--f-display)}
+.gchip.todo{border-style:dashed;color:var(--muted)}
+.gchip:hover,.gchip:focus-visible{border-color:var(--gold);outline:none}
+.curve{background:none;border:1px solid var(--line);color:var(--fg);font-family:var(--f-display);font-weight:800;font-size:.78rem;border-radius:99px;padding:6px 14px;cursor:pointer}
+.curve:hover,.curve:focus-visible{border-color:var(--gold);outline:none}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:420px;height:auto}
+.chart text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.chart .lbl{fill:var(--fg);font-size:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.gstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.gstats div{background:var(--panel2);border-radius:10px;padding:10px 12px;font-size:.78rem;color:var(--muted)}
+.gstats b{display:block;font-family:var(--f-display);font-size:1.3rem;color:var(--fg)}
+.gtable{width:100%;border-collapse:collapse;font-size:.85rem;font-variant-numeric:tabular-nums}
+.gtable th,.gtable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.gtable th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
 .filter{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
 .filter button{font-family:var(--f-display);font-weight:800;font-size:.82rem;padding:8px 16px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
 .filter button:hover{color:var(--fg)}
@@ -175,6 +202,25 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
   </div>
 </div>
 
+<div class="login" id="gradeDlg" hidden role="dialog" aria-modal="true" aria-labelledby="gTitle">
+  <div class="lcard">
+    <div class="eyebrow" id="gEyebrow"></div>
+    <h2 id="gTitle"></h2>
+    <p class="note" id="gText"></p>
+    <div class="gbtns" id="gBtns"></div>
+    <button type="button" class="ghost" id="gSkip">Später</button>
+  </div>
+</div>
+
+<div class="login" id="chartDlg" hidden role="dialog" aria-modal="true" aria-labelledby="cTitle">
+  <div class="lcard wide">
+    <div class="eyebrow">Leistungskurve</div>
+    <h2 id="cTitle">Erwartet vs. echt</h2>
+    <div id="chartBody"></div>
+    <button type="button" class="ghost" id="cClose">Schließen</button>
+  </div>
+</div>
+
 <div class="wrap">
   <div class="userbar"><span>Spieler: <b id="who">–</b> · <span id="sync"></span></span><button type="button" id="logout">Ausloggen</button></div>
   <header class="hero">
@@ -186,7 +232,7 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
   </header>
 
   <section class="xp" aria-label="Fortschritt">
-    <div class="row"><span class="lvl" id="lvl"></span><span class="nums" id="nums"></span></div>
+    <div class="row"><span class="lvl" id="lvl"></span><span class="nums" id="nums"></span><button type="button" class="curve" id="curveBtn">Leistungskurve →</button></div>
     <div class="bar"><i id="fill"></i></div>
   </section>
 
@@ -258,6 +304,14 @@ const esc=x=>String(x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;
 const isOwn=c=>(st._custom||[]).includes(c);
 let view="all";try{view=localStorage.getItem(KEY+":view")||"all"}catch(e){}
 const VIEWS=[["all","Alle"],["pub","Klasse"],["own","Meine"],["arch","Abgeschlossen"]];
+// Noten (österreichisch 1–5) pro Eintrag: st._grades[id] = {exp, real}
+const GN=["","Sehr gut","Gut","Befriedigend","Genügend","Nicht genügend"];
+const gOf=id=>(st._grades||{})[id]||{};
+function gradeRow(c,fin){
+  const g=gOf(c.id);if(!fin&&!g.exp&&!g.real)return "";
+  const chip=(k,lbl)=>'<button type="button" class="gchip'+(g[k]?"":" todo")+'" data-grade="'+c.id+'" data-kind="'+k+'">'+lbl+": "+(g[k]?"<b>"+g[k]+"</b>":"eintragen")+"</button>";
+  return '<div class="grow">'+chip("exp","Erwartet")+chip("real","Echte Note")+"</div>";
+}
 const dm=d=>d.getDate()+"."+(d.getMonth()+1)+".";
 let sel=null; // ausgewählter Tag
 const XP=10, RANKS=["Rookie","Lernender","Grinder","Streber","Boss-Killer"];
@@ -379,7 +433,7 @@ function render(){
     const chip=fin?'<span class="chip ok">besiegt ✓</span>':'<span class="chip'+(dd<=1&&dd>=0?" soon":"")+'">'+wd[dt.getDay()]+" "+dm(dt)+" · "+rel(dd)+"</span>";
     return'<article class="card'+(fin?" done":"")+'" style="--c:var('+c.c+')">'+
       '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':"")+'</div></div>'+(isOwn(c)?'<button type="button" class="hide" data-hide="'+c.id+'" title="Eigene Aufgabe löschen">✕</button>':"")+'</div>'+
-      '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+
+      '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+gradeRow(c,fin)+
       (c.note?'<p class="note">'+c.note+"</p>":"")+
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
       '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+esc(t)+'</span><span class="xpTag">+'+XP+" XP</span></label></li>").join("")+
@@ -400,20 +454,22 @@ $("cards").addEventListener("change",e=>{
   const k=e.target.dataset.k;if(!k)return;
   st[k]=e.target.checked;save();
   const c=byId(e.target.dataset.c);
-  if(e.target.checked)toast(doneN(c)===c.tasks.length?c.t+" besiegt! 🏆":"+"+XP+" XP");
+  const fin=doneN(c)===c.tasks.length;
+  if(e.target.checked)toast(fin?c.t+" besiegt! 🏆":"+"+XP+" XP");
   render();$(k)?.focus();
+  if(e.target.checked&&fin&&!gOf(c.id).exp)setTimeout(()=>openGrade(c.id,"exp",$(k)),600);
 });
 let armed=false;
 $("reset").addEventListener("click",e=>{
   if(!armed){armed=true;e.target.textContent="Sicher? Nochmal klicken";e.target.classList.add("arm");setTimeout(()=>{armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm")},3000);return}
-  st={_custom:st._custom};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
+  st={_custom:st._custom,_grades:st._grades};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
 });
 $("cards").addEventListener("click",e=>{
   const b=e.target.closest("[data-hide]");if(!b)return;
   if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent="Entfernen?";setTimeout(()=>{if(b.isConnected){b.classList.remove("arm");b.textContent="✕"}},3000);return}
   const id=b.dataset.hide,own=(st._custom||[]).find(c=>c.id===id);
   if(!own)return; // Klassen-Einträge kann man nicht löschen
-  st._custom=st._custom.filter(c=>c!==own);own.tasks.forEach((_,i)=>delete st[id+i]);
+  st._custom=st._custom.filter(c=>c!==own);own.tasks.forEach((_,i)=>delete st[id+i]);if(st._grades)delete st._grades[id];
   save();render();toast("Gelöscht");
 });
 $("filter").addEventListener("click",e=>{
@@ -429,6 +485,56 @@ $("addForm").addEventListener("submit",e=>{
   st._custom=[...(st._custom||[]),{id:"u"+Date.now(),t,b:t.slice(0,3).toUpperCase(),c:"--c-own",due,tasks:tasks.length?tasks:["Erledigt"]}];
   save();render();e.target.reset();$("addbox").open=false;toast("Hinzugefügt (nur für dich)");
 });
+let gCtx=null;
+function openGrade(id,kind,back){
+  const c=byId(id);if(!c)return;
+  gCtx={id,kind,back};const cur=gOf(id)[kind];
+  $("gEyebrow").textContent=kind==="exp"?"Fertig gelernt":"Note zurück";
+  $("gTitle").textContent=c.t;
+  $("gText").textContent=kind==="exp"?"Was glaubst du, welche Note du bekommst?":"Welche Note hast du bekommen?";
+  $("gBtns").innerHTML=[1,2,3,4,5].map(n=>'<button type="button" data-n="'+n+'" aria-pressed="'+(cur===n)+'">'+n+"<small>"+GN[n]+"</small></button>").join("");
+  $("gradeDlg").hidden=false;$("gBtns").querySelector("button").focus();
+}
+function closeGrade(){$("gradeDlg").hidden=true;gCtx?.back?.focus?.();gCtx=null}
+$("gBtns").addEventListener("click",e=>{
+  const b=e.target.closest("[data-n]");if(!b||!gCtx)return;
+  st._grades=st._grades||{};
+  st._grades[gCtx.id]={...gOf(gCtx.id),[gCtx.kind]:+b.dataset.n};
+  save();const k=gCtx.kind;closeGrade();render();
+  toast(k==="exp"?"Gemerkt. Trag die echte Note ein, wenn du sie hast":"Note eingetragen");
+});
+$("gSkip").addEventListener("click",closeGrade);
+$("cards").addEventListener("click",e=>{const b=e.target.closest("[data-grade]");if(b)openGrade(b.dataset.grade,b.dataset.kind,b)});
+
+// Leistungskurve: y = Note (1 oben), x = Einträge nach Datum
+function chartHTML(){
+  const rows=DATA.concat(st._custom||[]).filter(c=>gOf(c.id).exp||gOf(c.id).real).sort((a,b)=>a.due.localeCompare(b.due));
+  if(!rows.length)return '<p class="note">Noch keine Noten. Hak alle Schritte eines Fachs ab, dann wirst du nach deiner Erwartung gefragt. Die echte Note trägst du später auf der Karte ein.</p>';
+  const W=640,H=260,L=86,R=20,T=18,B=46,n=rows.length;
+  const x=i=>n===1?(L+W-R)/2:L+i*(W-L-R)/(n-1),y=g=>T+(g-1)*(H-T-B)/4;
+  let svg='<svg viewBox="0 0 '+W+" "+H+'" role="img" aria-label="Leistungskurve">';
+  for(let g=1;g<=5;g++)svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="var(--line)"/><text x="'+(L-10)+'" y="'+(y(g)+4)+'" text-anchor="end">'+g+" "+GN[g].split(" ")[0]+"</text>";
+  const line=(k,col,dash)=>{
+    const pts=rows.map((c,i)=>gOf(c.id)[k]?[x(i),y(gOf(c.id)[k])]:null).filter(Boolean);
+    let o=pts.length>1?'<polyline fill="none" stroke="'+col+'" stroke-width="3" stroke-linejoin="round"'+(dash?' stroke-dasharray="6 5"':"")+' points="'+pts.map(p=>p.join(",")).join(" ")+'"/>':"";
+    return o+pts.map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="'+col+'" stroke="var(--panel)" stroke-width="2"/>').join("");
+  };
+  svg+=line("exp","var(--muted)",true)+line("real","var(--hot)",false);
+  rows.forEach((c,i)=>{const d=new Date(c.due+"T00:00");svg+='<text class="lbl" x="'+x(i)+'" y="'+(H-B+18)+'" text-anchor="middle">'+esc(c.b)+'</text><text x="'+x(i)+'" y="'+(H-B+32)+'" text-anchor="middle">'+dm(d)+"</text>"});
+  svg+="</svg>";
+  const both=rows.filter(c=>gOf(c.id).exp&&gOf(c.id).real),reals=rows.filter(c=>gOf(c.id).real),exps=rows.filter(c=>gOf(c.id).exp);
+  const avg=a=>a.length?(a.reduce((s,v)=>s+v,0)/a.length).toFixed(1).replace(".",","):"–";
+  const diff=both.length?both.reduce((s,c)=>s+gOf(c.id).real-gOf(c.id).exp,0)/both.length:null;
+  const verdict=diff===null?"–":Math.abs(diff)<.25?"passt":diff>0?"zu optimistisch":"zu streng";
+  return '<div class="legend"><span><i style="background:var(--muted)"></i>erwartet</span><span><i style="background:var(--hot)"></i>echte Note</span></div>'+
+    '<div class="chart">'+svg+"</div>"+
+    '<div class="gstats"><div><b>'+avg(reals.map(c=>gOf(c.id).real))+"</b>Ø echte Note</div><div><b>"+avg(exps.map(c=>gOf(c.id).exp))+"</b>Ø erwartet</div><div><b>"+both.filter(c=>gOf(c.id).exp===gOf(c.id).real).length+"/"+both.length+"</b>genau getroffen</div><div><b>"+verdict+"</b>deine Einschätzung</div></div>"+
+    '<table class="gtable"><tr><th>Eintrag</th><th>Datum</th><th>Erwartet</th><th>Echt</th></tr>'+rows.map(c=>{const g=gOf(c.id),d=new Date(c.due+"T00:00");return"<tr><td>"+esc(c.t)+"</td><td>"+dm(d)+"</td><td>"+(g.exp||"–")+"</td><td>"+(g.real||"–")+"</td></tr>"}).join("")+"</table>";
+}
+function closeChart(){$("chartDlg").hidden=true;$("curveBtn").focus()}
+$("curveBtn").addEventListener("click",()=>{$("chartBody").innerHTML=chartHTML();$("chartDlg").hidden=false;$("cClose").focus()});
+$("cClose").addEventListener("click",closeChart);
+
 let dlFiles=[],dlBack=null;
 function learn(id,from){
   const m=MATERIAL[id];if(!m)return;
@@ -443,6 +549,8 @@ function closeDl(){$("dl").hidden=true;dlBack?.focus()}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-learn]");if(b)learn(b.dataset.learn,b)});
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&!$("dl").hidden)closeDl();
+  if(e.key==="Escape"&&!$("gradeDlg").hidden)closeGrade();
+  if(e.key==="Escape"&&!$("chartDlg").hidden)closeChart();
   const b=e.target.closest&&e.target.closest("li[data-learn]");
   if(b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();learn(b.dataset.learn,b)}
 });
