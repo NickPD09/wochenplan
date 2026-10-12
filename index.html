@@ -138,6 +138,7 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
 .filter button:hover{color:var(--fg)}
 .filter button[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 .filter button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.filter button[data-view="arch"]{margin-left:auto}
 .filter small{font-family:var(--f-mono);font-weight:500;opacity:.7;margin-left:4px}
 .empty{grid-column:1/-1;background:var(--panel);border:1px dashed var(--line);border-radius:16px;padding:22px;color:var(--muted);text-align:center}
 .learn{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:.8rem;padding:8px 14px;border-radius:10px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--fg);cursor:pointer}
@@ -255,7 +256,7 @@ const byId=id=>items().find(c=>c.id===id);
 const esc=x=>String(x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const isOwn=c=>(st._custom||[]).includes(c);
 let view="all";try{view=localStorage.getItem(KEY+":view")||"all"}catch(e){}
-const VIEWS=[["all","Alle"],["pub","Klasse"],["own","Meine"]];
+const VIEWS=[["all","Alle"],["pub","Klasse"],["own","Meine"],["arch","Abgeschlossen"]];
 const dm=d=>d.getDate()+"."+(d.getMonth()+1)+".";
 let sel=null; // ausgewählter Tag
 const XP=10, RANKS=["Rookie","Lernender","Grinder","Streber","Boss-Killer"];
@@ -343,9 +344,12 @@ function render(){
 
   // Quest-Karten (bei ausgewähltem Tag nur die Fächer dieses Tages)
   const ids=sel?new Set([...IT.filter(c=>c.due===sel).map(c=>c.id),...(PLAN[sel]||[]).map(x=>x[0])]):null;
-  const own=IT.filter(isOwn),pub=IT.filter(c=>!isOwn(c));
-  $("filter").innerHTML=VIEWS.map(([v,l])=>'<button type="button" data-view="'+v+'" aria-pressed="'+(view===v)+'">'+l+"<small>"+(v==="all"?IT:v==="own"?own:pub).length+"</small></button>").join("");
-  const base=view==="own"?own:view==="pub"?pub:IT;
+  // Fälligkeitstag vorbei → wandert nach "Abgeschlossen" (bei ausgewähltem Tag wird alles von dem Tag gezeigt)
+  const active=IT.filter(c=>days(c.due)>=0),past=IT.filter(c=>days(c.due)<0);
+  const cnt={all:active.length,pub:active.filter(c=>!isOwn(c)).length,own:active.filter(isOwn).length,arch:past.length};
+  $("filter").innerHTML=VIEWS.map(([v,l])=>'<button type="button" data-view="'+v+'" aria-pressed="'+(view===v)+'">'+l+"<small>"+cnt[v]+"</small></button>").join("");
+  const scope=sel?IT:view==="arch"?past:active;
+  const base=view==="own"?scope.filter(isOwn):view==="pub"?scope.filter(c=>!isOwn(c)):scope;
   const shown=ids?base.filter(c=>ids.has(c.id)):base;
   let all=0,done=0;
   IT.forEach(c=>{all+=c.tasks.length;done+=doneN(c)});
@@ -360,7 +364,7 @@ function render(){
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
       '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+esc(t)+'</span><span class="xpTag">+'+XP+" XP</span></label></li>").join("")+
       "</ul></div></article>";
-  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Unten bei „+ Eigene Aufgabe hinzufügen“ anlegen.":"Hier ist nichts.")+"</div>";
+  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Unten bei „+ Eigene Aufgabe hinzufügen“ anlegen.":view==="arch"?"Noch nichts abgeschlossen. Sobald ein Termin vorbei ist, landet er hier.":"Hier ist nichts.")+"</div>";
 
   // XP + Rang
   const p=all?done/all:0,r=RANKS[Math.min(RANKS.length-1,Math.floor(p*RANKS.length))];
