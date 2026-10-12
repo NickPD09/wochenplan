@@ -122,6 +122,13 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
 .lcard button{font-family:var(--f-display);font-weight:800;font-size:1rem;padding:12px;border:0;border-radius:10px;background:linear-gradient(90deg,var(--hot),var(--gold));color:#0c0b1a;cursor:pointer}
 .lcard button:disabled{opacity:.6;cursor:wait}
 .err{color:var(--hot);margin:0;font-size:.85rem}
+.learn{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:.8rem;padding:8px 14px;border-radius:10px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--fg);cursor:pointer}
+.learn:hover{background:color-mix(in srgb,var(--c) 30%,transparent)}
+.learn:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.dvlist li[data-learn]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px}
+.dlfiles{margin:0;padding-left:18px;color:var(--muted);font-family:var(--f-mono);font-size:.82rem;display:grid;gap:4px}
+.dlbtns{display:grid;gap:8px}
+.lcard button.ghost{background:none;border:1px solid var(--line);color:var(--muted)}
 @media (max-width:720px){.cards{grid-template-columns:1fr}}
 @media (max-width:560px){.hero{grid-template-columns:1fr}.boss{text-align:left}.week{grid-template-columns:1fr 1fr}.day:last-child{grid-column:span 2}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -136,6 +143,16 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
     <button type="submit" id="loginBtn">Los geht's</button>
     <p class="err" id="loginErr" hidden></p>
   </form>
+</div>
+
+<div class="login" id="dl" hidden role="dialog" aria-modal="true" aria-labelledby="dlTitle">
+  <div class="lcard">
+    <div class="eyebrow">Lernmaterial</div>
+    <h2 id="dlTitle"></h2>
+    <p class="note">Die Lernseite ist in einem neuen Tab offen. Diese Dateien gehören dazu:</p>
+    <ul class="dlfiles" id="dlList"></ul>
+    <div class="dlbtns"><button type="button" id="dlYes">Akzeptieren &amp; herunterladen</button><button type="button" class="ghost" id="dlNo">Nein danke</button></div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -189,6 +206,11 @@ const PLAN={
  "2026-10-14":[["mathe","Mathe Runde 2 + Fehler"],["haabs","Haabs: Folien fertig"],["insy","INSY Notation"]],
  "2026-10-15":[["insy","INSY Übungen"],["haabs","Haabs: Sprechtext + 2× proben"]],
  "2026-10-16":[["haabs","Haabs: früh Text 1× durchgehen"]]
+};
+// Lernmaterial pro Fach: html = Lernseite (öffnet im neuen Tab), files = Downloads nach "Akzeptieren".
+// Pfade relativ zum Repo, z. B. lernen/mathe.html und dateien/mathe/beispiele.pdf
+const MATERIAL={
+  // mathe:{html:"lernen/mathe.html",files:["dateien/mathe/beispiele.pdf"]},
 };
 const DAYS=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
 const byId=id=>DATA.find(c=>c.id===id);
@@ -270,7 +292,7 @@ function render(){
       '<div class="dvcols"><div><div class="eyebrow">Prüfung / Abgabe</div><ul class="dvlist">'+
       (dueC.length?dueC.map(c=>{const n=doneN(c),f=n===c.tasks.length;return'<li style="--c:var('+c.c+')"><span class="dot"></span>'+c.t+'<span class="chip'+(f?" ok":"")+'">'+(f?"besiegt ✓":n+"/"+c.tasks.length)+"</span></li>"}).join(""):'<li class="none">Nichts fällig</li>')+
       '</ul></div><div><div class="eyebrow">To-do an dem Tag</div><ul class="dvlist">'+
-      (PLAN[sel]||[]).map(([id,t])=>'<li style="--c:var('+byId(id).c+')"><span class="dot"></span>'+t+"</li>").join("")+
+      (PLAN[sel]||[]).map(([id,t])=>'<li style="--c:var('+byId(id).c+')"'+(MATERIAL[id]?' data-learn="'+id+'" role="button" tabindex="0"':'')+'><span class="dot"></span>'+t+"</li>").join("")+
       "</ul></div></div>";
   }
   dv.hidden=!sel;
@@ -286,7 +308,7 @@ function render(){
     const chip=fin?'<span class="chip ok">besiegt ✓</span>':'<span class="chip'+(dd<=1&&dd>=0?" soon":"")+'">'+wd[dt.getDay()]+" "+dt.getDate()+".10. · "+rel(dd)+"</span>";
     return'<article class="card'+(fin?" done":"")+'" style="--c:var('+c.c+')">'+
       '<div class="chead"><div class="badge">'+c.b+'</div><div><h2>'+c.t+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span></div></div></div>"+
-      '<div class="cbody"><div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+
+      '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+
       (c.note?'<p class="note">'+c.note+"</p>":"")+
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
       '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+t+'</span><span class="xpTag">+'+XP+" XP</span></label></li>").join("")+
@@ -314,6 +336,29 @@ let armed=false;
 $("reset").addEventListener("click",e=>{
   if(!armed){armed=true;e.target.textContent="Sicher? Nochmal klicken";e.target.classList.add("arm");setTimeout(()=>{armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm")},3000);return}
   st={};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
+});
+let dlFiles=[],dlBack=null;
+function learn(id,from){
+  const m=MATERIAL[id];if(!m)return;
+  if(m.html)window.open(m.html,"_blank","noopener");
+  if(!m.files||!m.files.length)return;
+  dlFiles=m.files;dlBack=from;
+  $("dlTitle").textContent=byId(id).t;
+  $("dlList").innerHTML=m.files.map(f=>"<li>"+f.split("/").pop()+"</li>").join("");
+  $("dl").hidden=false;$("dlYes").focus();
+}
+function closeDl(){$("dl").hidden=true;dlBack?.focus()}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-learn]");if(b)learn(b.dataset.learn,b)});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&!$("dl").hidden)closeDl();
+  const b=e.target.closest&&e.target.closest("li[data-learn]");
+  if(b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();learn(b.dataset.learn,b)}
+});
+$("dlNo").addEventListener("click",closeDl);
+$("dlYes").addEventListener("click",()=>{
+  // kleine Pause zwischen Downloads, sonst blockiert der Browser ab der 2. Datei
+  dlFiles.forEach((f,i)=>setTimeout(()=>{const a=document.createElement("a");a.href=f;a.download="";document.body.appendChild(a);a.click();a.remove()},i*400));
+  closeDl();
 });
 function pick(k){
   sel=sel===k?null:k;render();
