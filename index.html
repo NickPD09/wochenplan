@@ -208,7 +208,6 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
   </details>
   <div class="foot">
     <button class="reset" id="reset" type="button">Alle Häkchen zurücksetzen</button>
-    <button class="reset" id="restore" type="button" hidden>Ausgeblendete zurückholen</button>
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -250,8 +249,8 @@ const MATERIAL={
   itsi:{html:"lernen/itsi.html",files:["dateien/itsi/Kryptografie_Uebungen.xlsx"]},
 };
 const DAYS=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
-// Pro Nutzer: _hidden = ausgeblendete Standard-Einträge, _custom = eigene Einträge (beides in st, also nur unter seinem Namen)
-const items=()=>DATA.filter(c=>!(st._hidden||[]).includes(c.id)).concat(st._custom||[]);
+// Klassen-Einträge (DATA) sind fix für alle; _custom = eigene Einträge, nur unter dem eigenen Namen gespeichert
+const items=()=>DATA.concat(st._custom||[]);
 const byId=id=>items().find(c=>c.id===id);
 const esc=x=>String(x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const isOwn=c=>(st._custom||[]).includes(c);
@@ -314,7 +313,6 @@ const rel=n=>n<0?"vorbei":n===0?"heute":n===1?"morgen":"in "+n+" Tagen";
 
 function render(){
   const IT=items();
-  $("restore").hidden=!(st._hidden||[]).length;
   // Boss countdown: nächste offene Prüfung
   const next=IT.filter(c=>days(c.due)>=0&&doneN(c)<c.tasks.length).sort((a,b)=>a.due.localeCompare(b.due));
   if(next.length){
@@ -356,7 +354,7 @@ function render(){
     const dd=days(c.due),dt=new Date(c.due+"T00:00");
     const chip=fin?'<span class="chip ok">besiegt ✓</span>':'<span class="chip'+(dd<=1&&dd>=0?" soon":"")+'">'+wd[dt.getDay()]+" "+dm(dt)+" · "+rel(dd)+"</span>";
     return'<article class="card'+(fin?" done":"")+'" style="--c:var('+c.c+')">'+
-      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':"")+'</div></div><button type="button" class="hide" data-hide="'+c.id+'" title="Nur für dich entfernen">✕</button></div>'+
+      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':"")+'</div></div>'+(isOwn(c)?'<button type="button" class="hide" data-hide="'+c.id+'" title="Eigene Aufgabe löschen">✕</button>':"")+'</div>'+
       '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+
       (c.note?'<p class="note">'+c.note+"</p>":"")+
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
@@ -384,22 +382,21 @@ $("cards").addEventListener("change",e=>{
 let armed=false;
 $("reset").addEventListener("click",e=>{
   if(!armed){armed=true;e.target.textContent="Sicher? Nochmal klicken";e.target.classList.add("arm");setTimeout(()=>{armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm")},3000);return}
-  st={_hidden:st._hidden,_custom:st._custom};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
+  st={_custom:st._custom};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
 });
 $("cards").addEventListener("click",e=>{
   const b=e.target.closest("[data-hide]");if(!b)return;
   if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent="Entfernen?";setTimeout(()=>{if(b.isConnected){b.classList.remove("arm");b.textContent="✕"}},3000);return}
   const id=b.dataset.hide,own=(st._custom||[]).find(c=>c.id===id);
-  if(own){st._custom=st._custom.filter(c=>c!==own);own.tasks.forEach((_,i)=>delete st[id+i])}
-  else st._hidden=[...(st._hidden||[]),id];
-  save();render();toast("Entfernt (nur bei dir)");
+  if(!own)return; // Klassen-Einträge kann man nicht löschen
+  st._custom=st._custom.filter(c=>c!==own);own.tasks.forEach((_,i)=>delete st[id+i]);
+  save();render();toast("Gelöscht");
 });
 $("filter").addEventListener("click",e=>{
   const b=e.target.closest("[data-view]");if(!b)return;
   view=b.dataset.view;try{localStorage.setItem(KEY+":view",view)}catch(_){}
   render();document.querySelector('[data-view="'+view+'"]')?.focus();
 });
-$("restore").addEventListener("click",()=>{st._hidden=[];save();render();toast("Wieder da")});
 $("addForm").addEventListener("submit",e=>{
   e.preventDefault();
   const t=$("addT").value.trim(),due=$("addD").value;
