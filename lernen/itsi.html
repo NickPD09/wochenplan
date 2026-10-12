@@ -1,0 +1,322 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Krypto-Lernseite 4AHIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: sticky chapter rail left, one reading column right; diagrams in bordered "schematic" plates */
+:root{
+  --bg:#f5f7f8; --panel:#ffffff; --ink:#14202b; --muted:#5b6b78; --line:#d5dde3;
+  --teal:#0b8f9c; --teal-soft:#e2f3f4; --amber:#b86e00; --amber-soft:#fdf1dc;
+  --green:#2e7d32; --green-soft:#e8f4e8; --red:#c0392b;
+  --display:"Unbounded",system-ui,sans-serif; --body:"Instrument Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161c; --panel:#162029; --ink:#e4ecf1; --muted:#93a4b1; --line:#2a3946;
+  --teal:#3cc4cf; --teal-soft:#14343a; --amber:#f0a83a; --amber-soft:#3a2c14;
+  --green:#6fcf73; --green-soft:#1a3320; --red:#ff7b6b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161c; --panel:#162029; --ink:#e4ecf1; --muted:#93a4b1; --line:#2a3946;
+  --teal:#3cc4cf; --teal-soft:#14343a; --amber:#f0a83a; --amber-soft:#3a2c14;
+  --green:#6fcf73; --green-soft:#1a3320; --red:#ff7b6b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 80px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}nav.rail{position:static!important}}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font-size:14px}
+nav.rail .brand{font:700 15px/1.2 var(--display);letter-spacing:.02em;margin-bottom:18px}
+nav.rail .brand span{display:block;color:var(--teal);font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+nav.rail h4{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+nav.rail a{display:block;color:var(--ink);text-decoration:none;padding:3px 0 3px 10px;border-left:2px solid var(--line)}
+nav.rail a:hover,nav.rail a:focus-visible{border-color:var(--teal);color:var(--teal);outline:none}
+main{min-width:0}
+header.hero{padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.bits{font:500 12px var(--mono);color:var(--teal);letter-spacing:.2em;overflow:hidden;white-space:nowrap}
+h1{font:700 clamp(28px,4.6vw,44px)/1.1 var(--display);margin:10px 0 10px;text-wrap:balance}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+h2{font:700 24px/1.2 var(--display);margin:56px 0 4px;text-wrap:balance;scroll-margin-top:20px}
+h2 small{display:block;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+h3{font:600 19px/1.3 var(--body);margin:34px 0 8px;scroll-margin-top:20px}
+p,li{max-width:68ch}
+.formula{background:var(--teal-soft);border:1px solid color-mix(in srgb,var(--teal) 35%,transparent);border-radius:10px;padding:14px 18px;margin:14px 0;overflow-x:auto}
+.formula .lbl{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+math{font-size:1.25em}
+math[display="block"]{margin:4px 0}
+.excel{background:var(--green-soft);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14px;overflow-x:auto}
+.excel b{font:600 11px var(--mono);letter-spacing:.1em;color:var(--green);margin-right:10px}
+code{font:13.5px var(--mono);color:var(--green);white-space:nowrap}
+.merke{background:var(--amber-soft);border-left:3px solid var(--amber);padding:10px 14px;margin:14px 0;border-radius:0 8px 8px 0}
+.merke b:first-child{color:var(--amber);font:600 11px var(--mono);letter-spacing:.1em;display:block;margin-bottom:2px}
+.tbl{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums;min-width:100%}
+th,td{padding:7px 12px;border-bottom:1px solid var(--line);text-align:left}
+th{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.n{text-align:right;font-family:var(--mono);font-size:14px}
+.bad{color:var(--red);font-weight:600}.ok{color:var(--green);font-weight:600}
+figure{margin:18px 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+figure .sv{overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;margin:0 auto}
+figcaption{font-size:13.5px;color:var(--muted);margin-top:8px}
+svg text{font-family:var(--mono);fill:var(--ink)}
+svg .box{fill:var(--panel);stroke:var(--ink);stroke-width:1.5}
+svg .fbox{fill:var(--teal-soft);stroke:var(--teal);stroke-width:1.8}
+svg .ln{stroke:var(--ink);stroke-width:1.5;fill:none}
+svg .acc{stroke:var(--teal);stroke-width:2;fill:none}
+svg .grid{stroke:var(--line);stroke-width:1}
+svg .mut{fill:var(--muted)}
+svg .tealtxt{fill:var(--teal)}
+svg .amb{fill:var(--amber)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:14px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.card h5{margin:0 0 4px;font:600 15px var(--body)}
+.card .tag{font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+/* calculator */
+.calc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin:18px 0}
+.calc label{font:600 13px var(--body);display:block;margin-bottom:6px}
+.calc input{width:100%;font:15px var(--mono);padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.calc input:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.presets button,.quiz button{font:500 13px var(--mono);padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer}
+.presets button:hover,.presets button:focus-visible{border-color:var(--teal);color:var(--teal);outline:none}
+.stats{display:flex;flex-wrap:wrap;gap:18px;margin:12px 0 4px;font-family:var(--mono);font-size:14px}
+.stats div b{display:block;font:700 22px var(--display);color:var(--teal)}
+.warn{color:var(--red);font-size:14px;min-height:1.2em}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:6px}
+details p{margin:4px 0}
+.hf{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+.hf .sv{overflow-x:auto}
+.hf svg{display:block;max-width:100%;height:auto;margin:0 auto}
+.hf svg text{font-family:var(--mono);fill:var(--ink)}
+.hf .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.hf button{font:600 13px var(--mono);padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);cursor:pointer}
+.hf button:hover,.hf button:focus-visible{border-color:var(--teal);color:var(--teal);outline:none}
+.hf button:disabled{opacity:.4;cursor:default}
+.hf .msg{font-size:14px;color:var(--muted);flex:1 1 240px;min-width:0}
+.hf .msg b{color:var(--ink)}
+.hf .node{fill:var(--teal-soft);stroke:var(--teal);stroke-width:1.8}
+.hf .new{fill:var(--amber-soft);stroke:var(--amber);stroke-width:2.2}
+.hf .leaf{fill:var(--panel);stroke:var(--ink);stroke-width:1.5}
+.hf .edge{stroke:var(--ink);stroke-width:1.5}
+.hf .bit{fill:var(--teal);font-weight:600}
+.hf .code{fill:var(--teal);font-weight:600}
+footer{margin-top:60px;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:no-preference){nav.rail a{transition:border-color .15s,color .15s}}
+</style>
+
+<div class="wrap">
+<nav class="rail" aria-label="Kapitel">
+  <div class="brand">Kryptografie<span>4AHIT · Lernseite</span></div>
+  <h4>Informationstheorie</h4>
+  <a href="#info">Informationsgehalt</a>
+  <a href="#entropie">Entropie</a>
+  <a href="#codierung">Codierung</a>
+  <a href="#huffman">Huffman-Beispiele</a>
+  <a href="#korrelation">Krypto &amp; Korrelation</a>
+  <h4>Üben</h4>
+  <a href="#excel">Excel-Spickzettel</a>
+  <a href="#test">Selbsttest</a>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Informationstheorie</h1>
+  <p class="lede">Historische Verfahren ab Folie 13. Formeln, Beispiele, Excel und Selbsttest.</p>
+</header>
+
+<!-- ================= INFORMATIONSTHEORIE ================= -->
+<h2 id="info"><small>Shannon</small>Informationsgehalt</h2>
+<p>Information wird nur über <b>Wahrscheinlichkeiten</b> gemessen. Was die Nachricht bedeutet, spielt keine Rolle.</p>
+<div class="formula"><div class="lbl">Definition</div>
+<math display="block"><mi>I</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>ld</mi><mrow><mo>(</mo><mfrac><mn>1</mn><mrow><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mfrac><mo>)</mo></mrow><mtext>&nbsp;bit</mtext><mspace width="2em"/><msub><mi>I</mi><mtext>ges</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>I</mi><msub><mi>x</mi><mi>i</mi></msub></msub></math>
+</div>
+<ul>
+  <li>Je <b>seltener</b> ein Zeichen, desto <b>mehr</b> Information.</li>
+  <li>Ein sicheres Zeichen (p = 1) hat I = 0.</li>
+  <li>Bei unabhängigen Nachrichten werden die I <b>addiert</b>.</li>
+</ul>
+
+
+<div class="tbl"><table>
+<tr><th>Beispiel</th><th>Rechnung</th><th>I [bit]</th></tr>
+<tr><td>Quelle sendet immer x, p = 1</td><td>ld(1)</td><td class="n">0</td></tr>
+<tr><td>Binär, p(0) = p(1) = 0,5</td><td>ld(2)</td><td class="n">1</td></tr>
+<tr><td>2<sup>k</sup> gleich wahrscheinliche Symbole</td><td>ld(2<sup>k</sup>)</td><td class="n">k</td></tr>
+<tr><td>„b“ im Deutschen, p = 0,016</td><td>ld(62,5)</td><td class="n">≈ 5,97</td></tr>
+</table></div>
+<div class="merke"><b>MERKE</b>ld(x) = log₂(x) = ln(x) / ln(2). Am Taschenrechner: <code>ln(62.5)/ln(2)</code></div>
+<div class="excel"><b>EXCEL</b><code>=LOG(1/B4;2)</code> · Summe: <code>=SUMME(C4:C8)</code></div>
+
+<h2 id="entropie"><small>Mittelwert</small>Entropie</h2>
+<p>Die Entropie ist die <b>mittlere Information pro Zeichen</b> einer Quelle.</p>
+<div class="formula"><div class="lbl">Shannon-Entropie</div>
+<math display="block"><mi>H</mi><mo>(</mo><mi>X</mi><mo>)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mrow><mo>|</mo><mi>Z</mi><mo>|</mo></mrow></munderover><msub><mi>p</mi><mi>i</mi></msub><mo>·</mo><mi>ld</mi><mrow><mo>(</mo><mfrac><mn>1</mn><msub><mi>p</mi><mi>i</mi></msub></mfrac><mo>)</mo></mrow><mtext>&nbsp;bit/Zeichen</mtext><mspace width="2em"/><msub><mi>H</mi><mtext>max</mtext></msub><mo>=</mo><mi>ld</mi><mo>(</mo><mi>n</mi><mo>)</mo></math>
+</div>
+
+
+<div class="tbl"><table>
+<tr><th>Quelle</th><th>Rechnung</th><th>H</th></tr>
+<tr><td>1 Zeichen, p = 1</td><td>1 · 0</td><td class="n">0</td></tr>
+<tr><td>2 Zeichen, je 0,5</td><td>2 · 0,5 · 1</td><td class="n">1</td></tr>
+<tr><td>4 Zeichen, je 0,25</td><td>4 · 0,25 · 2</td><td class="n">2</td></tr>
+<tr><td>0,5 / 0,25 / 0,125 / 0,125</td><td>0,5·1 + 0,25·2 + 2·0,125·3</td><td class="n">1,75</td></tr>
+</table></div>
+<div class="excel"><b>EXCEL</b>Pro Zeile <code>=B5*LOG(1/B5;2)</code> · in einer Formel <code>=SUMMENPRODUKT(B5:B8;LOG(1/B5:B8;2))</code> · Kontrolle <code>=SUMME(B5:B8)</code> muss 1 sein</div>
+
+
+<h2 id="codierung"><small>Codes</small>Codierung &amp; Shannon-Theorem</h2>
+<ul>
+  <li>Eine Codierung C : A → B ordnet Wörtern aus A Wörter aus B zu.</li>
+  <li>Sie muss <b>injektiv</b> sein, sonst kann man nicht eindeutig decodieren: C⁻¹(C(a)) = a.</li>
+</ul>
+<div class="formula"><div class="lbl">Mittlere Wortlänge · Redundanz · Codierungstheorem</div>
+<math display="block"><mi>L</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>p</mi><mi>i</mi></msub><mo>·</mo><msub><mi>l</mi><mi>i</mi></msub><mspace width="2em"/><mi>R</mi><mo>=</mo><mi>L</mi><mo>−</mo><mi>H</mi><mspace width="2em"/><mi>H</mi><mo>≤</mo><mi>L</mi></math>
+</div>
+<p>Kein Binärcode ist im Mittel kürzer als die Entropie. Wenn L = H gilt, ist der Code <b>optimal</b>.</p>
+
+<div class="cols">
+  <div class="card"><span class="tag">Shannon-Fano · top-down</span><h5>Sortieren und teilen</h5>Nach p sortieren und in zwei Hälften mit möglichst gleicher Summe teilen. Links bekommt 0, rechts 1. Das wiederholst du für jede Hälfte.</div>
+  <div class="card"><span class="tag">Huffman · bottom-up</span><h5>Die zwei kleinsten verbinden</h5>Immer die zwei kleinsten p zu einem Knoten zusammenfassen, bis nur noch einer übrig ist. Huffman ist immer optimal.</div>
+</div>
+
+<div class="excel"><b>EXCEL</b>Länge <code>=LÄNGE(C4)</code> · L <code>=SUMMENPRODUKT(B4:B7;D4:D7)</code> · Prüfung <code>=WENN(H&lt;=L;"ja";"nein")</code></div>
+
+<h3 id="huffman">Huffman-Beispiele aus dem Unterricht (29.09.2026)</h3>
+<div class="merke"><b>SO FUNKTIONIERT'S</b>
+<ol style="margin:4px 0 0;padding-left:20px">
+<li>Alle Zeichen mit ihrem p nebeneinander schreiben. Das sind die <b>Blätter</b>.</li>
+<li>Die zwei <b>kleinsten</b> p suchen, verbinden und addieren. Daraus entsteht ein neuer Knoten.</li>
+<li>Der neue Knoten zählt ab jetzt wie ein normales Zeichen. Wieder die zwei kleinsten suchen.</li>
+<li>Das wiederholst du, bis oben nur noch <b>1</b> übrig ist. Das ist die <b>Wurzel</b>.</li>
+<li>An jeder Verzweigung bekommt ein Zweig <b>0</b> und der andere <b>1</b>.</li>
+<li>Der Code eines Zeichens ist der Weg <b>von der Wurzel nach unten</b> bis zu diesem Zeichen.</li>
+</ol>
+Seltene Zeichen landen tief unten und bekommen lange Codes, häufige Zeichen haben kurze Codes. Welcher Zweig 0 oder 1 heißt, ist egal, die <b>Längen</b> bleiben gleich.</div>
+<p>Mit „Weiter“ kannst du den Baum Schritt für Schritt aufbauen.</p>
+
+<p><b>Beispiel 1</b> · a = 0,5 · b = 0,25 · c = 0,125 · d = 0,125</p>
+<div class="hf" data-tree="1"></div>
+<div class="tbl"><table>
+<tr><th>Schritt</th><th>verbinden</th><th>Summe</th></tr>
+<tr><td>1</td><td>c 0,125 + d 0,125</td><td class="n">0,25</td></tr>
+<tr><td>2</td><td>b 0,25 + (cd) 0,25</td><td class="n">0,5</td></tr>
+<tr><td>3</td><td>a 0,5 + (bcd) 0,5</td><td class="n">1</td></tr>
+</table></div>
+<div class="tbl"><table>
+<tr><th>Zeichen</th><th>p</th><th>Code</th><th>l</th><th>p · l</th></tr>
+<tr><td>a</td><td class="n">0,5</td><td><code>1</code></td><td class="n">1</td><td class="n">0,5</td></tr>
+<tr><td>b</td><td class="n">0,25</td><td><code>01</code></td><td class="n">2</td><td class="n">0,5</td></tr>
+<tr><td>c</td><td class="n">0,125</td><td><code>001</code></td><td class="n">3</td><td class="n">0,375</td></tr>
+<tr><td>d</td><td class="n">0,125</td><td><code>000</code></td><td class="n">3</td><td class="n">0,375</td></tr>
+<tr><td colspan="4"><b>L = H = 1,75 → R = 0, also optimal</b></td><td class="n"><b>1,75</b></td></tr>
+</table></div>
+
+<p><b>Beispiel 2</b> · s1 = 0,03 · s2 = 0,12 · s3 = 0,34 · s4 = 0,18 · s5 = 0,13 · s6 = 0,2</p>
+<div class="hf" data-tree="2"></div>
+<div class="tbl"><table>
+<tr><th>Schritt</th><th>verbinden (die zwei kleinsten)</th><th>Summe</th></tr>
+<tr><td>1</td><td>s1 0,03 + s2 0,12</td><td class="n">0,15</td></tr>
+<tr><td>2</td><td>s5 0,13 + (s1s2) 0,15</td><td class="n">0,28</td></tr>
+<tr><td>3</td><td>s4 0,18 + s6 0,2</td><td class="n">0,38</td></tr>
+<tr><td>4</td><td>(s5s1s2) 0,28 + s3 0,34</td><td class="n">0,62</td></tr>
+<tr><td>5</td><td>(s4s6) 0,38 + 0,62</td><td class="n">1</td></tr>
+</table></div>
+<div class="tbl"><table>
+<tr><th>Zeichen</th><th>p</th><th>Code</th><th>l</th><th>p · l</th><th>p · ld(1/p)</th></tr>
+<tr><td>s3</td><td class="n">0,34</td><td><code>10</code></td><td class="n">2</td><td class="n">0,68</td><td class="n">0,529</td></tr>
+<tr><td>s6</td><td class="n">0,2</td><td><code>00</code></td><td class="n">2</td><td class="n">0,40</td><td class="n">0,464</td></tr>
+<tr><td>s4</td><td class="n">0,18</td><td><code>01</code></td><td class="n">2</td><td class="n">0,36</td><td class="n">0,445</td></tr>
+<tr><td>s5</td><td class="n">0,13</td><td><code>110</code></td><td class="n">3</td><td class="n">0,39</td><td class="n">0,383</td></tr>
+<tr><td>s2</td><td class="n">0,12</td><td><code>1110</code></td><td class="n">4</td><td class="n">0,48</td><td class="n">0,367</td></tr>
+<tr><td>s1</td><td class="n">0,03</td><td><code>1111</code></td><td class="n">4</td><td class="n">0,12</td><td class="n">0,152</td></tr>
+<tr><td colspan="4"><b>Summe</b></td><td class="n"><b>L = 2,43</b></td><td class="n"><b>H ≈ 2,340</b></td></tr>
+</table></div>
+<p>R = L − H = 2,43 − 2,340 ≈ <b>0,09 bit</b> · H<sub>max</sub> = ld(6) ≈ 2,585 · H ≤ L stimmt ✓</p>
+
+<h2 id="korrelation"><small>Angriff</small>Informationstheorie &amp; Kryptographie</h2>
+<p>Ein guter Geheimtext ist statistisch <b>nicht von Rauschen</b> zu unterscheiden. Sonst kann ein Angreifer Muster ausnutzen, etwa mit Frequenzanalyse oder über Redundanz.</p>
+<div class="cols">
+  <div class="card"><span class="tag">Kompression</span><h5>Redundanz entfernen</h5>Der Text wird kürzer und nähert sich H.</div>
+  <div class="card"><span class="tag">Kryptographie</span><h5>Redundanz verschleiern</h5>Die Muster werden unsichtbar und der Text sieht aus wie Rauschen.</div>
+</div>
+<p><b>Korrelation</b> ist die Abhängigkeit zwischen Signalen oder Symbolen, z. B. folgt auf „Q“ fast immer „U“. Angreifer nutzen das mit <b>Häufigkeitsanalyse</b> (E ist häufig, Q selten) und <b>Bi- bzw. Trigramm-Analyse</b> („TH“, „ER“, „CH“).</p>
+
+
+<div class="formula"><div class="lbl">Autokorrelation · Kreuzkorrelation</div>
+<math display="block"><msub><mi>R</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</mo><mo>=</mo><munder><mo movablelimits="false">lim</mo><mrow><msub><mi>T</mi><mi>F</mi></msub><mo>→</mo><mi>∞</mi></mrow></munder><mfrac><mn>1</mn><msub><mi>T</mi><mi>F</mi></msub></mfrac><msubsup><mo>∫</mo><mrow><mo>−</mo><msub><mi>T</mi><mi>F</mi></msub><mo>/</mo><mn>2</mn></mrow><mrow><msub><mi>T</mi><mi>F</mi></msub><mo>/</mo><mn>2</mn></mrow></msubsup><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>·</mo><mi>x</mi><mo>(</mo><mi>t</mi><mo>+</mo><mi>τ</mi><mo>)</mo><mi>d</mi><mi>t</mi></math>
+<math display="block"><msub><mi>R</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>(</mo><mi>τ</mi><mo>)</mo><mo>=</mo><munder><mo movablelimits="false">lim</mo><mrow><msub><mi>T</mi><mi>F</mi></msub><mo>→</mo><mi>∞</mi></mrow></munder><mfrac><mn>1</mn><msub><mi>T</mi><mi>F</mi></msub></mfrac><msubsup><mo>∫</mo><mrow><mo>−</mo><msub><mi>T</mi><mi>F</mi></msub><mo>/</mo><mn>2</mn></mrow><mrow><msub><mi>T</mi><mi>F</mi></msub><mo>/</mo><mn>2</mn></mrow></msubsup><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>·</mo><mi>y</mi><mo>(</mo><mi>t</mi><mo>+</mo><mi>τ</mi><mo>)</mo><mi>d</mi><mi>t</mi></math>
+</div>
+<p>R<sub>xx</sub> vergleicht ein Signal mit sich selbst, verschoben um τ. R<sub>xy</sub> vergleicht zwei verschiedene Signale. Ist der Wert hoch, gibt es eine Abhängigkeit, und genau die nutzt der Angreifer.</p>
+
+<!-- ================= ÜBEN ================= -->
+<h2 id="excel"><small>Üben</small>Excel-Spickzettel</h2>
+<div class="tbl"><table>
+<tr><th>Was</th><th>Deutsches Excel</th><th>Englisches Excel</th></tr>
+<tr><td>I = ld(1/p)</td><td><code>=LOG(1/B4;2)</code></td><td><code>=LOG(1/B4,2)</code></td></tr>
+<tr><td>p · ld(1/p)</td><td><code>=B5*LOG(1/B5;2)</code></td><td><code>=B5*LOG(1/B5,2)</code></td></tr>
+<tr><td>Entropie in 1 Formel</td><td><code>=SUMMENPRODUKT(B5:B8;LOG(1/B5:B8;2))</code></td><td><code>=SUMPRODUCT(B5:B8,LOG(1/B5:B8,2))</code></td></tr>
+<tr><td>H<sub>max</sub></td><td><code>=LOG(ANZAHL(B5:B8);2)</code></td><td><code>=LOG(COUNT(B5:B8),2)</code></td></tr>
+<tr><td>Codewortlänge</td><td><code>=LÄNGE(C4)</code></td><td><code>=LEN(C4)</code></td></tr>
+<tr><td>Mittlere Wortlänge L</td><td><code>=SUMMENPRODUKT(B4:B7;D4:D7)</code></td><td><code>=SUMPRODUCT(B4:B7,D4:D7)</code></td></tr>
+<tr><td>Prüfung H ≤ L</td><td><code>=WENN(F11&lt;=F10;"ja";"nein")</code></td><td><code>=IF(F11&lt;=F10,"ja","nein")</code></td></tr>
+</table></div>
+<p>Zum Üben gibt es die Datei <b>Kryptografie_Uebungen.xlsx</b>. Dort schreibst du die Formeln in die gelben Felder, und das Blatt zeigt dir, ob dein Ergebnis stimmt.</p>
+
+<h2 id="test"><small>Üben</small>Selbsttest</h2>
+<details><summary>1 · p = 0,125. Wie groß ist I?</summary><p>ld(1/0,125) = ld(8) = <b>3 bit</b></p></details>
+<details><summary>2 · Eine Quelle hat 8 gleich wahrscheinliche Zeichen. H = ?</summary><p>H = H<sub>max</sub> = ld(8) = <b>3 bit</b></p></details>
+<details><summary>3 · p = 0,4 / 0,3 / 0,2 / 0,1. Berechne H.</summary><p>0,529 + 0,521 + 0,464 + 0,332 ≈ <b>1,846 bit</b></p></details>
+<details><summary>4 · Code 0 / 10 / 110 / 111 für Frage 3. Wie groß sind L und R?</summary><p>L = 0,4·1 + 0,3·2 + 0,2·3 + 0,1·3 = <b>1,9</b> · R = 1,9 − 1,846 ≈ <b>0,054</b></p></details>
+
+<footer>Quelle: Folien „Kryptografische Verfahren“ (ab Folie 13), DI Andreas Brachinger, SJ 2026/27</footer>
+</main>
+</div>
+
+<script>
+// Huffman trees from the notebook (29.09.2026). node: [p, step, zeroChild, oneChild] or leaf: [p, "name"]
+const TREES={
+ 1:[1,3,[.5,2,[.25,1,[.125,"d"],[.125,"c"]],[.25,"b"]],[.5,"a"]],
+ 2:[1,5,[.38,3,[.2,"s6"],[.18,"s4"]],[.62,4,[.34,"s3"],[.28,2,[.13,"s5"],[.15,1,[.12,"s2"],[.03,"s1"]]]]]
+};
+const NS="http://www.w3.org/2000/svg",f=v=>String(+v.toFixed(3)).replace(".",",");
+function mk(p,t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e}
+document.querySelectorAll(".hf").forEach(box=>{
+  const root=TREES[box.dataset.tree],nodes=[],leaves=[];let depth=0;
+  (function lay(n,d,code){depth=Math.max(depth,d);const o={p:n[0],d,code};
+    if(typeof n[1]==="string"){o.name=n[1];o.i=leaves.length;leaves.push(o)}
+    else{o.step=n[1];o.k=[lay(n[2],d+1,code+"0"),lay(n[3],d+1,code+"1")];o.i=(o.k[0].i+o.k[1].i)/2}
+    nodes.push(o);return o})(root,0,"");
+  const W=Math.max(420,leaves.length*96),GX=W/leaves.length,GY=78,Hh=(depth+1)*GY+40;
+  const X=o=>GX/2+o.i*GX,Y=o=>30+o.d*GY;
+  const sv=document.createElement("div");sv.className="sv";box.appendChild(sv);
+  const s=mk(sv,"svg",{viewBox:`0 0 ${W} ${Hh}`,width:W,role:"img","aria-label":"Huffman-Baum"});
+  const steps=nodes.filter(o=>o.step).sort((a,b)=>a.step-b.step),max=steps.length;
+  const bar=document.createElement("div");bar.className="bar";box.appendChild(bar);
+  const prev=document.createElement("button"),next=document.createElement("button"),all=document.createElement("button"),msg=document.createElement("div");
+  prev.textContent="◀ Zurück";next.textContent="Weiter ▶";all.textContent="Fertiger Baum";msg.className="msg";msg.setAttribute("role","status");
+  bar.append(prev,next,all,msg);
+  let cur=max;
+  function draw(){
+    s.replaceChildren();
+    const vis=o=>!o.step||o.step<=cur;
+    nodes.filter(o=>o.k&&vis(o)).forEach(o=>o.k.forEach((c,b)=>{
+      mk(s,"line",{x1:X(o),y1:Y(o)+18,x2:X(c),y2:Y(c)-(c.name?20:18),class:"edge"});
+      mk(s,"text",{x:(X(o)+X(c))/2+(b?10:-14),y:(Y(o)+Y(c))/2+2,"font-size":14,class:"bit","text-anchor":"middle"},b)}));
+    nodes.filter(vis).forEach(o=>{
+      if(o.name){mk(s,"rect",{x:X(o)-38,y:Y(o)-20,width:76,height:40,rx:6,class:"leaf"});
+        mk(s,"text",{x:X(o),y:Y(o)-3,"text-anchor":"middle","font-size":13,"font-weight":600},o.name);
+        mk(s,"text",{x:X(o),y:Y(o)+13,"text-anchor":"middle","font-size":12},f(o.p));
+        if(cur===max)mk(s,"text",{x:X(o),y:Y(o)+38,"text-anchor":"middle","font-size":13,class:"code"},o.code)}
+      else{mk(s,"circle",{cx:X(o),cy:Y(o),r:18,class:o.step===cur&&cur<max+1&&cur!==max?"new":o.step===cur?"new":"node"});
+        mk(s,"text",{x:X(o),y:Y(o)+4,"text-anchor":"middle","font-size":12},f(o.p))}});
+    const o=steps[cur-1];
+    msg.innerHTML=cur===0?"<b>Start:</b> nur die Zeichen mit ihren Wahrscheinlichkeiten.":
+      `<b>Schritt ${cur}/${max}:</b> ${f(o.k[0].p)} + ${f(o.k[1].p)} = ${f(o.p)}`+(cur===max?" · Wurzel erreicht. Die Codes stehen unter den Zeichen (Weg von oben nach unten).":"");
+    prev.disabled=cur===0;next.disabled=all.disabled=cur===max;
+  }
+  prev.onclick=()=>{cur--;draw()};next.onclick=()=>{cur++;draw()};all.onclick=()=>{cur=max;draw()};
+  draw();
+});
+</script>
+
+</body></html>
