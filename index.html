@@ -157,6 +157,7 @@ button.reset.arm{color:var(--hot);border-color:var(--hot)}
 .gstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
 .gstats div{background:var(--panel2);border-radius:10px;padding:10px 12px;font-size:.78rem;color:var(--muted)}
 .gstats b{display:block;font-family:var(--f-display);font-size:1.3rem;color:var(--fg)}
+.gstats b.t{font-size:.95rem;line-height:1.6}
 .gtable{width:100%;border-collapse:collapse;font-size:.85rem;font-variant-numeric:tabular-nums}
 .gtable th,.gtable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
 .gtable th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
@@ -510,10 +511,10 @@ $("cards").addEventListener("click",e=>{const b=e.target.closest("[data-grade]")
 function chartHTML(){
   const rows=DATA.concat(st._custom||[]).filter(c=>gOf(c.id).exp||gOf(c.id).real).sort((a,b)=>a.due.localeCompare(b.due));
   if(!rows.length)return '<p class="note">Noch keine Noten. Hak alle Schritte eines Fachs ab, dann wirst du nach deiner Erwartung gefragt. Die echte Note trägst du später auf der Karte ein.</p>';
-  const W=640,H=260,L=86,R=20,T=18,B=46,n=rows.length;
+  const W=640,H=260,L=112,R=20,T=18,B=46,n=rows.length;
   const x=i=>n===1?(L+W-R)/2:L+i*(W-L-R)/(n-1),y=g=>T+(g-1)*(H-T-B)/4;
   let svg='<svg viewBox="0 0 '+W+" "+H+'" role="img" aria-label="Leistungskurve">';
-  for(let g=1;g<=5;g++)svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="var(--line)"/><text x="'+(L-10)+'" y="'+(y(g)+4)+'" text-anchor="end">'+g+" "+GN[g].split(" ")[0]+"</text>";
+  for(let g=1;g<=5;g++)svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="var(--line)"/><text x="'+(L-10)+'" y="'+(y(g)+4)+'" text-anchor="end">'+g+" "+["","Sehr gut","Gut","Befriedig.","Genügend","Nicht gen."][g]+"</text>";
   const line=(k,col,dash)=>{
     const pts=rows.map((c,i)=>gOf(c.id)[k]?[x(i),y(gOf(c.id)[k])]:null).filter(Boolean);
     let o=pts.length>1?'<polyline fill="none" stroke="'+col+'" stroke-width="3" stroke-linejoin="round"'+(dash?' stroke-dasharray="6 5"':"")+' points="'+pts.map(p=>p.join(",")).join(" ")+'"/>':"";
@@ -528,7 +529,7 @@ function chartHTML(){
   const verdict=diff===null?"–":Math.abs(diff)<.25?"passt":diff>0?"zu optimistisch":"zu streng";
   return '<div class="legend"><span><i style="background:var(--muted)"></i>erwartet</span><span><i style="background:var(--hot)"></i>echte Note</span></div>'+
     '<div class="chart">'+svg+"</div>"+
-    '<div class="gstats"><div><b>'+avg(reals.map(c=>gOf(c.id).real))+"</b>Ø echte Note</div><div><b>"+avg(exps.map(c=>gOf(c.id).exp))+"</b>Ø erwartet</div><div><b>"+both.filter(c=>gOf(c.id).exp===gOf(c.id).real).length+"/"+both.length+"</b>genau getroffen</div><div><b>"+verdict+"</b>deine Einschätzung</div></div>"+
+    '<div class="gstats"><div><b>'+avg(reals.map(c=>gOf(c.id).real))+"</b>Ø echte Note</div><div><b>"+avg(exps.map(c=>gOf(c.id).exp))+"</b>Ø erwartet</div><div><b>"+both.filter(c=>gOf(c.id).exp===gOf(c.id).real).length+"/"+both.length+'</b>genau getroffen</div><div><b class="t">'+verdict+"</b>deine Einschätzung</div></div>"+
     '<table class="gtable"><tr><th>Eintrag</th><th>Datum</th><th>Erwartet</th><th>Echt</th></tr>'+rows.map(c=>{const g=gOf(c.id),d=new Date(c.due+"T00:00");return"<tr><td>"+esc(c.t)+"</td><td>"+dm(d)+"</td><td>"+(g.exp||"–")+"</td><td>"+(g.real||"–")+"</td></tr>"}).join("")+"</table>";
 }
 function closeChart(){$("chartDlg").hidden=true;$("curveBtn").focus()}
