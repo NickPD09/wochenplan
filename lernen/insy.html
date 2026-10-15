@@ -1,0 +1,373 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>INSY ER-Modell Lernblatt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: blueprint sheet, one study column; examples as a tabbed workbench (diagram on top, tables revealed step by step) */
+:root{
+  --bg:#0a1428; --grid:#11203c; --fg:#e8eefc; --muted:#93a3c4; --card:#0f1d38; --line:#24385f;
+  --accent:#4fd1ff; --accent-soft:#12305a; --fk:#ffb547; --ok:#6ee7a8; --warn:#ff7a6b; --warn-soft:#3a1a1a;
+  --display:"Unbounded",system-ui,sans-serif; --body:"Instrument Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#eef3fb; --grid:#dbe5f4; --fg:#0f1b33; --muted:#51607e; --card:#ffffff; --line:#c8d5ea;
+  --accent:#0a6fd6; --accent-soft:#dcebff; --fk:#b86a00; --ok:#0f8a55; --warn:#c2402f; --warn-soft:#fde9e6; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#eef3fb; --grid:#dbe5f4; --fg:#0f1b33; --muted:#51607e; --card:#ffffff; --line:#c8d5ea;
+  --accent:#0a6fd6; --accent-soft:#dcebff; --fk:#b86a00; --ok:#0f8a55; --warn:#c2402f; --warn-soft:#fde9e6; color-scheme:light}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+main{max-width:960px;margin:0 auto;padding-block:40px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.15}
+h1{font:800 clamp(2.1rem,7vw,3.8rem)/1.05 var(--display);letter-spacing:-.02em}
+h1 .arr{color:var(--accent)}
+h2{font:700 clamp(1.3rem,4vw,1.7rem) var(--display);display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+h2 .n{font:600 .85rem var(--mono);color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:2px 8px}
+h3{font:700 1.05rem var(--body)}
+p{margin:0}
+.eyebrow{font:600 .78rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch;font-size:1.05rem}
+.hero{display:flex;flex-direction:column;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips a{font:600 .85rem var(--mono);color:var(--fg);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px}
+.chips a:hover,.chips a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+section{display:flex;flex-direction:column;gap:18px;scroll-margin-top:20px}
+code{font:.92em var(--mono);color:var(--accent)}
+u{text-underline-offset:3px}
+
+/* tables (text->ER) */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td:last-child{color:var(--accent);font-weight:600}
+.steps{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px}
+.key{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:16px 18px;font-weight:600}
+.key b{color:var(--accent)}
+
+/* workbench */
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:600 .85rem var(--body);color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.tab span{font:700 .72rem var(--mono);color:var(--fk)}
+.tab[aria-selected="true"]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+.tab[aria-selected="true"] span{color:var(--bg)}
+.bench{background:color-mix(in srgb,var(--card) 70%,transparent);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:16px}
+.ex-text{font-size:1.02rem;max-width:70ch}
+.ex-text b{color:var(--accent)}
+.dia{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.dia svg{max-width:none;display:block}
+.s-box{fill:var(--card);stroke:var(--accent);stroke-width:1.6}
+.s-dash{stroke-dasharray:6 4}
+.s-dia{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6}
+.s-ln{stroke:var(--muted);stroke-width:1.4}
+.s-name{fill:var(--fg);font:700 14px var(--body)}
+.s-rel{fill:var(--fg);font:600 12.5px var(--body)}
+.s-card{fill:var(--fk);font:700 15px var(--mono)}
+.s-attr{fill:var(--muted);font:12.5px var(--mono)}
+.s-key{fill:var(--fg);text-decoration:underline}
+.s-ra{fill:var(--ok);font-style:italic}
+.s-note{font-style:italic}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 .9rem var(--body);padding:9px 14px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--bg)}
+.btn:focus-visible,.tab:focus-visible,summary:focus-visible{outline:2px solid var(--fk);outline-offset:2px}
+.prog{font:600 .85rem var(--mono);color:var(--muted);margin-left:auto}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px}
+.tc{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;min-width:0}
+.tc-head{display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--accent-soft)}
+.tc-name{font:700 15px var(--mono);color:var(--accent)}
+.tc-why{font-size:.84rem;color:var(--fg)}
+.tc-cols{display:flex;flex-wrap:wrap}
+.col{padding:9px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font:13.5px var(--mono);display:flex;gap:6px;align-items:center}
+.col.pk .cn{text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.col.fk .cn{color:var(--fk)}
+.bd{font:700 9.5px var(--mono);padding:1px 5px;border-radius:4px;background:var(--accent);color:var(--bg)}
+.bd-fk{background:var(--fk)}
+.tc-not{padding:8px 12px;font:13px var(--mono);color:var(--muted);overflow-x:auto;white-space:nowrap}
+.tc.hide>*{filter:blur(8px);user-select:none}
+.tc.hide::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:800 2rem var(--display);color:var(--accent)}
+.tc.pop{animation:pop .35s ease-out}
+@keyframes pop{from{transform:translateY(6px) scale(.98);opacity:.3}}
+.note{border-left:3px solid var(--ok);padding:4px 0 4px 14px;color:var(--fg)}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:12px}
+.rule{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rule .tag{font:700 .8rem var(--mono);color:var(--fk)}
+.rule .nt{font:13px var(--mono);color:var(--fg);overflow-x:auto;white-space:nowrap;padding-top:6px;border-top:1px dashed var(--line)}
+.nt .f{color:var(--fk)}
+
+/* exercises */
+.task{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.task h3 span{font:700 .8rem var(--mono);color:var(--fk);margin-right:8px}
+details{border-top:1px dashed var(--line);padding-top:12px}
+summary{cursor:pointer;font-weight:700;color:var(--ok)}
+details[open] summary{margin-bottom:12px}
+.sol{display:flex;flex-direction:column;gap:12px}
+
+.warn{background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:16px 18px}
+.warn ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.warn li::marker{color:var(--warn)}
+.check{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:8px}
+.check label{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.check input{accent-color:var(--accent);margin-top:5px}
+@media (prefers-reduced-motion:reduce){.tc.pop{animation:none}}
+</style>
+
+<main>
+<header class="hero">
+  <p class="eyebrow">INSY · Test am Freitag · keine Normalformen</p>
+  <h1>ER-Modell <span class="arr">→</span> Relational</h1>
+  <p class="lead">Zwei Aufgabentypen: <b>Text lesen und das ER-Modell erweitern</b> und <b>ein ER-Modell ins Relationenmodell umwandeln</b>. Hier sind alle Regeln, 9 Beispiele zum Durchklicken und 5 Übungen mit Lösung.</p>
+  <nav class="chips" aria-label="Abschnitte">
+    <a href="#text">Text → ER</a><a href="#regeln">Regeln</a><a href="#beispiele">Beispiele</a><a href="#uebungen">Übungen</a><a href="#fehler">Fehler</a><a href="#check">Checkliste</a>
+  </nav>
+</header>
+
+<section id="text">
+  <h2><span class="n">01</span>Text → ER-Modell</h2>
+  <div class="tbl"><table>
+    <tr><th>Im Text steht</th><th>Im ER-Modell wird daraus</th></tr>
+    <tr><td>Nomen: Kunde, Kurs, Auto</td><td>Entität ▭</td></tr>
+    <tr><td>Eigenschaft: Name, Datum, Preis</td><td>Attribut ⬭</td></tr>
+    <tr><td>Nummer, ID, „eindeutig“</td><td>Schlüssel (unterstrichen)</td></tr>
+    <tr><td>Verb: bestellt, leitet, gehört zu</td><td>Beziehung ◇</td></tr>
+    <tr><td>„genau ein“, „höchstens ein“</td><td>1</td></tr>
+    <tr><td>„mehrere“, „beliebig viele“</td><td>n bzw. m</td></tr>
+    <tr><td>Info, die erst durch die Beziehung entsteht (Note, Menge, Datum)</td><td>Attribut an der Raute</td></tr>
+    <tr><td>„mehrere Telefonnummern“</td><td>mehrwertiges Attribut</td></tr>
+    <tr><td>„A und B sind beides …“</td><td>IS-A △</td></tr>
+    <tr><td>„nur innerhalb von X eindeutig“</td><td>schwache Entität ▭▭</td></tr>
+  </table></div>
+  <h3>So gehst du vor</h3>
+  <ol class="steps">
+    <li>Nomen und Verben im Text markieren.</li>
+    <li>Abhaken, was schon im Modell ist. Nur Neues dazuzeichnen.</li>
+    <li>Jede Beziehung von <b>beiden Seiten</b> lesen: „Ein A hat wie viele B?“ und „Ein B hat wie viele A?“</li>
+    <li>Jeder neuen Entität einen Schlüssel geben.</li>
+    <li>Beziehungsattribute an die Raute hängen.</li>
+  </ol>
+  <div class="key">1 + 1 → <b>1:1</b> &nbsp;·&nbsp; 1 + mehrere → <b>1:n</b> &nbsp;·&nbsp; mehrere + mehrere → <b>m:n</b></div>
+</section>
+
+<section id="regeln">
+  <h2><span class="n">02</span>Umwandlungsregeln</h2>
+  <p class="lead">Schreibweise: <code>Tabelle(<u>PK</u>, Attribut, #FK)</code>. Primärschlüssel unterstrichen, Fremdschlüssel mit #.</p>
+  <div class="rules" id="rules"></div>
+  <div class="key">Merksatz: <b>1:n</b> → FK auf die n-Seite. <b>m:n</b> → neue Tabelle. Attribute der Beziehung kommen dorthin, wo die Beziehung landet.</div>
+</section>
+
+<section id="beispiele">
+  <h2><span class="n">03</span>Beispiele zum Durchklicken</h2>
+  <p class="lead">Lies den Text, schau dir das ER-Modell an und überleg dir die Tabellen. Dann deckst du sie Schritt für Schritt auf.</p>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="bench" id="bench" role="tabpanel"></div>
+</section>
+
+<section id="uebungen">
+  <h2><span class="n">04</span>Übungen wie im Test</h2>
+  <div id="tasks" style="display:flex;flex-direction:column;gap:14px"></div>
+</section>
+
+<section id="fehler">
+  <h2><span class="n">05</span>Typische Fehler</h2>
+  <div class="warn"><ul>
+    <li>FK bei 1:n auf die 1-Seite gesetzt. Er gehört auf die <b>n-Seite</b>.</li>
+    <li>Bei m:n die Zwischentabelle vergessen.</li>
+    <li>Beziehungsattribut (Note, Menge, Datum) in eine Entität gesteckt.</li>
+    <li>Bei einer schwachen Entität den FK nicht in den PK genommen.</li>
+    <li>FK auf eine schwache Entität nur mit einem Teil des Schlüssels.</li>
+    <li>Kardinalität nur von einer Seite gelesen.</li>
+    <li>Neue Entität ohne Schlüssel.</li>
+  </ul></div>
+</section>
+
+<section id="check">
+  <h2><span class="n">06</span>Checkliste vor der Abgabe</h2>
+  <ul class="check">
+    <li><label><input type="checkbox" id="c1">Jede Entität hat einen Schlüssel.</label></li>
+    <li><label><input type="checkbox" id="c2">Jede Beziehung hat beidseitig eine Kardinalität.</label></li>
+    <li><label><input type="checkbox" id="c3">1:n → FK auf der n-Seite.</label></li>
+    <li><label><input type="checkbox" id="c4">m:n → eigene Tabelle, PK aus beiden FKs.</label></li>
+    <li><label><input type="checkbox" id="c5">Beziehungsattribute in der richtigen Tabelle.</label></li>
+    <li><label><input type="checkbox" id="c6">Schwache Entität: PK enthält FK des Besitzers.</label></li>
+    <li><label><input type="checkbox" id="c7">Mehrwertig → eigene Tabelle. Zusammengesetzt → aufteilen.</label></li>
+    <li><label><input type="checkbox" id="c8">PK unterstrichen, FK mit # markiert.</label></li>
+  </ul>
+</section>
+</main>
+
+<script>
+const E=(n,a,o={})=>({t:'e',n,a,...o}), R=(n,l,r,a,o={})=>({t:'r',n,l,r,a,...o}), I={t:'i'};
+
+const EX=[
+ {title:'Schule',tag:'1:n + m:n',
+  text:'Eine Klasse hat mehrere Schüler, ein Schüler ist in genau einer Klasse. Schüler besuchen mehrere Kurse, ein Kurs hat mehrere Schüler. Pro Kurs bekommt jeder Schüler eine <b>Note</b>.',
+  chain:[E('Klasse',['_KID','Bez']),R('hat','1','n'),E('Schüler',['_SNr','Name']),R('besucht','m','n',['Note']),E('Kurs',['_KursNr','Titel'])],
+  tables:[{n:'Klasse',c:['_KID','Bez'],why:'Entität → eigene Tabelle'},
+          {n:'Schueler',c:['_SNr','Name','#KID'],why:'1:n → FK #KID auf die n-Seite (Schüler)'},
+          {n:'Kurs',c:['_KursNr','Titel'],why:'Entität → eigene Tabelle'},
+          {n:'besucht',c:['_#SNr','_#KursNr','Note'],why:'m:n → neue Tabelle, PK = beide FKs, Note kommt mit'}]},
+ {title:'Online-Shop',tag:'1:n + m:n',
+  text:'Ein Kunde gibt mehrere Bestellungen auf, jede Bestellung gehört zu genau einem Kunden. Eine Bestellung enthält mehrere Produkte, ein Produkt kommt in vielen Bestellungen vor. Gespeichert wird die <b>Menge</b> pro Produkt.',
+  chain:[E('Kunde',['_KNr','Name','Email']),R('gibt auf','1','n'),E('Bestellung',['_BNr','Datum']),R('enthält','m','n',['Menge']),E('Produkt',['_PNr','Bez','Preis'])],
+  tables:[{n:'Kunde',c:['_KNr','Name','Email'],why:'Entität → Tabelle'},
+          {n:'Bestellung',c:['_BNr','Datum','#KNr'],why:'1:n → FK #KNr auf die n-Seite'},
+          {n:'Produkt',c:['_PNr','Bez','Preis'],why:'Entität → Tabelle'},
+          {n:'enthaelt',c:['_#BNr','_#PNr','Menge'],why:'m:n → neue Tabelle mit Menge'}]},
+ {title:'Firmenwagen',tag:'1:1',
+  text:'Jeder Firmenwagen ist <b>genau einem</b> Mitarbeiter zugeteilt. Ein Mitarbeiter hat <b>höchstens einen</b> Firmenwagen.',
+  chain:[E('Mitarbeiter',['_MNr','Name']),R('fährt','1','1'),E('Firmenwagen',['_Kennz','Modell'])],
+  tables:[{n:'Mitarbeiter',c:['_MNr','Name'],why:'Entität → Tabelle'},
+          {n:'Firmenwagen',c:['_Kennz','Modell','#MNr~'],why:'1:1 → FK auf die Seite, die immer teilnimmt, plus UNIQUE'}],
+  note:'Jeder Wagen hat sicher einen Mitarbeiter, aber nicht jeder Mitarbeiter einen Wagen. Darum kommt der FK in Firmenwagen, so gibt es keine leeren Felder.'},
+ {title:'Gebäude & Räume',tag:'schwache Entität',
+  text:'Ein Gebäude hat mehrere Räume. Die Raumnummer ist <b>nur innerhalb eines Gebäudes eindeutig</b>, Raum 1 gibt es in jedem Gebäude.',
+  chain:[E('Gebäude',['_GNr','Adresse']),R('hat','1','n',[],{weak:true}),E('Raum',['RaumNr (Teilschl.)','Plätze'],{weak:true})],
+  tables:[{n:'Gebaeude',c:['_GNr','Adresse'],why:'Entität → Tabelle'},
+          {n:'Raum',c:['_#GNr','_RaumNr','Plaetze'],why:'Schwach → PK = FK des Besitzers + Teilschlüssel'}]},
+ {title:'Chef',tag:'rekursiv',
+  text:'Jeder Mitarbeiter hat <b>höchstens einen Chef</b>, der selbst Mitarbeiter ist. Ein Chef leitet mehrere Mitarbeiter.',
+  chain:[E('Mitarbeiter',['_MNr','Name']),R('leitet','1','n'),E('Mitarbeiter',[],{same:true})],
+  tables:[{n:'Mitarbeiter',c:['_MNr','Name','#ChefNr'],why:'Rekursiv 1:n → FK auf dieselbe Tabelle, umbenannt'}],
+  note:'Bei rekursiv m:n (z. B. „Personen kennen Personen“) brauchst du eine neue Tabelle: kennt(#PNr1, #PNr2).'},
+ {title:'Kunde & Telefon',tag:'Attribut-Arten',
+  text:'Ein Kunde hat eine Adresse aus Straße, PLZ und Ort und kann <b>mehrere Telefonnummern</b> haben.',
+  chain:[E('Kunde',['_KNr','Name','Adresse(Str,PLZ,Ort)','{Telefon}'])],
+  tables:[{n:'Kunde',c:['_KNr','Name','Strasse','PLZ','Ort'],why:'Zusammengesetzt → in Einzelspalten aufteilen'},
+          {n:'Telefon',c:['_#KNr','_TelNr'],why:'Mehrwertig → eigene Tabelle mit FK'}]},
+ {title:'Personen',tag:'IS-A',
+  text:'Lehrer und Schüler sind <b>beides Personen</b> mit Personennummer und Name. Lehrer haben zusätzlich ein Gehalt, Schüler einen Jahrgang.',
+  chain:[E('Lehrer',['Gehalt']),I,E('Person',['_PNr','Name']),I,E('Schüler',['Jahrgang'])],
+  tables:[{n:'Person',c:['_PNr','Name'],why:'Supertyp → Tabelle'},
+          {n:'Lehrer',c:['_#PNr','Gehalt'],why:'IS-A → PK ist gleichzeitig FK auf Person'},
+          {n:'Schueler',c:['_#PNr','Jahrgang'],why:'IS-A → PK ist gleichzeitig FK auf Person'}]},
+ {title:'Stundenplan',tag:'ternär',
+  text:'Ein Lehrer unterrichtet ein Fach in einer Klasse. Die Beziehung verbindet <b>drei</b> Entitäten gleichzeitig.',
+  chain:[E('Lehrer',['_LNr','Name']),R('unterrichtet','n','n',[],{below:{n:'Klasse',a:['_KID'],c:'n'}}),E('Fach',['_FNr','Bez'])],
+  tables:[{n:'Lehrer',c:['_LNr','Name'],why:'Entität → Tabelle'},
+          {n:'Fach',c:['_FNr','Bez'],why:'Entität → Tabelle'},
+          {n:'Klasse',c:['_KID'],why:'Entität → Tabelle'},
+          {n:'unterrichtet',c:['_#LNr','_#FNr','_#KID'],why:'Ternär → neue Tabelle mit 3 FKs'}]},
+ {title:'Hotel',tag:'m:n mit Datum',
+  text:'Ein Gast bucht mehrere Zimmer, ein Zimmer wird von vielen Gästen gebucht. Gespeichert werden <b>Anreise und Abreise</b>. Derselbe Gast kann dasselbe Zimmer öfter buchen.',
+  chain:[E('Gast',['_GastNr','Name']),R('bucht','m','n',['Anreise','Abreise']),E('Zimmer',['_ZNr','Preis'])],
+  tables:[{n:'Gast',c:['_GastNr','Name'],why:'Entität → Tabelle'},
+          {n:'Zimmer',c:['_ZNr','Preis'],why:'Entität → Tabelle'},
+          {n:'bucht',c:['_#GastNr','_#ZNr','_Anreise','Abreise'],why:'m:n → neue Tabelle, Anreise kommt in den PK'}],
+  note:'Ohne Anreise im PK könnte derselbe Gast dasselbe Zimmer nur einmal buchen.'}
+];
+
+const RULES=[
+ {tag:'Entität',d:'Jede Entität wird eine Tabelle, Attribute werden Spalten.',t:{n:'Schueler',c:['_SNr','Name']}},
+ {tag:'1 : n',d:'FK kommt auf die n-Seite.',t:{n:'Schueler',c:['_SNr','Name','#KID']}},
+ {tag:'1 : 1',d:'FK auf eine Seite (die Pflichtseite) mit UNIQUE.',t:{n:'Firmenwagen',c:['_Kennz','#MNr~']}},
+ {tag:'m : n',d:'Neue Tabelle. PK = beide FKs, Beziehungsattribute dazu.',t:{n:'besucht',c:['_#SNr','_#KursNr','Note']}},
+ {tag:'Schwache Entität',d:'PK = FK des Besitzers + eigener Teilschlüssel.',t:{n:'Raum',c:['_#GNr','_RaumNr','Plaetze']}},
+ {tag:'Mehrwertig',d:'Eigene Tabelle mit FK.',t:{n:'Telefon',c:['_#KNr','_TelNr']}},
+ {tag:'Zusammengesetzt',d:'In Einzelspalten aufteilen.',t:{n:'Kunde',c:['_KNr','Strasse','PLZ','Ort']}},
+ {tag:'Rekursiv 1 : n',d:'FK auf die eigene Tabelle, umbenennen.',t:{n:'Mitarbeiter',c:['_MNr','Name','#ChefNr']}},
+ {tag:'Rekursiv m : n',d:'Neue Tabelle mit 2 FKs auf dieselbe Tabelle.',t:{n:'kennt',c:['_#PNr1','_#PNr2']}},
+ {tag:'Ternär',d:'Neue Tabelle mit 3 FKs.',t:{n:'unterrichtet',c:['_#LNr','_#FNr','_#KID']}},
+ {tag:'IS-A',d:'Subtyp-PK ist gleichzeitig FK auf den Supertyp.',t:{n:'Lehrer',c:['_#PNr','Gehalt']}}
+];
+
+const TASKS=[
+ {title:'Umwandeln',text:'Wandle das ER-Modell ins Relationenmodell um.',
+  given:[E('Autor',['_ANr','Name']),R('schreibt','m','n',['Reihenfolge']),E('Buch',['_ISBN','Titel']),R('erscheint bei','n','1'),E('Verlag',['_VNr','Name'])],
+  tables:[{n:'Autor',c:['_ANr','Name']},{n:'Verlag',c:['_VNr','Name']},{n:'Buch',c:['_ISBN','Titel','#VNr']},{n:'schreibt',c:['_#ANr','_#ISBN','Reihenfolge']}],
+  note:'Achtung: Hier steht „n“ bei Buch und „1“ bei Verlag. Buch ist also die n-Seite und bekommt den FK.'},
+ {title:'Erweitern + Umwandeln',text:'Zusätzlich hat jeder Mitarbeiter <b>höchstens einen Vorgesetzten</b>, der selbst Mitarbeiter ist. Erweitere das Modell und wandle alles um.',
+  given:[E('Abteilung',['_ANr','Bez']),R('arbeitet in','1','n'),E('Mitarbeiter',['_MNr','Name','Adresse(Str,PLZ,Ort)','{TelNr}'])],
+  sol:[E('Abteilung',['_ANr','Bez']),R('arbeitet in','1','n'),E('Mitarbeiter',['_MNr','Name','Adresse(Str,PLZ,Ort)','{TelNr}']),R('leitet','1','n'),E('Mitarbeiter',[],{same:true})],
+  tables:[{n:'Abteilung',c:['_ANr','Bez']},{n:'Mitarbeiter',c:['_MNr','Name','Strasse','PLZ','Ort','#ANr','#VorgesNr']},{n:'Telefon',c:['_#MNr','_TelNr']}]},
+ {title:'Text → ER → Relational',text:'<b>Bestehend:</b> Leser(<u>LNr</u>, Name) und Buch(<u>BNr</u>, Titel).<br><b>Neu:</b> Ein Leser kann mehrere Bücher ausleihen, ein Buch wird über die Zeit von mehreren Lesern ausgeliehen. Gespeichert werden Ausleih- und Rückgabedatum. Jedes Buch steht in genau einem Regal, ein Regal hat viele Bücher. Regale haben eine Nummer und einen Standort.',
+  sol:[E('Leser',['_LNr','Name']),R('leiht aus','m','n',['VonDatum','BisDatum']),E('Buch',['_BNr','Titel']),R('steht in','n','1'),E('Regal',['_RNr','Standort'])],
+  tables:[{n:'Leser',c:['_LNr','Name']},{n:'Regal',c:['_RNr','Standort']},{n:'Buch',c:['_BNr','Titel','#RNr']},{n:'leiht_aus',c:['_#LNr','_#BNr','_VonDatum','BisDatum']}],
+  note:'VonDatum gehört in den PK, weil derselbe Leser dasselbe Buch mehrmals ausleihen kann.'},
+ {title:'Text → ER → Relational',text:'<b>Neu:</b> Ein Krankenhaus besteht aus Stationen. Eine Station ist <b>nur innerhalb ihres Krankenhauses</b> eindeutig nummeriert. Jeder Arzt arbeitet auf genau einer Station. Ärzte und Pfleger sind <b>beides Angestellte</b> mit Personalnummer, Name und Gehalt.',
+  given:[E('Arzt',['_ArztNr','Name']),R('behandelt','1','n'),E('Patient',['_SVNr','Name'])],
+  sol:[E('Krankenhaus',['_KHNr','Name']),R('hat','1','n',[],{weak:true}),E('Station',['StatNr (Teilschl.)','Bez'],{weak:true}),R('arbeitet auf','1','n'),E('Arzt',[]),R('behandelt','1','n'),E('Patient',['_SVNr','Name'])],
+  tables:[{n:'Krankenhaus',c:['_KHNr','Name']},{n:'Station',c:['_#KHNr','_StatNr','Bez']},{n:'Angestellter',c:['_PersNr','Name','Gehalt']},{n:'Arzt',c:['_#PersNr','#KHNr','#StatNr']},{n:'Pfleger',c:['_#PersNr']},{n:'Patient',c:['_SVNr','Name','#PersNr']}],
+  note:'Dazu kommt IS-A: Angestellter → Arzt, Pfleger. Dadurch wird ArztNr zur PersNr. Der FK auf die schwache Station braucht beide Teile (KHNr + StatNr).'},
+ {title:'Text → ER → Relational',text:'Ein Verein hat mehrere Mannschaften, die Mannschaftsnummer ist <b>nur im Verein eindeutig</b>. Ein Spieler spielt in genau einer Mannschaft. Ein Spiel findet zwischen <b>zwei Mannschaften</b> statt (Heim und Gast), mit Datum und Ergebnis.',
+  sol:[E('Verein',['_VNr','Name']),R('hat','1','n',[],{weak:true}),E('Mannschaft',['MNr (Teilschl.)','Liga'],{weak:true}),R('spielt in','1','n'),E('Spieler',['_SpNr','Name'])],
+  tables:[{n:'Verein',c:['_VNr','Name']},{n:'Mannschaft',c:['_#VNr','_MNr','Liga']},{n:'Spieler',c:['_SpNr','Name','#VNr','#MNr']},{n:'Spiel',c:['_SpielNr','Datum','Ergebnis','#HeimVNr','#HeimMNr','#GastVNr','#GastMNr']}],
+  note:'Spiel hat zwei Beziehungen zu Mannschaft (Heim und Gast), also zwei FK-Paare. Jedes Paar hat beide Teile des Mannschafts-Schlüssels.'}
+];
+
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const K=s=>{const pk=s.startsWith('_');if(pk)s=s.slice(1);const fk=s.startsWith('#');if(fk)s=s.slice(1);const u=s.endsWith('~');if(u)s=s.slice(0,-1);return{pk,fk,u,n:s}};
+
+function diagram(chain){
+  const W={e:150,r:126,i:76},G=56,cy=48,out=[];let x=16,H=120,prev=null;
+  const at=(a,x,y)=>{const k=a.startsWith('_'),t=k?a.slice(1):a;return `<text x="${x}" y="${y}" class="s-attr${k?' s-key':''}" text-anchor="middle">${esc(t)}</text>`};
+  for(const n of chain){
+    const w=W[n.t];
+    if(prev!==null) out.push(`<line class="s-ln" x1="${prev}" y1="${cy}" x2="${x}" y2="${cy}"/>`);
+    if(n.t==='e'){
+      out.push(`<rect class="s-box${n.same?' s-dash':''}" x="${x}" y="${cy-24}" width="${w}" height="48" rx="4"/>`);
+      if(n.weak) out.push(`<rect class="s-box" x="${x+5}" y="${cy-19}" width="${w-10}" height="38" rx="2"/>`);
+      out.push(`<text class="s-name" x="${x+w/2}" y="${cy+5}" text-anchor="middle">${esc(n.n)}</text>`);
+      let y=cy+46;
+      for(const a of n.a){out.push(at(a,x+w/2,y));y+=19}
+      if(n.same){out.push(`<text class="s-attr s-note" x="${x+w/2}" y="${y}" text-anchor="middle">(dieselbe Entität)</text>`);y+=19}
+      H=Math.max(H,y);
+    }else if(n.t==='r'){
+      const mx=x+w/2,h=32,pts=(d,e)=>`${x+d},${cy} ${mx},${cy-h+e} ${x+w-d},${cy} ${mx},${cy+h-e}`;
+      out.push(`<polygon class="s-dia" points="${pts(0,0)}"/>`);
+      if(n.weak) out.push(`<polygon class="s-dia" points="${pts(10,5)}"/>`);
+      out.push(`<text class="s-rel" x="${mx}" y="${cy+4}" text-anchor="middle">${esc(n.n)}</text>`);
+      out.push(`<text class="s-card" x="${x-G/2}" y="${cy-10}" text-anchor="middle">${n.l}</text><text class="s-card" x="${x+w+G/2}" y="${cy-10}" text-anchor="middle">${n.r}</text>`);
+      let y=cy+h+20;
+      if(n.below){
+        const b=n.below,by=cy+h+74;
+        out.push(`<line class="s-ln" x1="${mx}" y1="${cy+h}" x2="${mx}" y2="${by-24}"/><text class="s-card" x="${mx+10}" y="${cy+h+24}">${b.c}</text><rect class="s-box" x="${mx-75}" y="${by-24}" width="150" height="48" rx="4"/><text class="s-name" x="${mx}" y="${by+5}" text-anchor="middle">${esc(b.n)}</text>`);
+        y=by+46;for(const a of b.a){out.push(at(a,mx,y));y+=19}
+      }else for(const a of (n.a||[])){out.push(`<text class="s-attr s-ra" x="${mx}" y="${y}" text-anchor="middle">${esc(a)}</text>`);y+=19}
+      H=Math.max(H,y);
+    }else{
+      const mx=x+w/2;
+      out.push(`<polygon class="s-dia" points="${x},${cy+28} ${x+w},${cy+28} ${mx},${cy-28}"/><text class="s-rel" x="${mx}" y="${cy+20}" text-anchor="middle">IS-A</text>`);
+    }
+    prev=x+w;x+=w+G;
+  }
+  const width=x-G+16;
+  return `<svg viewBox="0 0 ${width} ${H}" width="${width}" height="${H}" role="img" aria-label="ER-Diagramm">${out.join('')}</svg>`;
+}
+
+const nota=t=>`${esc(t.n)}(${t.c.map(c=>{const k=K(c),s=(k.fk?'#':'')+esc(k.n);return k.pk?`<u>${s}</u>`:k.fk?`<span class="f">${s}</span>`:s}).join(', ')})`;
+function card(t,hidden){
+  const cols=t.c.map(c=>{const k=K(c);return `<span class="col${k.pk?' pk':''}${k.fk?' fk':''}"><span class="cn">${k.fk?'#':''}${esc(k.n)}</span>${k.pk?'<b class="bd">PK</b>':''}${k.fk?'<b class="bd bd-fk">FK</b>':''}${k.u?'<b class="bd">UNIQUE</b>':''}</span>`}).join('');
+  return `<div class="tc${hidden?' hide':''}"><div class="tc-head"><span class="tc-name">${esc(t.n)}</span>${t.why?`<span class="tc-why">${t.why}</span>`:''}</div><div class="tc-cols">${cols}</div><div class="tc-not">${nota(t)}</div></div>`;
+}
+
+document.getElementById('rules').innerHTML=RULES.map(r=>`<div class="rule"><span class="tag">${r.tag}</span><p>${r.d}</p><div class="nt">${nota(r.t)}</div></div>`).join('');
+
+const tabs=document.getElementById('tabs'),bench=document.getElementById('bench');
+tabs.innerHTML=EX.map((e,i)=>`<button class="tab" role="tab" id="tab${i}" aria-selected="${i===0}">${e.title}<span>${e.tag}</span></button>`).join('');
+function show(i){
+  const ex=EX[i];let shown=0;
+  [...tabs.children].forEach((b,j)=>b.setAttribute('aria-selected',j===i));
+  bench.innerHTML=`<p class="ex-text">${ex.text}</p><div class="dia">${diagram(ex.chain)}</div>
+    <div class="ctrl"><button class="btn primary" id="bStep">Nächste Tabelle aufdecken</button><button class="btn" id="bAll">Alle zeigen</button><button class="btn" id="bReset">Wieder verdecken</button><span class="prog" id="prog"></span></div>
+    <div class="tgrid">${ex.tables.map(t=>card(t,true)).join('')}</div>${ex.note?`<p class="note">${ex.note}</p>`:''}`;
+  const cards=[...bench.querySelectorAll('.tc')],prog=bench.querySelector('#prog');
+  const upd=()=>{cards.forEach((c,j)=>{const h=j>=shown;if(!h&&c.classList.contains('hide'))c.classList.add('pop');c.classList.toggle('hide',h)});prog.textContent=`${shown}/${cards.length} Tabellen`};
+  bench.querySelector('#bStep').onclick=()=>{if(shown<cards.length)shown++;upd()};
+  bench.querySelector('#bAll').onclick=()=>{shown=cards.length;upd()};
+  bench.querySelector('#bReset').onclick=()=>{shown=0;cards.forEach(c=>c.classList.remove('pop'));upd()};
+  upd();
+}
+tabs.onclick=e=>{const b=e.target.closest('.tab');if(b)show([...tabs.children].indexOf(b))};
+show(0);
+
+document.getElementById('tasks').innerHTML=TASKS.map((t,i)=>`<div class="task"><h3><span>Ü${i+1}</span>${t.title}</h3><p>${t.text}</p>${t.given?`<div class="dia">${diagram(t.given)}</div>`:''}
+  <details><summary>Lösung zeigen</summary><div class="sol">${t.sol?`<div class="dia">${diagram(t.sol)}</div>`:''}<div class="tgrid">${t.tables.map(x=>card(x,false)).join('')}</div>${t.note?`<p class="note">${t.note}</p>`:''}</div></details></div>`).join('');
+</script>
+
+</body></html>
