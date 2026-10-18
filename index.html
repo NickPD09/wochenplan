@@ -410,9 +410,10 @@ function autoPlan(IT){
     if(c.due<t0)return;
     const open=c.tasks.map((t,i)=>[t,i]).filter(([,i])=>!st[c.id+i]);
     if(!open.length)return;
-    let ds=WEEK.filter(d=>d>=t0&&d<c.due);
-    if(!ds.length)ds=WEEK.filter(d=>d>=t0&&d<=c.due).slice(-1);
-    if(!ds.length)return;
+    // alle Schultage (Mo–Fr) von heute bis zum Tag vor dem Termin, auch über die Woche hinaus
+    const ds=[],d=new Date(t0+"T00:00");
+    while(iso(d)<c.due){if(d.getDay()%6)ds.push(iso(d));d.setDate(d.getDate()+1)}
+    if(!ds.length)ds.push(c.due);
     const per=Math.ceil(open.length/ds.length);
     open.forEach(([t],j)=>{const d=ds[Math.min(ds.length-1,Math.floor(j/per))];(out[d]=out[d]||[]).push([c.id,esc(c.t)+": "+esc(t)])});
   });
@@ -434,7 +435,8 @@ function render(){
   $("week").innerHTML=WEEK.map(k=>{
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
-    const plan=DP(k).filter(x=>byId(x[0])).map(x=>'<li class="do">'+x[1]+"</li>").join("");
+    const grp={};DP(k).filter(x=>byId(x[0])).forEach(([id])=>grp[id]=(grp[id]||0)+1);
+    const plan=Object.entries(grp).map(([id,n])=>'<li class="do">'+esc(byId(id).t)+" · "+n+(n>1?" To-dos":" To-do")+"</li>").join("");
     return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+due+plan+"</ul></div>";
   }).join("");
 
