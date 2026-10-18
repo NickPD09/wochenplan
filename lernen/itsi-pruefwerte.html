@@ -1,0 +1,158 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ITSI Prüfwerte Lernblatt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<style>
+/* Layout: single reading column, each topic a section; formulas in mono "Tafel" boxes */
+:root{
+  --bg:#f5f7f6; --fg:#16201d; --muted:#5b6b66; --line:#cdd8d4; --panel:#ffffff; --accent:#0d7a5f; --warn:#b4471f;
+  --f-display:"Fraunces",Georgia,serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1513;--fg:#e3ece8;--muted:#93a49e;--line:#2a3733;--panel:#16201d;--accent:#3fc59d;--warn:#f08a5d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1513;--fg:#e3ece8;--muted:#93a49e;--line:#2a3733;--panel:#16201d;--accent:#3fc59d;--warn:#f08a5d;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body)}
+main{max-width:46rem;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1{font:600 2.1rem/1.15 var(--f-display);margin:0;text-wrap:balance}
+h2{font:600 1.35rem/1.25 var(--f-display);margin:0 0 12px;text-wrap:balance}
+.eyebrow{font:600 .75rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+p{margin:0 0 10px}
+.sub{color:var(--muted)}
+.tafel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;font:1.05rem/1.9 var(--f-mono);overflow-x:auto;margin:10px 0}
+.tafel .big{font-size:1.35rem;color:var(--accent);font-weight:600}
+sub,sup{font-size:.72em}
+.diagram{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px}
+.diagram svg{display:block;min-width:640px;width:100%;height:auto}
+svg .s{stroke:var(--fg);stroke-width:1.6;fill:none}
+svg .box{stroke:var(--fg);stroke-width:1.6;fill:var(--panel)}
+svg .dash{stroke-dasharray:5 4}
+svg text{fill:var(--fg);font-family:var(--f-mono);font-size:15px}
+svg .lbl{fill:var(--accent);font-size:12px}
+svg .ah{fill:var(--fg)}
+ol.steps{margin:8px 0 0;padding-left:1.3rem;display:grid;gap:4px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font:600 .75rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.mono{font-family:var(--f-mono)}
+.pill{font:600 .75rem var(--f-mono);padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.bad{color:var(--warn)} .ok{color:var(--accent)}
+.calc{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:10px}
+.calc input{font:1rem var(--f-mono);width:6rem;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--fg)}
+.calc input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.calc output{font:600 1.05rem var(--f-mono);color:var(--accent)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:var(--panel);min-width:0}
+.card b{display:block;margin-bottom:4px}
+.note{font-size:.9rem;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">ITSI · Kryptografische Prüfwerte</div>
+  <h1>Lernblatt Prüfwerte</h1>
+  <p class="sub">Stoff: Präsi bis Motivation, plus Merkle-Damgård-Zeichnung, Birthday-Formel und Hash-Längen.</p>
+</header>
+
+<section>
+  <div class="eyebrow">Muss man zeichnen können</div>
+  <h2>Merkle-Damgård-Konstruktion (MD5, SHA-1, SHA-2)</h2>
+  <div class="tafel">
+    f : {0,1}<sup>a+b</sup> → {0,1}<sup>b</sup><br>
+    m̄ = m<sub>1</sub> ‖ m<sub>2</sub> ‖ … ‖ m<sub>n</sub> &nbsp; mit |m<sub>i</sub>| = a<br>
+    H<sub>0</sub> = IV<br>
+    <span class="big">H<sub>i</sub> := f(H<sub>i−1</sub> ‖ m<sub>i</sub>)</span> &nbsp; 1 ≤ i ≤ n
+  </div>
+
+  <div class="diagram" role="img" aria-label="Merkle-Damgård: Blöcke m1 bis mn gehen jeweils in eine Kompressionsfunktion f, die Zwischenwerte werden verkettet, beginnend mit IV, am Ende final und Hash">
+  <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+    <!-- Nachricht -->
+    <rect class="box" x="40" y="14" width="240" height="34"/><line class="s" x1="160" y1="14" x2="160" y2="48"/>
+    <rect class="box" x="340" y="14" width="240" height="34"/><line class="s" x1="460" y1="14" x2="460" y2="48"/>
+    <text x="88" y="37">m₁</text><text x="208" y="37">m₂</text><text x="293" y="37">…</text>
+    <text x="378" y="37">mₙ₋₁</text><text x="508" y="37">mₙ</text>
+    <!-- Blöcke runter und rein -->
+    <g class="s" marker-end="url(#a)">
+      <path d="M100,48 V115 H140"/><path d="M220,48 V115 H260"/>
+      <path d="M400,48 V115 H440"/><path d="M520,48 V115 H560"/>
+    </g>
+    <!-- f-Boxen -->
+    <g class="box">
+      <path d="M140,92 L200,125 V180 H140 Z"/><path d="M260,92 L320,125 V180 H260 Z"/>
+      <path d="M440,92 L500,125 V180 H440 Z"/><path d="M560,92 L620,125 V180 H560 Z"/>
+    </g>
+    <text x="164" y="160">f</text><text x="284" y="160">f</text><text x="464" y="160">f</text><text x="584" y="160">f</text>
+    <!-- Kette -->
+    <text x="4" y="160">IV</text>
+    <g class="s" marker-end="url(#a)">
+      <line x1="28" y1="155" x2="140" y2="155"/><line x1="200" y1="155" x2="260" y2="155"/>
+      <line class="s dash" x1="320" y1="155" x2="440" y2="155"/><line x1="500" y1="155" x2="560" y2="155"/>
+      <line x1="620" y1="155" x2="650" y2="155"/><line x1="720" y1="155" x2="740" y2="155"/>
+    </g>
+    <text class="lbl" x="60" y="147">H₀</text><text class="lbl" x="215" y="147">H₁</text><text class="lbl" x="335" y="147">H₂ …</text><text class="lbl" x="510" y="147">Hₙ₋₁</text><text class="lbl" x="624" y="147">Hₙ</text>
+    <rect class="box dash" x="650" y="140" width="70" height="30"/><text x="660" y="160">final</text>
+    <text x="744" y="160">Hash</text>
+  </svg>
+  </div>
+
+  <ol class="steps">
+    <li>Oben eine lange Box: m₁ | m₂ | … | mₙ₋₁ | mₙ.</li>
+    <li>Darunter eine Reihe von f-Boxen (Trapeze), eine pro Block.</li>
+    <li>Jeder Block mᵢ: Pfeil runter, dann rechts ins f.</li>
+    <li>IV → erstes f, dann f → f → … (in der Mitte strichliert).</li>
+    <li>Letztes f → strichlierte Box „final“ → Hash.</li>
+  </ol>
+  <p class="note" style="margin-top:12px">Merksatz: Neuer Block + alter Zwischenwert → f → neuer Zwischenwert. Davor wird die Nachricht <b>gepaddet</b>, damit sie ein Vielfaches von a ist. SHA-3 nutzt stattdessen die <b>Sponge-Konstruktion</b>.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Wahrscheinlichkeit</div>
+  <h2>Birthday-Paradoxon</h2>
+  <p>Hash mit n Bit hat N = 2<sup>n</sup> mögliche Werte. Aufwand für eine Kollision:</p>
+  <div class="tafel">
+    <span class="big">√(2<sup>n</sup>) = 2<sup>n/2</sup></span><br>
+    P(Kollision) ≈ 1 − e<sup>−k² / 2N</sup><br>
+    P = 50 % &nbsp;⇒&nbsp; k ≈ 1,18 · √N
+  </div>
+  <p class="sub">k = Anzahl gehashter Nachrichten. Beispiel: N = 365 Tage ⇒ k ≈ 1,18 · √365 ≈ 23 Personen.</p>
+  <div class="calc">
+    <label for="bits">Hash-Länge n (Bit)</label>
+    <input id="bits" type="number" min="1" max="1024" value="160">
+    <span>→ Aufwand</span><output id="out" for="bits">2^80</output>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Wichtig</div>
+  <h2>Hash-Längen</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Hash</th><th>Bit</th><th>Kollision 2<sup>n/2</sup></th><th>Jahr</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>MD5</td><td class="mono">128</td><td class="mono">2⁶⁴</td><td>1992</td><td><span class="pill bad">gebrochen 2004</span></td></tr>
+      <tr><td>SHA-1</td><td class="mono">160</td><td class="mono">2⁸⁰</td><td>1995</td><td><span class="pill bad">gebrochen 2017</span></td></tr>
+      <tr><td>SHA-2</td><td class="mono">224–512</td><td class="mono">2¹¹²–2²⁵⁶</td><td>2001</td><td><span class="pill ok">sicher</span></td></tr>
+      <tr><td>SHA-3</td><td class="mono">224–512</td><td class="mono">2¹¹²–2²⁵⁶</td><td>2012</td><td><span class="pill ok">sicher</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="sub" style="margin-top:8px">SHA-1-Angriff heißt SHAttered. SHA-3 = Keccak, Gewinner des NIST-Wettbewerbs.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Präsi Folie 1–2</div>
+  <h2>Motivation</h2>
+  <p>Ziel: Schutz vor <b>Manipulation</b> und <b>Fälschung</b>.</p>
+  <div class="grid2">
+    <div class="card"><b>Integrity → MDC</b>Integrität: Sind die Daten unverändert? MDC = Modification Detection Code.</div>
+    <div class="card"><b>Authenticity → MAC</b>Authentizität: Von wem stammt die Nachricht? MAC = Message Authentication Code.</div>
+    <div class="card"><b>CRC / Paritätsbits</b>Einfache Prüfsummen: erkennen nur zufällige Fehler, kein Schutz vor absichtlicher Manipulation.</div>
+  </div>
+</section>
+</main>
+
+<script>
+const bits=document.getElementById('bits'),out=document.getElementById('out');
+function upd(){const n=+bits.value;out.textContent=n>0?(n%2?'2^'+(n/2).toFixed(1):'2^'+n/2):'–';}
+bits.addEventListener('input',upd);upd();
+</script>
+
+</body></html>
