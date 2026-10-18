@@ -403,8 +403,24 @@ const $=id=>document.getElementById(id);
 const doneN=c=>c.tasks.filter((_,i)=>st[c.id+i]).length;
 const rel=n=>n<0?"vorbei":n===0?"heute":n===1?"morgen":"in "+n+" Tagen";
 
+// Tages-To-dos automatisch: offene Schritte jedes Eintrags auf die Tage bis zum Termin verteilen (handgeplante PLAN-Tage haben Vorrang)
+function autoPlan(IT){
+  const out={},t0=iso(today);
+  IT.forEach(c=>{
+    if(c.due<t0)return;
+    const open=c.tasks.map((t,i)=>[t,i]).filter(([,i])=>!st[c.id+i]);
+    if(!open.length)return;
+    let ds=WEEK.filter(d=>d>=t0&&d<c.due);
+    if(!ds.length)ds=WEEK.filter(d=>d>=t0&&d<=c.due).slice(-1);
+    if(!ds.length)return;
+    const per=Math.ceil(open.length/ds.length);
+    open.forEach(([t],j)=>{const d=ds[Math.min(ds.length-1,Math.floor(j/per))];(out[d]=out[d]||[]).push([c.id,esc(c.t)+": "+esc(t)])});
+  });
+  return out;
+}
 function render(){
   const IT=items();
+  const AP=autoPlan(IT),DP=k=>PLAN[k]||AP[k]||[];
   // Boss countdown: nächste offene Prüfung
   const next=IT.filter(c=>days(c.due)>=0&&doneN(c)<c.tasks.length).sort((a,b)=>a.due.localeCompare(b.due));
   if(next.length){
@@ -418,7 +434,7 @@ function render(){
   $("week").innerHTML=WEEK.map(k=>{
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
-    const plan=(PLAN[k]||[]).filter(x=>byId(x[0])).map(x=>'<li class="do">'+x[1]+"</li>").join("");
+    const plan=DP(k).filter(x=>byId(x[0])).map(x=>'<li class="do">'+x[1]+"</li>").join("");
     return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+due+plan+"</ul></div>";
   }).join("");
 
@@ -430,13 +446,13 @@ function render(){
       '<div class="dvcols"><div><div class="eyebrow">Prüfung / Abgabe</div><ul class="dvlist">'+
       (dueC.length?dueC.map(c=>{const n=doneN(c),f=n===c.tasks.length;return'<li style="--c:var('+c.c+')"><span class="dot"></span>'+esc(c.t)+'<span class="chip'+(f?" ok":"")+'">'+(f?"besiegt ✓":n+"/"+c.tasks.length)+"</span></li>"}).join(""):'<li class="none">Nichts fällig</li>')+
       '</ul></div><div><div class="eyebrow">To-do an dem Tag</div><ul class="dvlist">'+
-      (PLAN[sel]||[]).filter(x=>byId(x[0])).map(([id,t])=>'<li style="--c:var('+byId(id).c+')"'+(MATERIAL[id]?' data-learn="'+id+'" role="button" tabindex="0"':'')+'><span class="dot"></span>'+t+"</li>").join("")+
+      DP(sel).filter(x=>byId(x[0])).map(([id,t])=>'<li style="--c:var('+byId(id).c+')"'+(MATERIAL[id]?' data-learn="'+id+'" role="button" tabindex="0"':'')+'><span class="dot"></span>'+t+"</li>").join("")+
       "</ul></div></div>";
   }
   dv.hidden=!sel;
 
   // Quest-Karten (bei ausgewähltem Tag nur die Fächer dieses Tages)
-  const ids=sel?new Set([...IT.filter(c=>c.due===sel).map(c=>c.id),...(PLAN[sel]||[]).map(x=>x[0])]):null;
+  const ids=sel?new Set([...IT.filter(c=>c.due===sel).map(c=>c.id),...DP(sel).map(x=>x[0])]):null;
   // Fälligkeitstag vorbei → wandert nach "Abgeschlossen" (bei ausgewähltem Tag wird alles von dem Tag gezeigt)
   const active=IT.filter(c=>days(c.due)>=0),past=IT.filter(c=>days(c.due)<0);
   const cnt={all:active.length,pub:active.filter(c=>!isOwn(c)).length,own:active.filter(isOwn).length,arch:past.length};
