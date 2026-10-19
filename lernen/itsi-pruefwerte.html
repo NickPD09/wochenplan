@@ -50,8 +50,44 @@ td.mono{font-family:var(--f-mono)}
 <header>
   <div class="eyebrow">ITSI · Kryptografische Prüfwerte</div>
   <h1>Lernblatt Prüfwerte</h1>
-  <p class="sub">Stoff: Präsi bis Motivation, plus Merkle-Damgård-Zeichnung, Birthday-Formel und Hash-Längen.</p>
+  <p class="sub">Die ganze Präsi „Kryptografische Prüfwerte“. Besonders wichtig: Zeichnung, Birthday-Formel, Hash-Längen.</p>
 </header>
+
+<section>
+  <div class="eyebrow">Folie 2–3</div>
+  <h2>Motivation</h2>
+  <p>Ziel: Schutz vor <b>Manipulation</b> und <b>Fälschung</b>.</p>
+  <div class="grid2">
+    <div class="card"><b>Integrity → MDC</b>Integrität: Sind die Daten unverändert? MDC = Modification Detection Code.</div>
+    <div class="card"><b>Authenticity → MAC</b>Authentizität: Von wem stammt die Nachricht? MAC = Message Authentication Code.</div>
+    <div class="card"><b>CRC / Paritätsbits</b>Einfache Prüfsummen: erkennen nur zufällige Fehler, kein Schutz vor absichtlicher Manipulation.</div>
+    <div class="card"><b>Praxis</b>Downloadseiten mit SHA-256-Werten, Signaturen bei Software-Updates, TLS (MACs), Blockchain (Hashverkettung).</div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Folie 4</div>
+  <h2>Anforderungen an eine Hashfunktion h</h2>
+  <div class="grid2">
+    <div class="card"><b>Kompression</b>Eingabe beliebiger endlicher Länge → Ausgabe mit fester Bitlänge.</div>
+    <div class="card"><b>Einfache Berechnung</b>h(x) ist mit wenig Aufwand berechenbar.</div>
+  </div>
+  <p class="sub" style="margin-top:10px">Für einen <b>kryptografischen</b> Prüfwert braucht es zusätzlich die drei Eigenschaften unten.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Folie 5–7</div>
+  <h2>Sicherheit von Hashfunktionen</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Gegeben</th><th>Finde</th><th>Eigenschaft, wenn unlösbar</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Urbild</td><td class="mono">h, y</td><td class="mono">x mit h(x) = y</td><td>Einwegfunktion, 1st Pre-Image resistant</td></tr>
+      <tr><td>2 · Zweites Urbild</td><td class="mono">h, x</td><td class="mono">x′ ≠ x mit h(x′) = h(x)</td><td>schwach kollisionsresistent, 2nd Pre-Image resistant</td></tr>
+      <tr><td>3 · Kollision</td><td class="mono">h</td><td class="mono">x₁ ≠ x₂ mit h(x₁) = h(x₂)</td><td>(stark) kollisionsresistent</td></tr>
+    </tbody>
+  </table></div>
+  <p class="sub" style="margin-top:8px">Unterschied 2 vs. 3: Bei 2 ist x vorgegeben, bei 3 darfst du beide Werte frei wählen. Darum ist 3 leichter zu knacken (Birthday-Angriff).</p>
+</section>
 
 <section>
   <div class="eyebrow">Muss man zeichnen können</div>
@@ -115,6 +151,7 @@ td.mono{font-family:var(--f-mono)}
     P = 50 % &nbsp;⇒&nbsp; k ≈ 1,18 · √N
   </div>
   <p class="sub">k = Anzahl gehashter Nachrichten. Beispiel: N = 365 Tage ⇒ k ≈ 1,18 · √365 ≈ 23 Personen.</p>
+  <p>Folie 12: Praktische MD5- und SHA-1-Kollisionen gibt es schon. Risiko: Signaturen lassen sich fälschen, wenn der Hash schwach ist.</p>
   <div class="calc">
     <label for="bits">Hash-Länge n (Bit)</label>
     <input id="bits" type="number" min="1" max="1024" value="160">
@@ -134,18 +171,54 @@ td.mono{font-family:var(--f-mono)}
       <tr><td>SHA-3</td><td class="mono">224–512</td><td class="mono">2¹¹²–2²⁵⁶</td><td>2012</td><td><span class="pill ok">sicher</span></td></tr>
     </tbody>
   </table></div>
-  <p class="sub" style="margin-top:8px">SHA-1-Angriff heißt SHAttered. SHA-3 = Keccak, Gewinner des NIST-Wettbewerbs.</p>
+  <p class="sub" style="margin-top:8px">MD5 = Message Digest 5 (Ron Rivest). SHA-1: NIST, FIPS 180-1, nur noch in Legacy-Systemen; Angriff heißt SHAttered. SHA-2 (SHA-224/256/384/512): Standard in TLS, Zertifikaten, Git. SHA-3 = Keccak, Gewinner des NIST-Wettbewerbs, Sponge-Konstruktion.</p>
 </section>
 
 <section>
-  <div class="eyebrow">Präsi Folie 1–2</div>
-  <h2>Motivation</h2>
-  <p>Ziel: Schutz vor <b>Manipulation</b> und <b>Fälschung</b>.</p>
+  <div class="eyebrow">Folie 11</div>
+  <h2>Anwendungen</h2>
   <div class="grid2">
-    <div class="card"><b>Integrity → MDC</b>Integrität: Sind die Daten unverändert? MDC = Modification Detection Code.</div>
-    <div class="card"><b>Authenticity → MAC</b>Authentizität: Von wem stammt die Nachricht? MAC = Message Authentication Code.</div>
-    <div class="card"><b>CRC / Paritätsbits</b>Einfache Prüfsummen: erkennen nur zufällige Fehler, kein Schutz vor absichtlicher Manipulation.</div>
+    <div class="card"><b>Integrität</b>Schutz von Dateien und Nachrichten.</div>
+    <div class="card"><b>Fingerprinting</b>Git-Commits, Zertifikate.</div>
+    <div class="card"><b>Passwortspeicherung</b>Salt + Hash, mit KDF: PBKDF2, bcrypt, Argon2.</div>
   </div>
+</section>
+
+<section>
+  <div class="eyebrow">Folie 13</div>
+  <h2>Message Authentication Codes (MAC)</h2>
+  <p>Hashfunktion alleine: Integrität <span class="ok">✔</span>, Authentizität <span class="bad">✘</span>, weil jeder den Hash neu berechnen kann. Lösung: einen <b>geheimen Schlüssel</b> einbeziehen.</p>
+  <div class="tafel"><span class="big">MAC<sub>k</sub>(M) = f(k, M)</span><br>M = Nachricht, k = geheimer Schlüssel</div>
+  <ul class="steps">
+    <li>MAC = Prüfwert mit Schlüssel.</li>
+    <li>Nur wer k kennt, kann einen gültigen MAC erzeugen.</li>
+    <li>Der Empfänger prüft den MAC, indem er ihn neu berechnet.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">Folie 14</div>
+  <h2>HMAC (Hash-based MAC)</h2>
+  <p>Ein MAC, der auf einer Hashfunktion aufbaut (z. B. SHA-256).</p>
+  <div class="tafel"><span class="big">HMAC<sub>k</sub>(M) = H( (k′ ⊕ opad) ‖ H( (k′ ⊕ ipad) ‖ M ) )</span><br>
+  ⊕ = XOR, ‖ = aneinanderhängen, ipad/opad = feste innere/äußere Padding-Konstanten</div>
+  <div class="grid2">
+    <div class="card"><b>Vorteile</b>Einfach zu implementieren. Bewiesen sicher, also so stark wie die Hashfunktion.</div>
+    <div class="card"><b>Anwendungen</b>TLS (Prüfsummen für verschlüsselte Nachrichten), APIs (Requests mit HMAC + Zeitstempel), JWTs, Banking/IoT (Befehle und Sensordaten).</div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Folie 15</div>
+  <h2>MAC vs. digitale Signatur</h2>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>MAC</th><th>Digitale Signatur</th></tr></thead>
+    <tbody>
+      <tr><td>Verfahren</td><td>symmetrisch</td><td>asymmetrisch</td></tr>
+      <tr><td>Schlüssel</td><td>derselbe Schlüssel, Sender und Empfänger teilen ihn</td><td>privater + öffentlicher Schlüssel</td></tr>
+      <tr><td>Nicht-Abstreitbarkeit</td><td><span class="bad">✘ nein</span></td><td><span class="ok">✔ „Nur der Absender konnte unterschreiben“</span></td></tr>
+    </tbody>
+  </table></div>
 </section>
 </main>
 
