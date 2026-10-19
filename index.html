@@ -577,7 +577,7 @@ $("cClose").addEventListener("click",closeChart);
 let dlFiles=[],dlBack=null;
 function learn(id,from){
   const m=MATERIAL[id];if(!m)return;
-  if(m.html)window.open(m.html,"_blank","noopener");
+  if(m.html)window.open(m.html+"?t="+Date.now(),"_blank","noopener"); // ?t= umgeht den Browser-Cache, sonst sieht man alte Lernblätter
   if(!m.files||!m.files.length)return;
   dlFiles=m.files;dlBack=from;
   $("dlTitle").textContent=byId(id).t;
