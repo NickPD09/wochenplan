@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Schwingungen &amp; Wellen</title>
+<title>Schwingungen</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Sora:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <style>
@@ -140,6 +140,26 @@ details[open] summary::before{content:"−";color:var(--good)}
 #score{font:700 1.1rem var(--f-mono);color:var(--accent);text-shadow:0 0 12px rgba(63,224,255,.5)}
 .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;margin:8px 0 4px}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--violet),var(--accent2));box-shadow:0 0 12px var(--accent);transition:width .4s}
+.nt{font-style:normal;font:600 10px var(--f-mono);letter-spacing:.12em;color:var(--bad);border:1px solid var(--bad);border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:middle;white-space:nowrap}
+section.notest{opacity:.72}
+section.notest:hover{opacity:1}
+nav a.skip{opacity:.4}
+nav a.skip::after{content:"";position:absolute;left:6px;right:6px;top:50%;height:1px;background:var(--bad);transform:rotate(-20deg)}
+nav a.star{border-color:var(--good);background:linear-gradient(160deg,rgba(62,240,160,.16),rgba(63,224,255,.05))}
+nav a.star i{color:var(--good)}
+.focus{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.focus a{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:16px;transition:.2s}
+.focus a:hover{transform:translateY(-2px)}
+.focus .yes{border-color:rgba(62,240,160,.5);background:rgba(62,240,160,.06)}
+.focus .yes:hover{box-shadow:0 0 24px -6px var(--good)}
+.focus .no{border-color:rgba(255,107,122,.45);background:rgba(255,107,122,.05)}
+.focus strong{display:block;font:700 1rem var(--f-display);margin-bottom:4px}
+.focus .yes strong{color:var(--good)}
+.focus .no strong{color:var(--bad)}
+.focus span{font-size:.9rem;color:#c6cfe8}
+.answer{border:1px solid rgba(62,240,160,.45);border-radius:12px;padding:16px 18px;background:rgba(62,240,160,.05);margin:14px 0;box-shadow:0 0 30px -12px var(--good)}
+.answer .lbl{font:600 11px var(--f-mono);letter-spacing:.18em;color:var(--good);margin-bottom:6px}
+.answer p{margin:6px 0}
 footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spacing:.2em;margin-top:40px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 </style>
@@ -149,14 +169,59 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
   <canvas id="cvHero" aria-hidden="true"></canvas>
   <div class="heroin">
     <div class="kicker">NAWI · Physik · 4AHIT</div>
-    <h1>Schwingungen &amp; Wellen</h1>
-    <p class="sub">Vom Federpendel bis zum Überschallknall. Formeln, Live-Simulationen, gelöste Aufgaben und ein Quiz, alles aus deinem Skript und den Arbeitsblättern.</p>
-    <div class="stats"><span><b>10</b> Simulationen</span><span><b>12</b> Kapitel</span><span><b>45</b> gelöste Aufgaben</span><span><b>16</b> Quizfragen</span></div>
-    <p class="hint">↳ Hintergrund: Interferenz zweier Kreiswellen. Bewege Maus oder Finger darüber.</p>
+    <h1>Schwingungen</h1>
+    <p class="sub">Vom Federpendel bis zur Resonanz. Formeln, Live-Simulationen, gelöste Aufgaben und ein Quiz, alles aus deinem Skript und den Arbeitsblättern.</p>
+    <div class="stats"><span><b>8</b> Kapitel</span><span><b>7</b> Simulationen</span><span><b>31</b> gelöste Aufgaben</span><span><b>12</b> Quizfragen</span></div>
+    <p class="hint" style="color:var(--good)">● Test: Rechenbeispiele + harmonischer Oszillator</p>
+    <p class="hint">↳ Hintergrund: Überlagerung zweier Schwingungsquellen. Bewege Maus oder Finger darüber.</p>
   </div>
 </header>
 <div class="wrap">
-<nav aria-label="Kapitel"><a href="#mech" data-sym="Me"><b>0</b><i>Me</i><span>Mechanik</span></a><a href="#grund" data-sym="Gb"><b>1</b><i>Gb</i><span>Grundbegriffe</span></a><a href="#harm" data-sym="Hs"><b>2</b><i>Hs</i><span>Harmonisch</span></a><a href="#pendel" data-sym="Pd"><b>3</b><i>Pd</i><span>Pendel</span></a><a href="#energie" data-sym="En"><b>4</b><i>En</i><span>Energie</span></a><a href="#daempf" data-sym="Dä"><b>5</b><i>Dä</i><span>Dämpfung</span></a><a href="#ueber" data-sym="Üb"><b>6</b><i>Üb</i><span>Überlagerung</span></a><a href="#wellen" data-sym="We"><b>7</b><i>We</i><span>Wellen</span></a><a href="#schall" data-sym="Sc"><b>8</b><i>Sc</i><span>Schall</span></a><a href="#ausbr" data-sym="Au"><b>9</b><i>Au</i><span>Ausbreitung</span></a><a href="#doppler" data-sym="Dp"><b>10</b><i>Dp</i><span>Doppler</span></a><a href="#stehend" data-sym="Sw"><b>11</b><i>Sw</i><span>Stehende W.</span></a><a href="#formeln" class="alt" data-sym="Fx"><b>Σ</b><i>Fx</i><span>Formeln</span></a><a href="#aufg" class="alt" data-sym="Ag"><b>✓</b><i>Ag</i><span>Aufgaben</span></a><a href="#quiz" class="alt" data-sym="Qz"><b>?</b><i>Qz</i><span>Quiz</span></a></nav>
+<nav aria-label="Kapitel"><a href="#osz" class="star" data-sym="Ho"><b>★</b><i>Ho</i><span>Test-Frage</span></a><a href="#mech" data-sym="Me"><b>0</b><i>Me</i><span>Mechanik</span></a><a href="#grund" data-sym="Gb"><b>1</b><i>Gb</i><span>Grundbegriffe</span></a><a href="#harm" data-sym="Hs"><b>2</b><i>Hs</i><span>Harmonisch</span></a><a href="#pendel" data-sym="Pd"><b>3</b><i>Pd</i><span>Pendel</span></a><a href="#energie" data-sym="En"><b>4</b><i>En</i><span>Energie</span></a><a href="#daempf" data-sym="Dä"><b>5</b><i>Dä</i><span>Dämpfung</span></a><a href="#ueber" data-sym="Üb"><b>6</b><i>Üb</i><span>Überlagerung</span></a><a href="#formeln" class="alt" data-sym="Fx"><b>Σ</b><i>Fx</i><span>Formeln</span></a><a href="#aufg" class="alt" data-sym="Ag"><b>✓</b><i>Ag</i><span>Aufgaben</span></a><a href="#quiz" class="alt" data-sym="Qz"><b>?</b><i>Qz</i><span>Quiz</span></a></nav>
+
+<!-- TEST -->
+<section id="testfokus">
+  <h2><span class="no">FÜR DEN TEST</span>Was du können musst</h2>
+  <div class="focus">
+    <a class="yes" href="#aufg"><strong>✓ Rechenbeispiele</strong><span>Alle Schwingungs-Aufgaben: T, f, ω, Federpendel, Fadenpendel, Energie, Dämpfung</span></a>
+    <a class="yes" href="#osz"><strong>✓ Harmonischer Oszillator</strong><span>Was ist das? Wo wird er benutzt? Federpendel, Fadenpendel …</span></a>
+  </div>
+</section>
+
+<section id="osz">
+  <h2><span class="no">★ PRÜFUNGSFRAGE</span>Was ist ein harmonischer Oszillator?</h2>
+  <div class="answer">
+    <div class="lbl">ANTWORT ZUM AUSWENDIGLERNEN</div>
+    <p>Ein <b>Oszillator</b> ist ein schwingungsfähiges System. Er braucht eine <b>Rückstellkraft</b> (zieht zurück in die Ruhelage) und <b>Trägheit</b> (schwingt über die Ruhelage hinaus).</p>
+    <p><b>Harmonisch</b> ist er, wenn die Rückstellkraft <b>proportional zur Auslenkung</b> ist (lineares Kraftgesetz F = −k·x). Dann ist die Bewegung eine <b>Sinusschwingung</b>.</p>
+    <p>Die Frequenz hängt nur von <b>k und m</b> ab, <b>nicht von der Amplitude</b>.</p>
+  </div>
+  <div class="grid2">
+    <div class="f big">F = −k·x</div>
+    <div class="f big">x(t) = r·sin(ωt + φ₀)</div>
+    <div class="f big">ω = <span class="sq">√</span><span class="fr"><span>k</span><span>m</span></span></div>
+    <div class="f big">T = 2π<span class="sq">√</span><span class="fr"><span>m</span><span>k</span></span></div>
+  </div>
+  <h3>Wo wird er benutzt?</h3>
+  <div class="tbl"><table>
+    <tr><th>Oszillator</th><th>Rückstellkraft</th><th>Formel</th><th>Harmonisch?</th></tr>
+    <tr><td><b>Federpendel</b></td><td>Federkraft (Hooke)</td><td class="m">T = 2π√(m/k)</td><td>immer (solange Hooke gilt)</td></tr>
+    <tr><td><b>Fadenpendel</b></td><td>Schwerkraft</td><td class="m">T = 2π√(l/g)</td><td>nur bei <b>kleiner Auslenkung</b></td></tr>
+    <tr><td><b>Drehpendel / Torsionspendel</b></td><td>Rückstellmoment (Spiralfeder, Draht)</td><td class="m">T = 2π√(I/k*)</td><td>ja</td></tr>
+    <tr><td><b>Physisches Pendel</b></td><td>Schwerkraft am Schwerpunkt</td><td class="m">T = 2π√(I/(mgs))</td><td>nur bei kleiner Auslenkung</td></tr>
+    <tr><td><b>Elektrischer Schwingkreis</b></td><td>Spule + Kondensator</td><td class="m">—</td><td>ja (elektromagnetisch)</td></tr>
+  </table></div>
+  <h3>Im Alltag &amp; in der Technik</h3>
+  <div class="grid2">
+    <div class="card"><h4>Uhren</h4><p>Pendeluhr (Fadenpendel), Unruh in der Armbanduhr (Drehpendel), Quarzuhr. Konstantes T = genaue Zeit.</p></div>
+    <div class="card"><h4>Fahrzeuge</h4><p>Federung und Stoßdämpfer beim Auto: Feder + Masse, gedämpft (aperiodischer Grenzfall).</p></div>
+    <div class="card"><h4>Bau &amp; Maschinen</h4><p>Rüttelstampfer (Bodenverdichtung), Schwingungsdämpfer in Hochhäusern, Kranlast am Seil.</p></div>
+    <div class="card"><h4>Musik &amp; Elektronik</h4><p>Stimmgabel (reiner Ton), Saiten, Schwingkreis im Radio, Lautsprechermembran.</p></div>
+    <div class="card"><h4>Messen</h4><p>Federwaage, Sekundenpendel (T = 2 s), Foucault-Pendel (Erdrotation), g bestimmen mit Fadenpendel.</p></div>
+    <div class="card"><h4>Natur</h4><p>Atome und Moleküle schwingen im Kristallgitter um ihre Ruhelage.</p></div>
+  </div>
+  <div class="note"><b>Nicht harmonisch:</b> Fadenpendel mit großer Auslenkung (cos α ≠ 1 ⇒ Kraft nicht mehr ∝ Auslenkung), hüpfender Ball, Rechteckschwingung.</div>
+</section>
 
 <!-- 0 -->
 <section id="mech">
@@ -421,186 +486,6 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
   </div>
 </section>
 
-<!-- 7 -->
-<section id="wellen">
-  <h2><span class="no">KAPITEL 7</span>Wellen: Entstehung &amp; Beschreibung</h2>
-  <p>Welle = Schwingung, die sich durch <b>Kopplung</b> von Teilchen zu Teilchen ausbreitet. Mechanische Wellen brauchen ein <b>Medium</b>, elektromagnetische (Licht, Radio) nicht.</p>
-  <div class="note"><b>Wichtig:</b> Eine Welle transportiert <b>Energie, aber keine Masse</b>. Jedes Teilchen schwingt nur um seine eigene Ruhelage.</div>
-  <p>Zwei streng getrennte Vorgänge: ① jedes Teilchen schwingt um seine Ruhelage ② die Energie wird an den Nachbarn weitergegeben, zeitversetzt ⇒ Phasenunterschied ⇒ sieht aus wie eine wandernde Welle.</p>
-  <p>Modell <b>Pendelkette</b> (mit Federn gekoppelte Pendel) = Modell für Wellen im Atomgitter eines Festkörpers. Stärkere Kopplung ⇒ größeres c.</p>
-  <div class="grid2">
-    <div class="card"><h4>Transversalwelle (Querwelle)</h4><p>Schwingung <b>quer</b> zur Ausbreitung. Seil, Wasseroberfläche, Licht.</p></div>
-    <div class="card"><h4>Longitudinalwelle (Längswelle)</h4><p>Schwingung <b>längs</b> zur Ausbreitung. Verdichtungen &amp; Verdünnungen. Schall in Luft, Feder.</p></div>
-  </div>
-  <div class="lab">
-    <div class="t">Simulation · Transversal vs. Longitudinal</div>
-    <canvas id="cvWave" height="260"></canvas>
-    <div class="ctrls">
-      <label>Frequenz f (Hz) <output id="oWF">0.5</output><input id="sWF" type="range" min="0.2" max="1.5" step="0.05" value="0.5"></label>
-      <label>Ausbreitungsgeschw. c (Einheiten/s) <output id="oWC">2.0</output><input id="sWC" type="range" min="0.5" max="4" step="0.1" value="2"></label>
-    </div>
-    <div class="readout" id="rdWave"></div>
-  </div>
-  <h3>Momentanbilder</h3>
-  <ul><li><b>Transversal:</b> Verbindungslinie aller Teilchen = Sinuslinie über x (nicht über t). Wellenberg und -tal wandern weiter.</li>
-  <li><b>Longitudinal:</b> Transversal-Bild zeichnen, Auslenkungen um 90° nach rechts drehen ⇒ Verdichtungen und Verdünnungen (Extrema um π/2 verschoben). Bei werdender Verdichtung bewegen sich Teilchen aufeinander zu, bei Verdünnung auseinander.</li>
-  <li>Nachbarteilchen sind phasenverschoben, weiter entfernte können phasengleich sein.</li></ul>
-  <h3>Herleitung c = λ·f</h3>
-  <div class="f">s = v·t &nbsp;⇒&nbsp; λ = c·T &nbsp;⇒&nbsp; c = <span class="fr"><span>λ</span><span>T</span></span> = λ·f<small>gilt für jede Welle</small></div>
-<div class="f big">c = λ·f &nbsp;&nbsp;&nbsp; λ = c·T</div>
-  <p>In der Zeit T läuft ein Wellenberg genau eine Wellenlänge λ weiter.</p>
-  <ul>
-    <li><b>λ</b> = Abstand zweier nächster Teilchen im gleichen Schwingungszustand (räumliche Periode)</li>
-    <li><b>Schnelle</b> = Geschwindigkeit eines Teilchens um seine Ruhelage ≠ c!</li>
-    <li>c hängt von der Kopplung ab: c<sub>Luft</sub> &lt; c<sub>Wasser</sub> &lt; c<sub>Eisen</sub></li><li>Ausgangspunkt der Welle = <b>Erreger</b> (Erregerzentrum, Quelle, Sender)</li>
-    <li>Harmonische Schwingung + lineare Kopplung ⇒ <b>harmonische (sinusförmige) Welle</b></li>
-  </ul>
-  <h3>Wellengleichung</h3>
-  <div class="f">Teilchen 1: y₁ = r·sin(ωt) &nbsp; Teilchen 2 (Abstand Δx): y₂ = r·sin ω(t − Δt), Δt = <span class="fr"><span>Δx</span><span>c</span></span><small>gleiche Amplitude und ω, nur zeitversetzt</small></div>
-<div class="f big">y(t, x) = r·sin ω(t − <span class="fr"><span>x</span><span>c</span></span>)</div>
-  <ul>
-    <li>x = const → Schwingung eines Teilchens (zeitliche Periode T)</li>
-    <li>t = const → Momentanbild der Welle (räumliche Periode λ)</li>
-  </ul>
-  <div class="note"><b>Merke:</b> f bestimmt der <b>Erreger</b> (bleibt konstant). c und λ bestimmt das <b>Medium</b> (können sich ändern). Amplitude kann durch Dämpfung sinken.</div>
-</section>
-
-<!-- 8 -->
-<section id="schall">
-  <h2><span class="no">KAPITEL 8</span>Schallwellen</h2>
-  <ul>
-    <li>Longitudinalwellen (Dichtewellen) gehen in festen, flüssigen und gasförmigen Stoffen (Volumselastizität).</li>
-    <li>Transversalwellen nur in Festkörpern (Formelastizität) + Flüssigkeitsoberfläche.</li>
-    <li>Im Festkörper: c<sub>longitudinal</sub> &gt; c<sub>transversal</sub></li>
-  </ul>
-  <div class="tbl"><table>
-    <tr><th>Bereich</th><th>Frequenz</th><th>Beispiel</th></tr>
-    <tr><td>Infraschall</td><td class="m">&lt; 20 Hz</td><td>Erdbeben, Gebäudeschwingungen, Wind</td></tr>
-    <tr><td>Hörschall</td><td class="m">20 Hz – 20 kHz</td><td>Sprache, Musik</td></tr>
-    <tr><td>Ultraschall</td><td class="m">20 kHz – 1 GHz</td><td>Medizin, Fledermäuse</td></tr>
-    <tr><td>Hyperschall</td><td class="m">1 GHz – 1 THz</td><td>Gitterschwingungen in Kristallen</td></tr>
-  </table></div>
-  <div class="tbl"><table>
-    <tr><th>Schallereignis</th><th>Aufbau</th></tr>
-    <tr><td>Ton</td><td>eine harmonische Schwingung. Tonhöhe ↔ f, Lautstärke ↔ Amplitude</td></tr>
-    <tr><td>Klang</td><td>Grundton + Obertöne (ganzzahlige Vielfache). Grundton = Tonhöhe, Obertöne = Klangfarbe</td></tr>
-    <tr><td>Geräusch</td><td>sehr viele Töne mit eng benachbarten Frequenzen</td></tr>
-    <tr><td>Knall</td><td>kurzes Schallereignis (Explosion)</td></tr>
-  </table></div>
-</section>
-
-<!-- 9 -->
-<section id="ausbr">
-  <h2><span class="no">KAPITEL 9</span>Ausbreitung von Wellen</h2>
-  <h3>Wellenfronten &amp; Wellenstrahlen</h3>
-  <ul>
-    <li><b>Wellenfront</b>: alle Punkte gleicher Phase. Abstand benachbarter Fronten = λ.</li>
-    <li><b>Wellenstrahl</b>: Ausbreitungsrichtung, steht ⟂ auf Wellenfront.</li>
-    <li>Punktförmiger Erreger → Kreis-/Kugelwelle (Strahlen radial). Gerader Erreger → ebene Welle (Strahlen parallel).</li>
-    <li>Kugelwelle: Energie pro Fläche ∝ 1/r². Weit weg ≈ ebene Welle (Sonnenlicht).</li>
-    <li>1D: Seil · 2D: Stein ins Wasser (Flächenwelle) · 3D: Kugelwelle</li>
-    <li>Kreiswelle: Wellenberg bei x läuft in T bis x + λ, gleichzeitig startet ein neuer Berg beim Erreger.</li>
-    <li>Ebene Welle: Strahlen pro Fläche konstant ⇒ Energietransport konstant.</li>
-  </ul>
-  <h3>Interferenz zweier Wellen</h3>
-  <p>Gangunterschied Δx = Unterschied der Laufwege.</p><p>Δx = kürzeste Strecke, um die man einen Wellenzug verschieben muss, damit beide in Phase sind. Bsp.: Seil von beiden Seiten anschlagen: Störungen treffen sich, addieren sich und laufen danach <b>ungestört</b> weiter. Das Superpositionsprinzip gilt für alle Vektoren (Kräfte, Bewegungen …).</p>
-  <div class="grid2">
-    <div class="f">Δx = k·λ<small>konstruktiv: Berg trifft Berg → Maximum</small></div>
-    <div class="f">Δx = (2k + 1)·<span class="fr"><span>λ</span><span>2</span></span><small>destruktiv: Berg trifft Tal → Minimum</small></div>
-  </div>
-  <p><b>Kohärent</b> = gleiche Frequenz + konstanter Gangunterschied ⇒ stabiles Interferenzmuster.</p><p>Beliebiger Bruchteil, z.B. Δx = λ/4: wieder Sinuswelle mit λ, Amplitude dazwischen. Nicht kohärent ⇒ kein gleichbleibendes Muster.</p>
-  <h3>Huygens'sches Prinzip</h3>
-  <p>Jeder Punkt einer Wellenfront ist Ausgangspunkt einer <b>Elementarwelle</b>. Die neue Wellenfront ist die <b>Einhüllende</b> aller Elementarwellen.</p><p>Versuch Wellenwanne: Kreis- oder gerade Welle trifft Spalt ⇒ dahinter immer Kreiswelle mit Zentrum im Spalt. Abweichungen von der geraden Ausbreitung: <b>Beugung, Reflexion, Brechung, Streuung</b>.</p>
-  <h3>Beugung</h3>
-  <p>Welle dringt in den geometrischen Schattenraum ein. Je näher Spaltbreite an λ, desto stärker. Spalt ≤ λ ⇒ Kreiswelle hinter dem Spalt.</p><p>Beugung = Richtungsänderung an einem Hindernis. Gilt auch an Hindernissen, nicht nur an Spalten. Kleinerer Spalt ⇒ stärkere Beugung.</p>
-  <h3>Reflexion</h3>
-  <div class="f big">α = β &nbsp;<small style="display:inline">(Einfallswinkel = Reflexionswinkel, jeweils zum Lot)</small></div>
-  <p>Reflexion = Umkehr der Komponente normal zur Grenzfläche.</p>
-  <h3>Herleitung α = β (Huygens)</h3>
-  <ul><li>Wellenfront AC trifft zuerst in A auf die Wand ⇒ A sendet Elementarwelle.</li>
-  <li>Bis C die Wand in D erreicht, hat die Elementarwelle von A den Radius CD, die von der Mitte E den Radius ½·CD.</li>
-  <li>Einhüllende = reflektierte Wellenfront. Dreiecke ACD und AFD sind kongruent ⇒ <b>α = β</b>.</li></ul>
-  <p>Grund: einfallender und reflektierter Strahl haben <b>gleiche Geschwindigkeit</b>. Bei Raumwellen liegen einfallender Strahl, reflektierter Strahl und Lot in <b>einer Ebene</b>.</p>
-<div class="tbl"><table>
-    <tr><th>Welle</th><th>festes Ende</th><th>freies Ende</th></tr>
-    <tr><td>Transversal (Seil)</td><td>Berg → Tal, Phasensprung Δφ = π</td><td>Berg → Berg, kein Sprung</td></tr>
-    <tr><td>Longitudinal (Schall)</td><td>Verdichtung → Verdichtung, Schnelle springt um π (schallhart)</td><td>Verdichtung → Verdünnung, Schnelle bleibt (schallweich)</td></tr>
-  </table></div>
-  <p><b>Echo</b>: direkter und reflektierter Schall getrennt hörbar. <b>Nachhall</b>: nicht trennbar, wichtig für Raumklang.</p><div class="note"><b>Merke:</b> Am festen Ende ändern sich Schwingungs- und Ausbreitungsrichtung, am freien Ende nur die Ausbreitungsrichtung. Modell: mit Federn gekoppelte Wagen, letzter Wagen festgehalten (fest) oder an Feder (frei).</div><p>Ohne Nachhall klingt die Stimme „leer“ (schalltoter Raum).</p>
-  <h3>Brechung (Snellius)</h3>
-  <div class="f big"><span class="fr"><span>sin α</span><span>sin β</span></span> = <span class="fr"><span>c₁</span><span>c₂</span></span> = <span class="fr"><span>λ₁</span><span>λ₂</span></span></div>
-  <p>Brechung = Richtungsänderung an der Grenze zweier Medien mit verschiedenem c.</p>
-  <h3>Herleitung (Huygens)</h3>
-  <div class="f">ΔADC: AC = <span class="fr"><span>c₁·t</span><span>sin α</span></span> &nbsp;&nbsp; ΔAEC: AC = <span class="fr"><span>c₂·t</span><span>sin β</span></span> ⇒ <span class="fr"><span>sin α</span><span>sin β</span></span> = <span class="fr"><span>c₁</span><span>c₂</span></span><small>t = Zeit vom ersten bis zum letzten Auftreffen. AC ist gemeinsame Hypotenuse.</small></div>
-  <div class="f">c₁ = λ₁·f, c₂ = λ₂·f ⇒ <span class="fr"><span>λ₁</span><span>λ₂</span></span> = <span class="fr"><span>c₁</span><span>c₂</span></span><small>f bleibt gleich, weil der Erreger sie bestimmt</small></div>
-<p>f bleibt gleich, c und λ ändern sich. Keine Brechung bei α = 0 oder c₁ = c₂. Langsameres Medium ⇒ zum Lot hin.</p>
-  <div class="lab">
-    <div class="t">Rechner · Brechung</div>
-    <canvas id="cvSnell" height="220"></canvas>
-    <div class="ctrls">
-      <label>Einfallswinkel α (°) <output id="oSa">40</output><input id="sSa" type="range" min="0" max="89" step="1" value="40"></label>
-      <label>c₁ <output id="oSc1">1.0</output><input id="sSc1" type="range" min="0.3" max="2" step="0.05" value="1"></label>
-      <label>c₂ <output id="oSc2">0.7</output><input id="sSc2" type="range" min="0.3" max="2" step="0.05" value="0.7"></label>
-    </div>
-    <div class="readout" id="rdSnell"></div>
-  </div>
-  <h3>Fermat'sches Prinzip</h3>
-  <p>Ein Strahl nimmt von A nach B immer den Weg mit der <b>kürzesten Zeit</b>. Daraus folgen Reflexions- und Brechungsgesetz.</p><p>Im homogenen Medium = gerade Linie.</p>
-  <div class="f">a = 1 m, b = 2 m: l₁ = 1 + √5 = 3,23 m &nbsp; l₂ = 2√2 = 2,83 m (α = β, kürzester Weg)</div>
-</section>
-
-<!-- 10 -->
-<section id="doppler">
-  <h2><span class="no">KAPITEL 10</span>Dopplereffekt</h2>
-  <p>Sender und Empfänger bewegen sich relativ zueinander ⇒ Empfänger hört andere Frequenz. (Christian Doppler, Österreicher.)</p>
-  <div class="grid2">
-    <div class="card"><h4>Sender bewegt (v)</h4>
-      <div class="f">f = <span class="fr"><span>f₀</span><span>1 ∓ v/c</span></span></div>
-      <p>− : nähert sich (f ↑) &nbsp; + : entfernt sich (f ↓)<br>λ = λ₀ − v·T₀, c bleibt gleich.</p></div>
-    <div class="card"><h4>Empfänger bewegt (v)</h4>
-      <div class="f">f = f₀·(1 ± v/c)</div>
-      <p>+ : nähert sich (f ↑) &nbsp; − : entfernt sich (f ↓)<br>λ bleibt, c' = c ± v.</p></div>
-  </div>
-  <h3>Herleitung Sender bewegt</h3>
-  <div class="f">λ = λ₀ − v·T₀ = <span class="fr"><span>c</span><span>f₀</span></span> − <span class="fr"><span>v</span><span>f₀</span></span> &nbsp;⇒&nbsp; <span class="fr"><span>c</span><span>f</span></span> = <span class="fr"><span>c</span><span>f₀</span></span>(1 − <span class="fr"><span>v</span><span>c</span></span>) &nbsp;⇒&nbsp; f = <span class="fr"><span>f₀</span><span>1 − v/c</span></span><small>Sender rückt in T₀ um v·T₀ nach ⇒ Wellenfronten enger</small></div>
-  <h3>Herleitung Empfänger bewegt</h3>
-  <div class="f">λ = λ₀, c' = c + v &nbsp;⇒&nbsp; f = <span class="fr"><span>c + v</span><span>λ₀</span></span> = <span class="fr"><span>f₀</span><span>c</span></span>(c + v) = f₀(1 + <span class="fr"><span>v</span><span>c</span></span>)<small>Empfänger läuft den Fronten entgegen</small></div>
-  <p>Bezeichnungen: f₀, λ₀, c₀ im Ruhesystem des Senders, f, λ, c beim Empfänger. Die Wellengrößen hängen vom Bezugssystem ab.</p>
-<div class="note"><b>Nicht symmetrisch!</b> v = c/2: Empfänger → 1,5·f₀ / 0,5·f₀. Sender → 2·f₀ / ⅔·f₀.</div>
-  <p><b>Überschall</b> (v &gt; c): Wellenfronten überholen sich → <b>Mach'scher Kegel</b> → Überschallknall (Flugzeug, Geschoss, Peitsche, Bugwelle).</p>
-  <p>Gilt für alle Wellen: Verkehrsradar, Rotverschiebung von Licht.</p><p>Sender und Empfänger gleich schnell in dieselbe Richtung ⇒ Effekte heben sich auf: f = <span class="fr"><span>f₀</span><span>1 − v/c</span></span>·(1 − v/c) = f₀.</p>
-  <div class="lab">
-    <div class="t">Simulation · bewegter Sender</div>
-    <canvas id="cvDop" height="240"></canvas>
-    <div class="ctrls">
-      <label>v / c <output id="oDv">0.50</output><input id="sDv" type="range" min="0" max="1.6" step="0.05" value="0.5"></label>
-    </div>
-    <div class="readout" id="rdDop"></div>
-  </div>
-</section>
-
-<!-- 11 -->
-<section id="stehend">
-  <h2><span class="no">KAPITEL 11</span>Stehende Wellen</h2>
-  <p>Zwei gegenläufige Wellen mit gleicher f und gleicher Amplitude (meist: Welle + ihre Reflexion).</p>
-  <div class="f big">Abstand Knoten–Knoten = Bauch–Bauch = <span class="fr"><span>λ</span><span>2</span></span></div>
-  <div class="tbl"><table>
-    <tr><th></th><th>fortschreitende Welle</th><th>stehende Welle</th></tr>
-    <tr><td>Phase</td><td>Nachbarn phasenverschoben</td><td>zwischen 2 Knoten alle in Phase</td></tr>
-    <tr><td>Amplitude</td><td>überall gleich</td><td>unterschiedlich (Knoten 0, Bauch max)</td></tr>
-  </table></div>
-  <p><b>Longitudinal:</b> Bewegungsknoten = Druckbäuche, Bewegungsbäuche = Druckknoten (Kundt'sche Röhre).</p>
-  <p>Versuche: Seil an der Wand + Hand auf und ab (transversal). Feder fest eingespannt + Exzenter (longitudinal). Höhere f ⇒ kleineres λ ⇒ mehr Knoten (c bleibt gleich).</p>
-  <p>Longitudinal: Teilchen zwischen den Knoten bewegen sich gleichphasig auf den Knoten zu oder weg ⇒ im Knoten abwechselnd maximale Verdichtung/Verdünnung.</p>
-  <div class="f">Seil mit 2 festen Enden: L = n·<span class="fr"><span>λ</span><span>2</span></span><small>n = Anzahl der Bäuche (Zusatz, braucht man oft zum Rechnen)</small></div>
-  <div class="lab">
-    <div class="t">Simulation · Stehende Welle aus hin- und rücklaufender Welle</div>
-    <canvas id="cvStand" height="220"></canvas>
-    <div class="legend"><span><i style="background:var(--wave1)"></i>hinlaufend</span><span><i style="background:var(--wave2)"></i>rücklaufend</span><span><i style="background:var(--wave3)"></i>Summe</span></div>
-    <div class="btns"><button id="bTog" class="on">Einzelwellen zeigen</button></div>
-  </div>
-</section>
-
 <!-- Formelblatt -->
 <section id="formeln">
   <h2><span class="no">SPICKZETTEL</span>Formelblatt</h2>
@@ -615,13 +500,6 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
     <tr><td>Energie</td><td class="m">E = ½kr² &nbsp; v_max = ωr</td></tr>
     <tr><td>Dämpfung</td><td class="m">y = r·e^(−δt)·sin(ω_D t) &nbsp; ω_D = √(ω₀²−δ²)</td></tr>
     <tr><td>Schwebung</td><td class="m">f_S = |f₁−f₂| &nbsp; f̄ = (f₁+f₂)/2</td></tr>
-    <tr><td>Welle</td><td class="m">c = λ·f &nbsp; y = r·sin ω(t − x/c)</td></tr>
-    <tr><td>Interferenz</td><td class="m">max: Δx = kλ &nbsp; min: Δx = (2k+1)λ/2</td></tr>
-    <tr><td>Reflexion</td><td class="m">α = β</td></tr>
-    <tr><td>Brechung</td><td class="m">sin α / sin β = c₁/c₂ = λ₁/λ₂</td></tr>
-    <tr><td>Doppler Sender</td><td class="m">f = f₀ / (1 ∓ v/c)</td></tr>
-    <tr><td>Doppler Empfänger</td><td class="m">f = f₀·(1 ± v/c)</td></tr>
-    <tr><td>Stehende Welle</td><td class="m">Knotenabstand = λ/2</td></tr>
   </table></div>
 </section>
 
@@ -629,6 +507,7 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
 <section id="aufg">
   <h2><span class="no">ÜBEN</span>Aufgaben mit Lösungen</h2>
   <p>Erst selbst rechnen, dann aufklappen.</p>
+  
 
   <h3>Schwingungen (Skript)</h3>
   <details><summary>Bsp. 1a: φ₀ = 0, f = 0,16 Hz, nach 0,5 s ist x = 8 cm. Amplitude?</summary>
@@ -663,24 +542,6 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
 <details><summary>Federpendel harmonisch? Begründe.</summary><div class="sol"><span class="r">Ja</span>: Hooke F = −k·x ⇒ Kraft ∝ Auslenkung ⇒ lineares Kraftgesetz</div></details>
 <details><summary>Warum ist T des Fadenpendels unabhängig von m?</summary><div class="sol">Rückstellkraft (Schwerkraft) ist ∝ m ⇒ k = mg/l ⇒ <span class="r">m kürzt sich</span> in √(m/k) = √(l/g)</div></details>
 
-  <h3>Wellen (Arbeitsblatt)</h3>
-  <details><summary>Wie ändert sich λ, wenn f bzw. c verdoppelt wird?</summary>
-    <div class="sol">λ = c/f<br>f × 2 ⇒ <span class="r">λ halbiert</span><br>c × 2 ⇒ <span class="r">λ verdoppelt</span></div></details>
-  <details><summary>Ozeanwelle: λ = 300 m, T = 15 s. c?</summary>
-    <div class="sol">c = λ/T = 300/15 = <span class="r">20 m/s</span></div></details>
-  <details><summary>Wellenwanne: c = 20 cm/s, λ = 2 cm. f?</summary>
-    <div class="sol">f = c/λ = 20/2 = <span class="r">10 Hz</span></div></details>
-  <details><summary>Ö3: f = 88,5 MHz, c = 3·10⁸ m/s. λ?</summary>
-    <div class="sol">λ = c/f = 3·10⁸ / 88,5·10⁶ = <span class="r">3,39 m</span></div></details>
-  <details><summary>Schall: c = 330 m/s, f = 1000 Hz. λ?</summary>
-    <div class="sol">λ = 330/1000 = <span class="r">0,33 m</span></div></details>
-  <details><summary>Doppler: Fußgänger hört 3·f₀. Wie schnell ist das Fahrzeug?</summary>
-    <div class="sol">3f₀ = f₀/(1 − v/c) ⇒ 1 − v/c = ⅓<br><span class="r">v = ⅔·c</span></div></details>
-<details><summary>Doppler v = c/2: alle 4 Fälle</summary><div class="sol">Empfänger: f = f₀(1 ± ½) ⇒ <span class="r">1,5·f₀ / 0,5·f₀</span><br>Sender: f = f₀/(1 ∓ ½) ⇒ <span class="r">2·f₀ / ⅔·f₀</span></div></details>
-<details><summary>Beweise: Sender nähert sich ⇒ f höher, entfernt sich ⇒ f tiefer (v &lt; c)</summary><div class="sol">v &lt; c ⇒ 0 &lt; v/c &lt; 1<br>1 − v/c &lt; 1 ⇒ f = f₀/(1 − v/c) <span class="r">&gt; f₀</span><br>1 + v/c &gt; 1 ⇒ f = f₀/(1 + v/c) <span class="r">&lt; f₀</span></div></details>
-<details><summary>Fermat: A und B je 1 m von der Wand, 2 m auseinander. Welcher Weg ist kürzer?</summary><div class="sol">l₁ = a + √(a²+b²) = 1 + √5 = 3,23 m<br>l₂ = 2·√(a² + (b/2)²) = 2√2 = <span class="r">2,83 m</span> ⇒ Weg mit α = β ist der kürzeste</div></details>
-
-
   <h3>Mechanik (Buch S. 4–7)</h3>
 <details><summary>F3: Wie groß muss die Raketenbeschleunigung mindestens sein? Warum Stufen?</summary><div class="sol">a &gt; g ≈ <span class="r">10 m/s²</span>, sonst hebt sie nicht ab (a<sub>netto</sub> = a − g)<br>Leere Stufen abwerfen ⇒ m kleiner ⇒ a = F/m <span class="r">größer</span></div></details>
 <details><summary>F4/F5: Durchschnitts- vs. Momentangeschwindigkeit, Radar vs. Section Control</summary><div class="sol">Durchschnitt = ganze Strecke / ganze Zeit (300 km / 3 h = 100 km/h)<br>Moment = Tacho<br>Radar misst <span class="r">Momentan</span>-, Section Control <span class="r">Durchschnitts</span>geschwindigkeit</div></details>
@@ -703,11 +564,6 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
 <details><summary>Physisches Pendel: Stab l = 1 m um ein Ende (I = ⅓ml², s = l/2). T?</summary><div class="sol">T = 2π√(I/(mgs)) = 2π√(⅓ml² / (mg·l/2)) = 2π√(2l/(3g))<br>T = 2π√(2/29,43) = <span class="r">1,64 s</span></div></details>
 <details><summary>Gedämpft: r₁ = 10 cm, r₂ = 8 cm, T = 2 s. δ und r₅?</summary><div class="sol">r₁/r₂ = e<sup>δT</sup> = 1,25 ⇒ δ = ln 1,25 / 2 = <span class="r">0,11 s⁻¹</span><br>pro Periode ×0,8 ⇒ r₅ = 10·0,8⁴ = <span class="r">4,1 cm</span></div></details>
 <details><summary>Zwei Stimmgabeln: 440 Hz und 444 Hz. Was hört man?</summary><div class="sol">Mittelfrequenz f̄ = (440+444)/2 = <span class="r">442 Hz</span><br>Schwebung f<sub>S</sub> = 444 − 440 = <span class="r">4 Hz</span> (4× pro Sekunde laut-leise)</div></details>
-<details><summary>Zwei Lautsprecher, f = 680 Hz, c = 340 m/s, Gangunterschied 1,25 m. Verstärkung oder Auslöschung?</summary><div class="sol">λ = c/f = 340/680 = 0,5 m<br>Δx/λ = 1,25/0,5 = 2,5 = (2·2+1)·½ ⇒ <span class="r">destruktiv (Minimum)</span></div></details>
-<details><summary>Schall Luft (340 m/s) → Wasser (1480 m/s), α = 10°, f = 1000 Hz. β, λ₁, λ₂?</summary><div class="sol">sin β = sin 10°·1480/340 = 0,756 ⇒ <span class="r">β ≈ 49°</span> (vom Lot weg)<br>λ₁ = 340/1000 = <span class="r">0,34 m</span> · λ₂ = 1480/1000 = <span class="r">1,48 m</span> · f bleibt gleich</div></details>
-<details><summary>Krankenwagen f₀ = 700 Hz, v = 20 m/s, c = 340 m/s. Was hörst du beim Kommen und Wegfahren?</summary><div class="sol">zu: f = 700/(1 − 20/340) = <span class="r">744 Hz</span><br>weg: f = 700/(1 + 20/340) = <span class="r">661 Hz</span></div></details>
-<details><summary>Radfahrer fährt mit 10 m/s auf eine ruhende Sirene (500 Hz) zu. f?</summary><div class="sol">Empfänger bewegt: f = 500·(1 + 10/340) = <span class="r">515 Hz</span></div></details>
-<details><summary>Seil L = 1,2 m, beide Enden fest, 3 Bäuche, c = 24 m/s. λ und f?</summary><div class="sol">L = 3·λ/2 ⇒ λ = <span class="r">0,8 m</span><br>f = c/λ = 24/0,8 = <span class="r">30 Hz</span></div></details>
 
 </section>
 
@@ -718,7 +574,7 @@ footer{text-align:center;font:11px var(--f-mono);color:var(--muted);letter-spaci
   <div id="quizBox"></div>
   <div class="btns"><button id="qReset">Quiz neu starten</button></div>
 </section>
-<footer>λ = c / f  ·  viel Erfolg beim Test</footer>
+<footer>ω = √(k/m)  ·  viel Erfolg beim Test</footer>
 </div>
 
 <script>
@@ -821,55 +677,6 @@ $('supPresets').addEventListener('click',e=>{const p=e.target.dataset.p;if(!p)re
   fourier=p==='four';if(!fourier){[sA1,sA2,sF1,sF2,sPh].forEach((s,i)=>{s.value=presets[p][i];s.dispatchEvent(new Event('input'))})}drawSup()});
 [sA1,sA2,sF1,sF2,sPh].forEach(s=>s.addEventListener('input',()=>{fourier=false;drawSup()}));
 
-// 7 Wellen
-const sWF=bind('sWF','oWF',2),sWC=bind('sWC','oWC',1);
-function drawWave(t){const [c,w,h]=setup($('cvWave'));const f=+sWF.value,cc=+sWC.value,om=2*Math.PI*f,lam=cc/f;
-  const x0=20,W=w-40,L=10,sx=W/L,N=Math.max(24,Math.round(W/14));const y1=h*0.27,y2=h*0.75,A=h*0.13;
-  c.shadowBlur=8;c.shadowColor=css('--accent');txt(c,'TRANSVERSAL',x0,14,css('--accent'));txt(c,'LONGITUDINAL',x0,h/2+16,css('--accent'));
-  axis(c,x0,y1,W);
-  for(let i=0;i<=N;i++){const X=i*L/N,arg=om*(t-X/cc),inject=t-X/cc>0;const y=inject?Math.sin(arg):0;
-    c.fillStyle=i===Math.round(N/3)?css('--accent2'):css('--wave1');c.beginPath();c.arc(x0+X*sx,y1-A*y,i===Math.round(N/3)?5:3.5,0,7);c.fill();
-    const dx=inject?Math.sin(arg)*0.35:0;c.strokeStyle=i===Math.round(N/3)?css('--accent2'):css('--wave1');c.lineWidth=i===Math.round(N/3)?3:1.6;
-    const px=x0+(X+dx)*sx;c.beginPath();c.moveTo(px,y2-A*0.8);c.lineTo(px,y2+A*0.8);c.stroke()}
-  // λ-Markierung
-  if(lam*sx<W*0.9){const a=x0+sx*0.5,b=a+lam*sx;c.strokeStyle=css('--muted');c.lineWidth=1;c.beginPath();c.moveTo(a,y1+A+12);c.lineTo(b,y1+A+12);c.stroke();txt(c,'λ',(a+b)/2,y1+A+26,null,'center')}
-  $('rdWave').innerHTML=`λ = c/f = <b>${fmt(lam)}</b> · T = <b>${fmt(1/f)} s</b> · orange Teilchen schwingt nur auf der Stelle`}
-
-// 9 Snellius
-const sSa=bind('sSa','oSa',0),sSc1=bind('sSc1','oSc1',2),sSc2=bind('sSc2','oSc2',2);
-function drawSnell(){const [c,w,h]=setup($('cvSnell'));const a=+sSa.value*Math.PI/180,c1=+sSc1.value,c2=+sSc2.value,cx=w/2,cy=h/2,R=Math.min(w/2-20,h/2-12);
-  c.fillStyle=css('--grid');c.fillRect(0,cy,w,h-cy);axis(c,0,cy,w,css('--ink'));
-  c.setLineDash([4,4]);c.strokeStyle=css('--muted');c.beginPath();c.moveTo(cx,cy-R);c.lineTo(cx,cy+R);c.stroke();c.setLineDash([]);
-  c.strokeStyle=css('--wave1');c.lineWidth=2.5;c.beginPath();c.moveTo(cx-R*Math.sin(a),cy-R*Math.cos(a));c.lineTo(cx,cy);c.stroke();
-  const s=Math.sin(a)*c2/c1;let out;
-  c.strokeStyle=css('--wave1');c.globalAlpha=.35;c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+R*Math.sin(a),cy-R*Math.cos(a));c.stroke();c.globalAlpha=1;
-  if(s<=1){const b=Math.asin(s);c.strokeStyle=css('--wave2');c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+R*Math.sin(b),cy+R*Math.cos(b));c.stroke();
-    out=`sin β = sin α · c₂/c₁ = ${fmt(s,3)} ⇒ <b>β = ${fmt(b*180/Math.PI,1)}°</b> · ${c2<c1?'langsamer ⇒ zum Lot hin':c2>c1?'schneller ⇒ vom Lot weg':'keine Brechung'}`}
-  else out='sin β &gt; 1 ⇒ kein gebrochener Strahl (Totalreflexion)';
-  txt(c,'Medium 1 (c₁)',10,16);txt(c,'Medium 2 (c₂)',10,h-8);$('rdSnell').innerHTML=out}
-[sSa,sSc1,sSc2].forEach(s=>s.addEventListener('input',drawSnell));
-
-// 10 Doppler
-const sDv=bind('sDv','oDv',2);
-function drawDop(t){const [c,w,h]=setup($('cvDop'));const v=+sDv.value,cs=60,period=0.5,cy=h/2;
-  const T=(w-40)/Math.max(cs*v,1);const tt=t%Math.max(4,Math.min(T,10));const sx0=20,sxp=s=>sx0+cs*v*s;
-  c.strokeStyle=css('--wave1');c.lineWidth=1.3;
-  for(let k=0;k*period<=tt;k++){const te=k*period,r=cs*(tt-te);if(r>w*1.5)continue;c.beginPath();c.arc(sxp(te),cy,r,0,7);c.stroke()}
-  const sx=sxp(tt);c.fillStyle=css('--accent2');c.beginPath();c.arc(sx,cy,7,0,7);c.fill();
-  c.fillStyle=css('--ink');c.fillRect(w-18,cy-10,6,20);txt(c,'Empfänger',w-22,cy-16,null,'right');
-  let msg;if(v<1){msg=`zu: f = f₀/(1 − ${fmt(v)}) = <b>${fmt(1/(1-v))}·f₀</b> · weg: f = f₀/(1 + ${fmt(v)}) = <b>${fmt(1/(1+v))}·f₀</b>`}
-  else if(v===1)msg='v = c: alle Fronten liegen vorne aufeinander (Schallmauer)';else msg=`v &gt; c: <b>Mach'scher Kegel</b>, Öffnungswinkel sin θ = c/v ⇒ θ = ${fmt(Math.asin(1/v)*180/Math.PI,1)}°`;
-  $('rdDop').innerHTML=msg}
-
-// 11 Stehende Welle
-let showSingle=true;$('bTog').onclick=e=>{showSingle=!showSingle;e.target.classList.toggle('on',showSingle)};
-function drawStand(t){const [c,w,h]=setup($('cvStand'));const x0=10,W=w-20,cy=h/2,A=h/5,lam=W/2,k=2*Math.PI/lam,om=2;axis(c,x0,cy,W);
-  if(showSingle){plot(c,X=>cy-A*Math.sin(k*(X-x0)-om*t),x0,w-10,css('--wave1'),1.2);plot(c,X=>cy-A*Math.sin(-k*(X-x0)-om*t+Math.PI),x0,w-10,css('--wave2'),1.2)}
-  plot(c,X=>cy-A*(Math.sin(k*(X-x0)-om*t)+Math.sin(-k*(X-x0)-om*t+Math.PI)),x0,w-10,css('--wave3'),2.5);
-  for(let i=0;i<=4;i++){const X=x0+i*lam/2;c.fillStyle=css('--accent2');c.beginPath();c.arc(X,cy,4,0,7);c.fill();txt(c,'K',X,cy+18,css('--accent2'),'center')}
-  txt(c,'K = Knoten, Abstand λ/2',x0+4,h-6)}
-
-
 // Hero: Interferenz zweier Punktquellen
 const hcv=$('cvHero');let src2=null;
 hcv.parentElement.addEventListener('pointermove',e=>{const r=hcv.getBoundingClientRect();src2=[(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]});
@@ -905,8 +712,8 @@ function drawBg(t){const W=innerWidth,H=innerHeight;bc.clearRect(0,0,W,H);
 
 // Loop
 const t0=performance.now();
-function frame(now){const t=reduce?1.3:(now-t0)/1000;drawCircle(t);drawSpring(t);drawEnergy(t);drawWave(t);drawDop(t);drawStand(t);drawHero(t);drawBg(t);if(!reduce)requestAnimationFrame(frame)}
-function statics(){drawDamp();drawRes();drawSup();drawSnell()}
+function frame(now){const t=reduce?1.3:(now-t0)/1000;drawCircle(t);drawSpring(t);drawEnergy(t);drawHero(t);drawBg(t);if(!reduce)requestAnimationFrame(frame)}
+function statics(){drawDamp();drawRes();drawSup()}
 statics();requestAnimationFrame(frame);
 addEventListener('resize',()=>{statics();if(reduce)frame(0)});
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',statics);
@@ -914,6 +721,9 @@ new MutationObserver(statics).observe(document.documentElement,{attributes:true,
 
 // Quiz
 const Q=[
+ ['Wann ist ein Oszillator harmonisch?',['Wenn er gedämpft ist','Wenn die Rückstellkraft proportional zur Auslenkung ist','Wenn die Masse klein ist','Immer'],1,'Lineares Kraftgesetz F = −k·x ⇒ Sinusschwingung.'],
+ ['Ist ein Fadenpendel ein harmonischer Oszillator?',['Ja, immer','Nein, nie','Nur bei kleiner Auslenkung','Nur im Weltall'],2,'Nur für kleine Winkel gilt cos α ≈ 1 ⇒ F ∝ y.'],
+ ['Wovon hängt die Frequenz eines harmonischen Oszillators NICHT ab?',['Richtgröße k','Masse m','Amplitude','Trägheitsmoment I (Drehpendel)'],2,'f = 1/(2π)·√(k/m), unabhängig von der Amplitude.'],
  ['Was braucht ein System, um schwingen zu können?',['Rückstellkraft und Trägheit','Nur eine Masse','Reibung und Energie','Ein Medium'],0,'Rückstellkraft zieht zurück, Trägheit lässt überschwingen.'],
  ['Masse am Federpendel wird vervierfacht. T wird …',['halbiert','verdoppelt','vervierfacht','gleich'],1,'T = 2π√(m/k) ⇒ √4 = 2.'],
  ['Wovon hängt T eines Fadenpendels NICHT ab?',['Länge l','Fallbeschleunigung g','Masse m','Ort (Mond/Erde)'],2,'T = 2π√(l/g), m kürzt sich.'],
@@ -922,13 +732,6 @@ const Q=[
  ['Bei Resonanz gilt:',['ω = 0','ω = ω₀','ω ≫ ω₀','δ = ω₀'],1,'Erregerfrequenz = Eigenfrequenz ⇒ Amplitude maximal, Phase −π/2.'],
  ['Zwei gleiche Schwingungen mit Δφ = π ergeben …',['doppelte Amplitude','Auslöschung','Schwebung','Rechteck'],1,'Gegenphase + gleiche Amplitude ⇒ y = 0.'],
  ['f₁ = 440 Hz, f₂ = 443 Hz. Schwebungsfrequenz?',['3 Hz','441,5 Hz','883 Hz','1,5 Hz'],0,'f_S = |f₁ − f₂| = 3 Hz.'],
- ['Was transportiert eine Welle?',['Masse','Energie, aber keine Masse','Masse und Energie','nichts'],1,'Teilchen schwingen nur um ihre Ruhelage.'],
- ['Schall in Luft ist eine …',['Transversalwelle','Longitudinalwelle','elektromagnetische Welle','stehende Welle'],1,'Verdichtungen und Verdünnungen in Ausbreitungsrichtung.'],
- ['Welle geht in ein langsameres Medium. Was bleibt gleich?',['c','λ','f','Richtung'],2,'f bestimmt der Erreger. c und λ ändern sich.'],
- ['Destruktive Interferenz bei Gangunterschied …',['k·λ','(2k+1)·λ/2','λ/4','2λ'],1,'Berg trifft Tal.'],
- ['Transversalwelle am festen Ende: Berg kommt zurück als …',['Berg','Tal (Phasensprung π)','gar nicht','Verdichtung'],1,'Festes Ende ⇒ Δφ = π.'],
- ['Abstand zweier Knoten einer stehenden Welle?',['λ','λ/4','λ/2','2λ'],2,'Knoten–Knoten = λ/2.'],
- ['Sender nähert sich mit v = c/2. Empfänger hört …',['1,5·f₀','2·f₀','0,5·f₀','⅔·f₀'],1,'f = f₀/(1 − ½) = 2f₀.'],
  ['Warum hat eine Rakete Stufen? (deine Notizen)',['Schöner','Leere Stufen abwerfen ⇒ m kleiner ⇒ a = F/m größer','Mehr Treibstoff','Wegen g'],1,'a = F/m: weniger Masse, mehr Beschleunigung.']
 ];
 let right=0,done=0;
