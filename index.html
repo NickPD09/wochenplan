@@ -280,6 +280,14 @@ const DATA=[
   "Stoffumfang klären","Mitschrift / Folien durcharbeiten","Formeln & Begriffe lernen","Beispiele rechnen / Selbsttest ohne Unterlagen"]},
  {id:"haabs2",t:"ITP Präsi Haabs (2. Gruppe)",b:"ITP",c:"--c-haabs",due:"2026-10-23",tasks:[
   "Folien fertig","Sprechtext pro Folie","Text lernen (Stichworte)","2× laut proben mit Timer"]},
+ {id:"ggp2",t:"GGP MÜ (Reiter)",b:"GGP",c:"--c-ggp",due:"2026-11-04",tasks:[
+  "Stoffumfang klären","Mitschrift / Heft durcharbeiten","Wichtige Begriffe & Zusammenhänge lernen","Kurz-Selbsttest ohne Unterlagen"]},
+ {id:"itp2",t:"ITP MÜ",b:"ITP",c:"--c-itp",due:"2026-11-05",tasks:[
+  "Stoffumfang klären","Mitschrift / Folien durcharbeiten","Begriffe in eigenen Worten erklären können","Kurz-Selbsttest ohne Unterlagen"]},
+ {id:"insy2",t:"INSY Test",b:"DB",c:"--c-insy",due:"2026-11-06",tasks:[
+  "Stoffumfang klären","Theorie / Mitschrift durcharbeiten","Übungsbeispiele ohne Lösung machen","Fehler nochmal üben"]},
+ {id:"itsi3",t:"ITSI MÜ (Haindl)",b:"ITSI",c:"--c-itsi",due:"2026-11-09",tasks:[
+  "Stoffumfang klären","Mitschrift / Folien durcharbeiten","Begriffe in eigenen Worten erklären können","Kurz-Selbsttest ohne Unterlagen"]},
  {id:"itsi",t:"ITSI MÜ",b:"ITSI",c:"--c-itsi",due:"2026-10-13",tasks:[
   "Stoffumfang klären","Mitschrift / Folien durcharbeiten","Begriffe in eigenen Worten erklären können","Kurz-Selbsttest ohne Unterlagen"]},
  {id:"burgi",t:"ITP Präsi (Burgi)",b:"ITP",c:"--c-itp",due:"2026-10-13",note:"Du präsentierst nicht, nur PPT gemacht.",tasks:[
@@ -315,6 +323,8 @@ const MATERIAL={
   nawi:{html:"lernen/nawi.html"},
   itsi:{html:"lernen/itsi.html",files:["dateien/itsi/Kryptografie_Uebungen.xlsx"]},
 };
+// Schulfreie Tage (Herbstferien + Allerseelen)
+const FERIEN=new Set(["2026-10-26","2026-10-27","2026-10-28","2026-10-29","2026-10-30","2026-11-02"]);
 const DAYS=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
 // Klassen-Einträge (DATA) sind fix für alle; _custom = eigene Einträge, nur unter dem eigenen Namen gespeichert
 const items=()=>DATA.concat(st._custom||[]);
@@ -437,7 +447,7 @@ function render(){
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
     const grp={};DP(k).filter(x=>byId(x[0])).forEach(([id])=>grp[id]=(grp[id]||0)+1);
     const plan=Object.entries(grp).map(([id,n])=>'<li class="do">'+esc(byId(id).t)+" · "+n+(n>1?" To-dos":" To-do")+"</li>").join("");
-    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+due+plan+"</ul></div>";
+    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+(FERIEN.has(k)?'<li class="do">🌴 Ferien</li>':"")+due+plan+"</ul></div>";
   }).join("");
 
   // Tagesansicht
