@@ -1,0 +1,178 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Unit 12 Check-up</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column, tabs on top, cards in an auto-fill grid */
+:root{
+  --bg:#f3f6f8; --card:#ffffff; --ink:#14232e; --muted:#5b6b77; --line:#d6dee4;
+  --accent:#0d7a6f; --accent-soft:#d8efec; --ok:#1d7f3a; --bad:#b3261e;
+  --display:"Archivo",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f171d; --card:#18232b; --ink:#e4ecf1; --muted:#93a4b0; --line:#2a3842;
+  --accent:#4cc3b5; --accent-soft:#183a37; --ok:#5fd17e; --bad:#ff8a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f171d; --card:#18232b; --ink:#e4ecf1; --muted:#93a4b0; --line:#2a3842;
+  --accent:#4cc3b5; --accent-soft:#183a37; --ok:#5fd17e; --bad:#ff8a80; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-block:24px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:clamp(28px,6vw,40px);font-weight:800;margin:0;text-wrap:balance}
+h2{font-size:22px;margin:0 0 8px}
+.sub{color:var(--muted);margin:4px 0 20px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+select,input{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.hint{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;min-height:92px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.card .w{font-weight:600;font-size:17px}
+.card .ipa{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.card .a{color:var(--accent);font-weight:600}
+.card.open{border-color:var(--accent);background:var(--accent-soft)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.q{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q input{width:170px}
+.res{font-weight:600;font-size:14px}
+.res.ok{color:var(--ok)} .res.bad{color:var(--bad)}
+table{border-collapse:collapse;width:100%}
+td,th{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+td:first-child{font-family:var(--mono);color:var(--muted);width:28px}
+td.ans{color:var(--accent);font-weight:600}
+.email{font-size:15.5px;max-width:65ch}
+.email p{margin:0 0 12px}
+.head{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:14px}
+.rules{display:grid;gap:8px;margin:0;padding-left:20px}
+.stack{display:grid;gap:16px}
+.score{font-weight:800;color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){.card{transition:background .15s,border-color .15s}}
+</style>
+
+<div class="wrap">
+  <h1>Unit 12 · Working abroad</h1>
+  <p class="sub">Check-up 3. November 2026 · Vokabeln (in context) + RC/LC</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="cards">Karteikarten</button>
+    <button role="tab" aria-selected="false" data-tab="gaps">In Context üben</button>
+  </div>
+
+  <section id="cards">
+    <div class="bar">
+      <select id="sec" aria-label="Abschnitt">
+        <option value="all">Alle Abschnitte</option>
+        <option>Words in context</option>
+        <option>A Engineers Without Borders</option>
+        <option>B An Austrian in Bengaluru</option>
+      </select>
+      <button id="dir">Zeige: Englisch → Deutsch</button>
+      <button id="shuf">Mischen</button>
+      <button id="reset">Alle zudecken</button>
+    </div>
+    <p class="hint">Antippen = Lösung aufdecken. <span id="cnt"></span></p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="gaps" hidden>
+    <p class="hint">Setz das passende Wort ein (wie im Check-up „vocabulary in context“). Groß/klein egal.</p>
+    <div class="box" id="gapbox"></div>
+    <div class="bar" style="margin-top:12px">
+      <button id="check">Prüfen</button>
+      <button id="show">Lösungen zeigen</button>
+      <span class="score" id="score"></span>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const S1="Words in context",S2="A Engineers Without Borders",S3="B An Austrian in Bengaluru";
+const V=[
+[S1,"technician","tekˈnɪʃn","TechnikerIn"],[S1,"employment","ɪmˈplɔɪmənt","Arbeit, Anstellung"],[S1,"secondment","sɪˈkɒndmənt","(dienstliche) Entsendung"],
+[S1,"to enhance","ɪnˈhɑːns","verbessern, aufbessern"],[S1,"CV (curriculum vitae)","ˌsiː ˈviː","Lebenslauf"],[S1,"to broaden","ˈbrɔːdn","verbreitern, erweitern"],
+[S1,"horizon","həˈraɪzn","Horizont"],[S1,"preconceived idea","ˌpriːkənˌsiːvd aɪˈdɪə","vorgefasste Meinung, Vorurteil"],[S1,"networking","ˈnetwɜːkɪŋ","Vernetzung"],
+[S1,"contribution","ˌkɒntrɪˈbjuːʃn","Beitrag"],[S1,"rewarding","rɪˈwɔːdɪŋ","lohnend, befriedigend"],[S1,"problem-solving","ˈprɒbləm sɒlvɪŋ","Problembewältigung"],
+[S1,"practicality","ˌpræktɪˈkæləti","Durchführbarkeit"],[S1,"smooth","smuːð","mild, sanft, geschmeidig"],[S1,"to settle in","ˈsetl ɪn","sich eingewöhnen"],
+[S1,"instance","ˈɪnstəns","Beispiel, Fall"],[S1,"expat community","ˌeksˌpæt kəˈmjuːnəti","Ausländergemeinde"],[S1,"to isolate","ˈaɪsəleɪt","isolieren"],
+[S1,"to feel homesick","ˌfiːl ˈhəʊmsɪk","Heimweh haben"],[S1,"loneliness","ˈləʊnlinəs","Einsamkeit"],[S1,"to plan ahead","ˌplæn əˈhed","vorausplanen"],
+[S1,"self-reliance","ˌself rɪˈlaɪəns","Selbstständigkeit"],[S1,"unforgettable","ˌʌnfəˈɡetəbl","unvergesslich"],
+[S2,"partnership","ˈpɑːtnəʃɪp","Partnerschaft"],[S2,"collaboration","kəˌlæbəˈreɪʃn","Zusammenarbeit"],[S2,"humanitarian","hjuːˌmænɪˈtæriən","humanitär"],
+[S2,"universal","juːnɪˈvɜːsl","universell, allgemein"],[S2,"transformational","ˌtrænsfəˈmeɪʃənl","umwälzend"],[S2,"health clinic","ˈhelθ klɪnɪk","Krankenstation, Klinik"],
+[S2,"sanitation","ˌsænɪˈteɪʃn","sanitäre Einrichtungen"],[S2,"capacity","kəˈpæsəti","Kapazität, Leistung"],[S2,"evenly","ˈiːvnli","gleichmäßig"],
+[S2,"in need","ɪn ˈniːd","bedürftig, in Not"],[S2,"alongside","əˌlɒŋˈsaɪd","neben, entlang"],[S2,"provision","prəˈvɪʒn","Versorgung"],
+[S2,"enterprise","ˈentəpraɪz","Unternehmen"],[S2,"scalable","ˈskeɪləbl","skalierbar"],[S2,"off-grid","ˌɒf ˈɡrɪd","ohne Anbindung ans Stromnetz"],
+[S2,"social enterprise","ˌsəʊʃl ˈentəpraɪz","Sozialunternehmen"],[S2,"modelling","ˈmɒdəlɪŋ","Modellierung"],[S2,"cookstove","ˈkʊkstəʊv","Kochherd (offenes Feuer)"],
+[S2,"smoky","ˈsməʊki","rauchig"],[S2,"to inhale","ɪnˈheɪl","einatmen"],[S2,"fume","fjuːm","Rauch, Abgas"],[S2,"death","deθ","Tod, Todesfall"],
+[S2,"malaria","məˈleəriə","Malaria"],[S2,"livelihood","ˈlaɪvlihʊd","Lebensgrundlage"],[S2,"organization","ˌɔːɡənaɪˈzeɪʃn","Organisation"],
+[S2,"stove","stəʊv","Kocher, Ofen, Herd"],[S2,"in-house","ˌɪn ˈhaʊs","hauseigen, intern"],[S2,"poisonous","ˈpɔɪzənəs","giftig"],
+[S2,"to collaborate","kəˈlæbəreɪt","zusammenarbeiten"],[S2,"to dismiss","dɪsˈmɪs","ablehnen, verwerfen"],[S2,"villager","ˈvɪlɪdʒə","DorfbewohnerIn"],
+[S2,"to sustain","səˈsteɪn","(aufrecht)erhalten"],[S2,"mains power","ˌmaɪnz ˈpaʊə","Netzstrom"],[S2,"to source sth. (from)","sɔːs","etw. beziehen (von)"],
+[S2,"mud brick","ˌmʌd ˈbrɪk","Lehmziegel"],[S2,"corrugated iron","ˌkɒrəɡeɪtɪd ˈaɪən","Wellblech"],[S2,"crisis area","ˈkraɪsɪs ˈeəriə","Krisengebiet"],
+[S2,"fundraising","ˈfʌndreɪzɪŋ","Spendensammeln"],[S2,"outreach","ˈaʊtriːtʃ","Reichweite, Erreichen"],[S2,"motivation","ˌməʊtɪˈveɪʃn","Motivation"],
+[S3,"programmer","ˈprəʊɡræmə","ProgrammiererIn"],[S3,"sticky","ˈstɪki","schwül"],[S3,"narrow","ˈnærəʊ","eng, schmal"],[S3,"three-wheeled","ˈθriː wiːld","dreirädrig"],
+[S3,"rickshaw","ˈrɪkʃɔː","Rikscha"],[S3,"ox-drawn cart","ˌɒks drɔːn ˈkɑːt","Ochsenkarren"],[S3,"crumbling","ˈkrʌmblɪŋ","zerfallend"],
+[S3,"boom","buːm","Boom, Hochkonjunktur"],[S3,"software developer","ˌsɒftweə dɪˈveləpə","SoftwareentwicklerIn"],[S3,"campus","ˈkæmpəs","(Firmen-/Uni-)Gelände"],
+[S3,"lawn","lɔːn","Rasen(fläche)"],[S3,"security guard","sɪˈkjʊərəti ɡɑːd","Wachmann/-frau"],[S3,"salary","ˈsæləri","Gehalt"],
+[S3,"to take steps","ˌteɪk ˈsteps","Maßnahmen ergreifen"],[S3,"to dig","dɪɡ","graben"],[S3,"child labour","ˈtʃaɪld leɪbə","Kinderarbeit"],
+[S3,"creativity","ˌkriːeɪˈtɪvəti","Kreativität"],[S3,"disaster","dɪˈzɑːstə","Katastrophe"],[S3,"power cut","ˈpaʊə kʌt","Stromausfall"],
+[S3,"nationality","ˌnæʃəˈnæləti","Staatsangehörigkeit"],[S3,"job opportunity","ˈdʒɒb ɒpətjuːnəti","Arbeitsgelegenheit"],[S3,"shocking","ˈʃɒkɪŋ","schockierend"],
+[S3,"first name","ˈfɜːst neɪm","Vorname"],[S3,"surname","ˈsɜːneɪm","Nachname"]
+];
+let enFirst=true, order=V.map((_,i)=>i);
+const grid=document.getElementById('grid'), sec=document.getElementById('sec');
+function render(){
+  const list=order.filter(i=>sec.value==='all'||V[i][0]===sec.value);
+  document.getElementById('cnt').textContent=list.length+' Wörter';
+  grid.innerHTML='';
+  list.forEach(i=>{const [,en,ipa,de]=V[i];const b=document.createElement('button');b.className='card';
+    const front=enFirst?`<span class="w">${en}</span><span class="ipa">[${ipa}]</span>`:`<span class="w">${de}</span>`;
+    const back=enFirst?`<span class="a">${de}</span>`:`<span class="a">${en}</span><span class="ipa">[${ipa}]</span>`;
+    b.innerHTML=front+`<span class="back" hidden>${back}</span>`;
+    b.onclick=()=>{const k=b.querySelector('.back');k.hidden=!k.hidden;b.classList.toggle('open',!k.hidden)};
+    grid.appendChild(b)});
+}
+sec.onchange=render;
+document.getElementById('dir').onclick=e=>{enFirst=!enFirst;e.target.textContent='Zeige: '+(enFirst?'Englisch → Deutsch':'Deutsch → Englisch');render()};
+document.getElementById('shuf').onclick=()=>{for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}render()};
+document.getElementById('reset').onclick=render;
+render();
+
+const G=[
+["Working abroad will really ___ your CV.","enhance"],
+["Travelling helps you ___ your horizons.","broaden"],
+["Many people ___ ___ in their first weeks abroad. (2 Wörter)","feel homesick"],
+["It took me two weeks to ___ ___ in my new flat. (2 Wörter)","settle in"],
+["Clean water and good ___ prevent many diseases.","sanitation"],
+["The village has no ___ power, so they use solar panels.","mains"],
+["Smoky cookstoves make people ___ poisonous fumes.","inhale"],
+["When the electricity suddenly stops, it is a ___ ___. (2 Wörter)","power cut"],
+["The engineers ___ with local villagers to build the clinic.","collaborate"],
+["Volunteering is a very ___ experience – you get a lot back.","rewarding"],
+["His monthly ___ is paid by the company in India.","salary"],
+["Living alone in another country teaches you ___.","self-reliance"],
+["EWB raises money through ___ events.","fundraising"],
+["Farming is the main ___ of the villagers.","livelihood"],
+["The roof of the hut is made of ___ iron.","corrugated"],
+["She was sent on a six-month ___ to the London office.","secondment"],
+["The ideas were ___ as too expensive and never used.","dismissed"],
+["Solar lamps are useful in ___ villages without electricity.","off-grid"],
+];
+const gb=document.getElementById('gapbox');
+G.forEach(([s],i)=>{const [a,b]=s.split(/___(?: ___)?/);const d=document.createElement('div');d.className='q';
+  d.innerHTML=`<span>${i+1}. ${a}</span><input id="g${i}" autocomplete="off" aria-label="Lücke ${i+1}"><span>${b}</span><span class="res" id="r${i}"></span>`;gb.appendChild(d)});
+const norm=s=>s.trim().toLowerCase().replace(/\s+/g,' ');
+document.getElementById('check').onclick=()=>{let n=0;G.forEach(([,ans],i)=>{const ok=norm(document.getElementById('g'+i).value)===ans;n+=ok;
+  const r=document.getElementById('r'+i);r.textContent=ok?'✓':'✗';r.className='res '+(ok?'ok':'bad')});
+  document.getElementById('score').textContent=n+' / '+G.length};
+document.getElementById('show').onclick=()=>G.forEach(([,ans],i)=>{const r=document.getElementById('r'+i);r.textContent='→ '+ans;r.className='res ok'});
+
+document.querySelectorAll('[data-tab]').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('[data-tab]').forEach(x=>{x.setAttribute('aria-selected',x===t);document.getElementById(x.dataset.tab).hidden=x!==t})});
+</script>
+
+</body></html>
