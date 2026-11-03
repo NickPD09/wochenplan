@@ -91,6 +91,17 @@ button{font-family:var(--f-body)}
 .dvlist .dot{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
 .dvlist .chip{margin-left:auto}
 .dvlist .none{color:var(--muted)}
+.day li.tddone{text-decoration:line-through;opacity:.7}
+.dvlist li.td{justify-content:space-between}
+.dvlist li.td label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;min-width:0}
+.dvlist li.td input{accent-color:var(--accent);margin-top:3px;flex:none}
+.dvlist li.td input:checked+span{text-decoration:line-through;color:var(--muted)}
+.tdel{font:inherit;font-size:.75rem;background:none;border:0;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px}
+.tdel:hover{background:var(--panel2);color:var(--warn)}
+.tdform{display:flex;gap:6px;margin-top:8px}
+.tdform input{flex:1;min-width:0;font:inherit;font-size:.88rem;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.tdform input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.tdform button{font:inherit;font-size:.82rem;font-weight:600;padding:6px 12px;border:0;border-radius:6px;background:var(--accent);color:var(--on-accent);cursor:pointer}
 @media (max-width:560px){.dvcols{grid-template-columns:1fr}}
 
 /* Filter */
@@ -436,13 +447,6 @@ Bez.-Attr.  → in Zwischentabelle / bei FK`,tasks:[
  {id:"haabs",t:"ITP Präsi (Haabs)",b:"ITP",c:"--c-haabs",due:"2026-10-16",note:"Wahrscheinlich Freitag, gleicher Tag wie INSY. Termin bestätigen! Präsi machen + Text relativ frei können.",tasks:[
   "Termin bestätigen + Anforderungen klären","Gliederung (5–7 Punkte)","Folien bauen","Sprechtext pro Folie schreiben","Text lernen (Stichworte statt auswendig)","2× laut proben mit Timer"]}
 ];
-const PLAN={
- "2026-10-12":[["sew","SEW HÜ fertig + abgeben"],["eng","Englisch lernen"],["itsi","ITSI lernen"],["burgi","Burgi-PPT checken"],["mathe","Mathe: Beispiel-Liste"],["haabs","Haabs: Termin + Anforderungen"]],
- "2026-10-13":[["mathe","Mathe Runde 1"],["haabs","Haabs: Gliederung + erste Folien"]],
- "2026-10-14":[["mathe","Mathe Runde 2 + Fehler"],["haabs","Haabs: Folien fertig"],["insy","INSY Notation"]],
- "2026-10-15":[["insy","INSY Übungen"],["haabs","Haabs: Sprechtext + 2× proben"]],
- "2026-10-16":[["haabs","Haabs: früh Text 1× durchgehen"]]
-};
 // Lernmaterial pro Fach: html = Lernseite (öffnet im neuen Tab), files = Downloads nach "Akzeptieren".
 // Pfade relativ zum Repo, z. B. lernen/mathe.html und dateien/mathe/beispiele.pdf
 const MATERIAL={
@@ -544,25 +548,10 @@ const $=id=>document.getElementById(id);
 const doneN=c=>c.tasks.filter((_,i)=>st[c.id+i]).length;
 const rel=n=>n<0?"vorbei":n===0?"heute":n===1?"morgen":"in "+n+" Tagen";
 
-// Tages-To-dos automatisch: offene Schritte jedes Eintrags auf die Tage bis zum Termin verteilen (handgeplante PLAN-Tage haben Vorrang)
-function autoPlan(IT){
-  const out={},t0=iso(today);
-  IT.forEach(c=>{
-    if(c.due<t0)return;
-    const open=c.tasks.map((t,i)=>[t,i]).filter(([,i])=>!st[c.id+i]);
-    if(!open.length)return;
-    // alle Schultage (Mo–Fr) von heute bis zum Tag vor dem Termin, auch über die Woche hinaus
-    const ds=[],d=new Date(t0+"T00:00");
-    while(iso(d)<c.due){if(d.getDay()%6)ds.push(iso(d));d.setDate(d.getDate()+1)}
-    if(!ds.length)ds.push(c.due);
-    const per=Math.ceil(open.length/ds.length);
-    open.forEach(([t],j)=>{const d=ds[Math.min(ds.length-1,Math.floor(j/per))];(out[d]=out[d]||[]).push([c.id,esc(c.t)+": "+esc(t)])});
-  });
-  return out;
-}
+// Tages-To-dos: nur selbst angelegt, pro Tag unter dem eigenen Namen gespeichert (st._todos)
+const TD=k=>(st._todos||{})[k]||[];
 function render(){
   const IT=items();
-  const AP=autoPlan(IT),DP=k=>PLAN[k]||AP[k]||[];
   // Boss countdown: nächste offene Prüfung
   const next=IT.filter(c=>days(c.due)>=0&&doneN(c)<c.tasks.length).sort((a,b)=>a.due.localeCompare(b.due));
   if(next.length){
@@ -576,8 +565,7 @@ function render(){
   $("week").innerHTML=WEEK.map(k=>{
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
-    const grp={};DP(k).filter(x=>byId(x[0])).forEach(([id])=>grp[id]=(grp[id]||0)+1);
-    const plan=Object.entries(grp).map(([id,n])=>'<li class="do">'+esc(byId(id).t)+" · "+n+(n>1?" To-dos":" To-do")+"</li>").join("");
+    const plan=TD(k).map(t=>'<li class="do'+(t.done?" tddone":"")+'">'+(t.done?"☑ ":"☐ ")+esc(t.t)+"</li>").join("");
     return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+(FERIEN.has(k)?'<li class="do">🌴 Ferien</li>':"")+due+plan+"</ul></div>";
   }).join("");
 
@@ -589,13 +577,13 @@ function render(){
       '<div class="dvcols"><div><div class="eyebrow">Prüfung / Abgabe</div><ul class="dvlist">'+
       (dueC.length?dueC.map(c=>{const n=doneN(c),f=n===c.tasks.length;return'<li style="--c:var('+c.c+')"><span class="dot"></span>'+esc(c.t)+'<span class="chip'+(f?" ok":"")+'">'+(f?"erledigt ✓":n+"/"+c.tasks.length)+"</span></li>"}).join(""):'<li class="none">Nichts fällig</li>')+
       '</ul></div><div><div class="eyebrow">To-do an dem Tag</div><ul class="dvlist">'+
-      DP(sel).filter(x=>byId(x[0])).map(([id,t])=>'<li style="--c:var('+byId(id).c+')"'+(MATERIAL[id]?' data-learn="'+id+'" role="button" tabindex="0"':'')+'><span class="dot"></span>'+t+"</li>").join("")+
-      "</ul></div></div>";
+      TD(sel).map(t=>'<li class="td"><label><input type="checkbox" data-td="'+t.id+'"'+(t.done?" checked":"")+"><span>"+esc(t.t)+'</span></label><button type="button" class="tdel" data-tdel="'+t.id+'" aria-label="To-do löschen">✕</button></li>').join("")+
+      '</ul><form class="tdform" id="tdForm"><input id="tdIn" maxlength="80" placeholder="Neues To-do" aria-label="Neues To-do"><button type="submit">Hinzufügen</button></form></div></div>';
   }
   dv.hidden=!sel;
 
   // Quest-Karten (bei ausgewähltem Tag nur die Fächer dieses Tages)
-  const ids=sel?new Set([...IT.filter(c=>c.due===sel).map(c=>c.id),...DP(sel).map(x=>x[0])]):null;
+  const ids=sel?new Set(IT.filter(c=>c.due===sel).map(c=>c.id)):null;
   // Fälligkeitstag vorbei → wandert nach "Abgeschlossen" (bei ausgewähltem Tag wird alles von dem Tag gezeigt)
   const active=IT.filter(c=>days(c.due)>=0),past=IT.filter(c=>days(c.due)<0);
   const cnt={all:active.length,pub:active.filter(c=>!isOwn(c)).length,own:active.filter(isOwn).length,arch:past.length};
@@ -616,7 +604,7 @@ function render(){
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
       '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+esc(t)+'</span><span class="xpTag">+'+XP+" XP</span></label></li>").join("")+
       "</ul></div></article>";
-  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Unten bei „+ Eigene Aufgabe hinzufügen“ anlegen.":view==="arch"?"Noch nichts abgeschlossen. Sobald ein Termin vorbei ist, landet er hier.":"Hier ist nichts.")+"</div>";
+  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Unten bei „+ Eigene Aufgabe hinzufügen“ anlegen.":view==="arch"?"Noch nichts abgeschlossen. Sobald ein Termin vorbei ist, landet er hier.":sel?"An diesem Tag ist nichts fällig.":"Hier ist nichts.")+"</div>";
 
   // XP + Rang
   const p=all?done/all:0,r=RANKS[Math.min(RANKS.length-1,Math.floor(p*RANKS.length))];
@@ -640,7 +628,7 @@ $("cards").addEventListener("change",e=>{
 let armed=false;
 $("reset").addEventListener("click",e=>{
   if(!armed){armed=true;e.target.textContent="Sicher? Nochmal klicken";e.target.classList.add("arm");setTimeout(()=>{armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm")},3000);return}
-  st={_custom:st._custom,_grades:st._grades,_book:st._book};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
+  st={_custom:st._custom,_grades:st._grades,_book:st._book,_todos:st._todos};save();render();armed=false;e.target.textContent="Alle Häkchen zurücksetzen";e.target.classList.remove("arm");
 });
 $("cards").addEventListener("click",e=>{
   const b=e.target.closest("[data-hide]");if(!b)return;
@@ -821,7 +809,19 @@ function pick(k){
 }
 $("week").addEventListener("click",e=>{const d=e.target.closest(".day");if(d)pick(d.dataset.d)});
 $("week").addEventListener("keydown",e=>{const d=e.target.closest(".day");if(d&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pick(d.dataset.d)}});
-$("dayview").addEventListener("click",e=>{if(e.target.closest("[data-all]")){const k=sel;sel=null;render();document.querySelector('.day[data-d="'+k+'"]')?.focus()}});
+$("dayview").addEventListener("submit",e=>{
+  if(e.target.id!=="tdForm")return;e.preventDefault();
+  const t=$("tdIn").value.trim().slice(0,80);if(!t||!sel)return;
+  st._todos=st._todos||{};st._todos[sel]=[...TD(sel),{id:"t"+Date.now(),t,done:false}];
+  save();render();$("tdIn")?.focus();
+});
+$("dayview").addEventListener("change",e=>{
+  const id=e.target.dataset.td;if(!id)return;
+  const x=TD(sel).find(t=>t.id===id);if(x){x.done=e.target.checked;save();render();document.querySelector('[data-td="'+id+'"]')?.focus()}
+});
+$("dayview").addEventListener("click",e=>{
+  const del=e.target.closest("[data-tdel]");
+  if(del){st._todos[sel]=TD(sel).filter(t=>t.id!==del.dataset.tdel);if(!st._todos[sel].length)delete st._todos[sel];save();render();$("tdIn")?.focus();return}if(e.target.closest("[data-all]")){const k=sel;sel=null;render();document.querySelector('.day[data-d="'+k+'"]')?.focus()}});
 $("loginForm").addEventListener("submit",e=>{e.preventDefault();login($("nameIn").value,$("pinIn").value)});
 $("logout").addEventListener("click",()=>{
   setMenu(false);
