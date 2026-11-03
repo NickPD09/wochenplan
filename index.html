@@ -80,6 +80,14 @@ button{font-family:var(--f-body)}
 .day li.due{font-weight:600;display:flex;gap:6px;align-items:center;min-width:0}
 .day li.due::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c);flex:none}
 .day li.do{color:var(--muted)}
+.wnav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.wbtn{font:inherit;font-size:1.1rem;line-height:1;width:32px;height:30px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);cursor:pointer}
+.wbtn:hover,.wtoday:hover{background:var(--panel2)}
+.wbtn:focus-visible,.wtoday:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wlbl{font-family:var(--f-mono);font-size:.8rem;font-weight:600;min-width:150px;text-align:center;font-variant-numeric:tabular-nums}
+.wtoday{font:inherit;font-size:.78rem;padding:5px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--accent);cursor:pointer}
+.whint{margin-left:auto}
+@media (max-width:560px){.whint{display:none}}
 .dayview{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:14px;box-shadow:var(--shadow)}
 .dvhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
 .dvhead h2{font-size:1.15rem;font-weight:700}
@@ -450,7 +458,13 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
     <div class="bar"><i id="fill"></i></div>
   </section>
 
-  <div class="eyebrow">Tag antippen für Details</div>
+  <div class="wnav">
+    <button type="button" class="wbtn" id="wPrev" aria-label="Vorige Woche">‹</button>
+    <span class="wlbl" id="wLbl"></span>
+    <button type="button" class="wbtn" id="wNext" aria-label="Nächste Woche">›</button>
+    <button type="button" class="wtoday" id="wToday" hidden>Diese Woche</button>
+    <span class="eyebrow whint">Tag antippen für Details</span>
+  </div>
   <section class="week" id="week" aria-label="Tagesplan"></section>
   <section class="dayview" id="dayview" hidden aria-live="polite"></section>
   <div class="filter" id="filter" aria-label="Ansicht"></div>
@@ -612,8 +626,11 @@ const days=s=>Math.round((new Date(s+"T00:00")-today)/864e5);
 const wd=["So","Mo","Di","Mi","Do","Fr","Sa"];
 const MON=["Jänner","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 // Aktuelle Schulwoche Mo–Fr; am Wochenende schon die nächste
-const WEEK=(()=>{const m=new Date(today),dow=(m.getDay()+6)%7;m.setDate(m.getDate()-dow+(dow>=5?7:0));
-  return [0,1,2,3,4].map(i=>{const d=new Date(m);d.setDate(m.getDate()+i);return iso(d)})})();
+// Woche: aktuelle Schulwoche (am Wochenende die nächste) + Versatz weekOff zum Vor-/Zurückblättern
+let weekOff=0;
+const weekOf=off=>{const m=new Date(today),dow=(m.getDay()+6)%7;m.setDate(m.getDate()-dow+(dow>=5?7:0)+off*7);
+  return [0,1,2,3,4].map(i=>{const d=new Date(m);d.setDate(m.getDate()+i);return iso(d)})};
+let WEEK=weekOf(0);
 const kw=s=>{const d=new Date(s+"T00:00");d.setDate(d.getDate()+3-(d.getDay()+6)%7);const j=new Date(d.getFullYear(),0,4);return 1+Math.round(((d-j)/864e5-3+(j.getDay()+6)%7)/7)};
 const $=id=>document.getElementById(id);
 const doneN=c=>c.tasks.filter((_,i)=>st[c.id+i]).length;
@@ -632,7 +649,8 @@ function render(){
 
   // Wochenleiste
   {const a=new Date(WEEK[0]+"T00:00"),b=new Date(WEEK[4]+"T00:00");
-   $("weekLabel").textContent="4AHIT · KW "+kw(WEEK[0])+" · "+dm(a)+"–"+dm(b);}
+   $("weekLabel").textContent="4AHIT · KW "+kw(weekOf(0)[0]);
+   $("wLbl").textContent="KW "+kw(WEEK[0])+" · "+dm(a)+"–"+dm(b);$("wToday").hidden=weekOff===0;}
   $("week").innerHTML=WEEK.map(k=>{
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
@@ -911,6 +929,10 @@ function pick(k){
   sel=sel===k?null:k;render();
   document.querySelector('.day[data-d="'+k+'"]')?.focus();
 }
+function goWeek(off){weekOff=off;WEEK=weekOf(off);sel=null;render()}
+$("wPrev").addEventListener("click",()=>goWeek(weekOff-1));
+$("wNext").addEventListener("click",()=>goWeek(weekOff+1));
+$("wToday").addEventListener("click",()=>{goWeek(0);$("wNext").focus()});
 $("week").addEventListener("click",e=>{const d=e.target.closest(".day");if(d)pick(d.dataset.d)});
 $("week").addEventListener("keydown",e=>{const d=e.target.closest(".day");if(d&&(e.key==="Enter"||e.key===" ")){e.preventDefault();pick(d.dataset.d)}});
 $("dayview").addEventListener("submit",e=>{
