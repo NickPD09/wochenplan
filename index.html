@@ -36,7 +36,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body)}
-.wrap{max-width:960px;margin:0 auto;padding-inline:16px;padding-block:20px 56px;display:grid;gap:20px}
+.wrap{max-width:960px;margin:0 auto;padding-inline:16px;padding-block:0 56px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
 .eyebrow{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 button{font-family:var(--f-body)}
@@ -319,6 +319,68 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
 @media (prefers-reduced-motion:reduce){.nb-seg label{transition:none}}
 @media (max-width:720px){.cards{grid-template-columns:1fr}}
 @media (max-width:560px){.hero{grid-template-columns:1fr}.boss{text-align:left}.week{grid-template-columns:1fr}.day{border-right:0;border-bottom:1px solid var(--line)}.day:last-child{border-bottom:0}.curve{margin-left:0}}
+
+/* Übersicht-Umbau: Kopfzeile, Überblick, Gruppen, einklappbare Karten, kompakte Woche am Handy */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;align-items:center;gap:12px;margin-inline:-16px;padding:10px 16px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tbtitle{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1}
+.tbtitle h1{font-size:1.15rem;font-weight:700;line-height:1.2;white-space:nowrap}
+.tbtitle .eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbuser{display:grid;justify-items:end;font-size:.78rem;line-height:1.25;min-width:0}
+.tbuser b{font-weight:600;max-width:14ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbuser span{color:var(--muted);font-size:.7rem;white-space:nowrap}
+.overview{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow)}
+.nextlist{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.nextlist li{display:flex;align-items:center;gap:8px;font-size:.9rem;min-width:0}
+.nextlist .dot{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
+.nextlist .nt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.nextlist .chip{margin-left:auto}
+.nextlist .none{color:var(--muted)}
+.ovprog{display:grid;gap:8px;align-content:center;border-left:1px solid var(--line);padding-left:14px}
+.ovprog .row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.grp{grid-column:1/-1;margin:10px 0 0;font-size:.72rem;font-family:var(--f-mono);font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.grp:first-child{margin-top:0}
+.cards{align-items:start}
+.card .chead{padding:0;display:flex;align-items:stretch}
+.ctog{flex:1;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;font:inherit;color:inherit;background:none;border:0;padding:12px 14px;cursor:pointer;border-radius:10px 10px 0 0}
+.ctog:hover{background:var(--panel2)}
+.ctog:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.ctit{min-width:0;display:grid;gap:3px}
+.ctit h2{font-size:.98rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chev{width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .2s}
+.card.open .chev{transform:rotate(-135deg) translateY(-1px)}
+.card .hide{align-self:center;margin-right:8px}
+.card>.mini{margin:0 14px 12px}
+.card.open>.mini{margin-bottom:10px}
+.card .cbody{padding:0 14px 14px}
+@media (max-width:720px){.cards{grid-template-columns:1fr}}
+@media (max-width:560px){
+  .wrap{gap:14px;padding-block:0 40px}
+  .tbtitle .eyebrow{display:none}
+  .overview{grid-template-columns:1fr;gap:12px;padding:12px 14px}
+  .ovprog{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:10px}
+  /* Woche als kompakte 5er-Leiste mit Punkten */
+  .week{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .day{border-right:1px solid var(--line);border-bottom:0;padding:8px 4px;gap:4px;justify-items:center;text-align:center}
+  .day:last-child{border-right:0}
+  .day .d{flex-direction:column;align-items:center;gap:0}
+  .day b{font-size:.85rem}
+  .day small{font-size:.66rem}
+  .day ul{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;min-height:8px}
+  .day li.due{font-size:0;gap:0}
+  .day li.due::before{width:8px;height:8px}
+  .day li.do{display:none}
+  .day li.fer{display:block;font-size:.8rem}
+  .ferl{display:none}
+  .wlbl{min-width:0;flex:1}
+  .filter{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+  .filter::-webkit-scrollbar{display:none}
+  .filter button{flex:none}
+  .filter button[data-view="arch"]{margin-left:0}
+  .ctog{padding:11px 12px;gap:10px}
+  .badge{min-width:34px;height:24px;font-size:.64rem}
+  .chip{font-size:.66rem}
+  .tasks label{padding:9px 2px;font-size:.92rem}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -448,18 +510,16 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
 </div>
 
 <div class="wrap">
-  <div class="userbar"><div class="ubleft"><button type="button" class="menubtn" id="menuBtn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="drawer"><i></i><i></i><i></i></button><span>Angemeldet als <b id="who">–</b> · <span id="sync"></span></span></div></div>
-  <header class="hero">
-    <div>
-      <div class="eyebrow" id="weekLabel">4AHIT</div>
-      <h1>Wochenplan <span>4AHIT</span></h1>
-    </div>
-    <div class="boss" id="boss"></div>
+  <header class="topbar">
+    <button type="button" class="menubtn" id="menuBtn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="drawer"><i></i><i></i><i></i></button>
+    <div class="tbtitle"><h1>Wochenplan</h1><span class="eyebrow" id="weekLabel">4AHIT</span></div>
+    <div class="tbuser"><b id="who">–</b><span id="sync"></span></div>
   </header>
 
-  <section class="xp" aria-label="Fortschritt">
-    <div class="row"><span class="lvl" id="lvl"></span><span class="nums" id="nums"></span><button type="button" class="curve" id="curveBtn" hidden>Leistungskurve →</button></div>
-    <div class="bar"><i id="fill"></i></div>
+  <section class="overview" aria-label="Überblick">
+    <div class="ovnext"><div class="eyebrow">Als Nächstes</div><ul class="nextlist" id="boss"></ul></div>
+    <div class="ovprog"><div class="row"><span class="lvl" id="lvl"></span><span class="nums" id="nums"></span></div><div class="bar"><i id="fill"></i></div>
+      <button type="button" class="curve" id="curveBtn" hidden>Leistungskurve →</button></div>
   </section>
 
   <div class="wnav">
@@ -579,7 +639,7 @@ const byId=id=>items().find(c=>c.id===id);
 const esc=x=>String(x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const isOwn=c=>(st._custom||[]).includes(c);
 let view="all";try{view=localStorage.getItem(KEY+":view")||"all"}catch(e){}
-const VIEWS=[["all","Alle"],["pub","Klasse"],["own","Meine"],["arch","Abgeschlossen"]];
+const VIEWS=[["all","Alle"],["pub","Klasse"],["own","Meine"],["arch","Erledigt"]];
 // Noten (österreichisch 1–5) pro Eintrag: st._grades[id] = {exp, real}
 const GN=["","Sehr gut","Gut","Befriedigend","Genügend","Nicht genügend"];
 const gOf=id=>(st._grades||{})[id]||{};
@@ -667,12 +727,9 @@ const rel=n=>n<0?"vorbei":n===0?"heute":n===1?"morgen":"in "+n+" Tagen";
 const TD=k=>(st._todos||{})[k]||[];
 function render(){
   const IT=items();
-  // Boss countdown: nächste offene Prüfung
-  const next=IT.filter(c=>days(c.due)>=0&&doneN(c)<c.tasks.length).sort((a,b)=>a.due.localeCompare(b.due));
-  if(next.length){
-    const d=next[0].due,n=days(d),names=next.filter(c=>c.due===d).map(c=>esc(c.t)).join(" + ");
-    $("boss").innerHTML='<div class="eyebrow">Nächster Termin</div><div class="big">'+(n===0?"Heute":n===1?"Morgen":"in "+n+" Tagen")+'</div><div class="who">'+names+"</div>";
-  }else $("boss").innerHTML='<div class="eyebrow">Status</div><div class="big">Erledigt</div><div class="who">Alles erledigt</div>';
+  // Als Nächstes: die nächsten 3 offenen Termine
+  const next=IT.filter(c=>days(c.due)>=0&&doneN(c)<c.tasks.length).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,3);
+  $("boss").innerHTML=next.length?next.map(c=>{const n=days(c.due);return'<li style="--c:var('+c.c+')"><span class="dot"></span><span class="nt">'+esc(c.t)+'</span><span class="chip'+(n<=1?" soon":"")+'">'+(n===0?"heute":n===1?"morgen":"in "+n+" T.")+"</span></li>"}).join(""):'<li class="none">Alles erledigt</li>';
 
   // Wochenleiste
   {const a=new Date(WEEK[0]+"T00:00"),b=new Date(WEEK[4]+"T00:00");
@@ -682,7 +739,7 @@ function render(){
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
     const plan=TD(k).map(t=>'<li class="do'+(t.done?" tddone":"")+'">'+(t.done?"☑ ":"☐ ")+esc(t.t)+"</li>").join("");
-    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+(FERIEN.has(k)?'<li class="do">🌴 Ferien</li>':"")+due+plan+"</ul></div>";
+    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+(FERIEN.has(k)?'<li class="do fer">🌴<span class="ferl"> Ferien</span></li>':"")+due+plan+"</ul></div>";
   }).join("");
 
   // Tagesansicht
@@ -709,18 +766,26 @@ function render(){
   const shown=ids?base.filter(c=>ids.has(c.id)):base;
   let all=0,done=0;
   IT.forEach(c=>{all+=c.tasks.length;done+=doneN(c)});
-  $("cards").innerHTML=shown.map(c=>{
+  const sorted=shown.slice().sort((a,b)=>view==="arch"&&!sel?b.due.localeCompare(a.due):a.due.localeCompare(b.due));
+  const wEnd=weekOf(0)[4],nEnd=weekOf(1)[4];
+  const grpOf=c=>sel||view==="arch"?"":c.due<=wEnd?"Diese Woche":c.due<=nEnd?"Nächste Woche":"Später";
+  let lastG=null;
+  $("cards").innerHTML=sorted.map(c=>{
     const n=doneN(c),fin=n===c.tasks.length;
     const dd=days(c.due),dt=new Date(c.due+"T00:00");
+    const open=isOpen(c,fin,dd);
+    const g=grpOf(c),gh=g&&g!==lastG?'<h3 class="grp">'+g+"</h3>":"";lastG=g;
     const chip=fin?'<span class="chip ok">erledigt ✓</span>':'<span class="chip'+(dd<=1&&dd>=0?" soon":"")+'">'+wd[dt.getDay()]+" "+dm(dt)+" · "+rel(dd)+"</span>";
-    return'<article class="card'+(fin?" done":"")+'" style="--c:var('+c.c+')">'+
-      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':isShared(c)?'<span class="chip">von '+esc(c.author)+"</span>":"")+'</div></div>'+(isOwn(c)||(isShared(c)&&c.author===user)?'<button type="button" class="hide" data-hide="'+c.id+'" title="Eigene Aufgabe löschen">✕</button>':"")+'</div>'+
-      '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+gradeRow(c,fin)+
+    const del=isOwn(c)||(isShared(c)&&c.author===user)?'<button type="button" class="hide" data-hide="'+c.id+'" title="Eigenen Eintrag löschen">✕</button>':"";
+    return gh+'<article class="card'+(fin?" done":"")+(open?" open":"")+'" style="--c:var('+c.c+')">'+
+      '<div class="chead"><button type="button" class="ctog" data-tog="'+c.id+'" aria-expanded="'+open+'"><span class="badge">'+esc(c.b)+'</span><span class="ctit"><h2>'+esc(c.t)+'</h2><span class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':isShared(c)?'<span class="chip">von '+esc(c.author)+"</span>":"")+'</span></span><span class="chev" aria-hidden="true"></span></button>'+del+"</div>"+
+      '<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+
+      (open?'<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':"")+gradeRow(c,fin)+
       (c.note?'<p class="note">'+c.note+"</p>":"")+
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
-      '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+esc(t)+'</span><span class="xpTag">+'+XP+" XP</span></label></li>").join("")+
-      "</ul></div></article>";
-  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Unten bei „+ Eigene Aufgabe hinzufügen“ anlegen.":view==="arch"?"Noch nichts abgeschlossen. Sobald ein Termin vorbei ist, landet er hier.":sel?"An diesem Tag ist nichts fällig.":"Hier ist nichts.")+"</div>";
+      '<ul class="tasks">'+c.tasks.map((t,i)=>'<li><label><input type="checkbox" id="'+c.id+i+'" data-k="'+c.id+i+'" data-c="'+c.id+'"'+(st[c.id+i]?" checked":"")+"><span>"+esc(t)+"</span></label></li>").join("")+
+      "</ul></div>":"")+"</article>";
+  }).join("")||'<div class="empty">'+(view==="own"?"Noch keine eigenen Aufgaben. Im Menü bei „Eigene Aufgabe hinzufügen“ anlegen.":view==="arch"?"Noch nichts abgeschlossen. Sobald ein Termin vorbei ist, landet er hier.":sel?"An diesem Tag ist nichts fällig.":"Hier ist nichts.")+"</div>";
 
   // XP + Rang
   const p=all?done/all:0,r=RANKS[Math.min(RANKS.length-1,Math.floor(p*RANKS.length))];
@@ -729,6 +794,11 @@ function render(){
   $("fill").style.width=p*100+"%";
 }
 
+const OPEN={};try{Object.assign(OPEN,JSON.parse(localStorage.getItem(KEY+":open"))||{})}catch(e){}
+const isOpen=(c,fin,dd)=>c.id in OPEN?OPEN[c.id]:(!fin&&dd>=0&&dd<=2);
+$("cards").addEventListener("click",e=>{const b=e.target.closest("[data-tog]");if(!b)return;const id=b.dataset.tog,c=byId(id);
+  OPEN[id]=!isOpen(c,doneN(c)===c.tasks.length,days(c.due));try{localStorage.setItem(KEY+":open",JSON.stringify(OPEN))}catch(_){}
+  render();document.querySelector('[data-tog="'+id+'"]')?.focus()});
 let tt;
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),1800)}
 
