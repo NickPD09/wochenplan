@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Wochenplan 4AHIT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Schibsted+Grotesk:wght@700;800&display=swap">
 <style>
 /* Layout: ruhiges Planungsblatt — Kopfzeile mit nächstem Termin, Wochenraster, darunter Fach-Karten. Farben nur als Akzent pro Fach. */
 :root{
@@ -234,39 +234,77 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
 .lcard .ntable .gchip:hover{border-color:var(--accent);color:var(--accent)}
 .nwrap{overflow-x:auto;max-height:60vh}
 @media (prefers-reduced-motion:reduce){.drawer{transition:none}}
-/* Notenbuch */
-.g1{--gc:var(--g1)}.g2{--gc:var(--g2)}.g3{--gc:var(--g3)}.g4{--gc:var(--g4)}.g5{--gc:var(--g5)}
-.nbsum{margin:0;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
-.nbsum b{color:var(--fg)}
-.nbform{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
-.nbrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.nbform label{display:grid;gap:4px;font-size:.78rem;color:var(--muted);font-weight:500}
-.nbform select,.nbform input{font:inherit;font-size:.9rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%}
-.nbform select:focus,.nbform input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
-.seg{display:flex;flex-wrap:wrap;gap:4px}
-.lcard .seg button{width:auto;margin:0;padding:6px 10px;font-size:.82rem;font-weight:500;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px}
-.lcard .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.lcard .seg.gr button{min-width:38px;font-family:var(--f-mono);font-weight:700;color:var(--gc)}
-.lcard .seg.gr button[aria-pressed="true"]{background:var(--gc);border-color:var(--gc);color:var(--on-accent)}
-.nbact{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.lcard .nbact button{width:auto;margin:0}
-.nbmsg{font-size:.82rem;color:var(--muted)}
-.nbmsg.err{color:var(--warn)}
-.nblist{display:grid;max-height:50vh;overflow-y:auto;border-top:1px solid var(--line)}
-.nbsub{display:grid;gap:6px;padding:10px 2px;border-bottom:1px solid var(--line)}
-.nbsub.nbempty{opacity:.55}
-.nbhead{display:flex;align-items:baseline;gap:8px}
-.nbhead b{font-family:var(--f-mono);font-size:.85rem}
-.nbhead span{font-size:.8rem;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nbhead .nbavg{margin-left:auto;font-family:var(--f-mono);font-weight:700;color:var(--gc);white-space:nowrap}
-.nbchips{display:flex;flex-wrap:wrap;gap:4px}
-.lcard .nbchip{width:auto;margin:0;padding:3px 8px;font-family:var(--f-mono);font-size:.78rem;font-weight:500;background:color-mix(in srgb,var(--gc) 10%,var(--panel));color:var(--fg);border:1px solid color-mix(in srgb,var(--gc) 35%,transparent);border-radius:6px}
-.lcard .nbchip b{color:var(--gc);margin-left:4px}
-.lcard .nbchip[aria-expanded="true"]{outline:2px solid var(--gc);outline-offset:1px}
-.nbtype{margin:0;font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
-.nbdet{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;font-size:.84rem;padding-top:6px;border-top:1px dashed var(--line)}
-.nbdet span{color:var(--muted)}
-.lcard .nbdel{width:auto;margin:0;padding:4px 10px;font-size:.8rem;background:none;color:var(--warn);border:1px solid var(--warn)}
+/* Notenbuch: Layout wie das Notenbuch-HTML — karierte Heftseite, Formular links (sticky), Fächer als Karten rechts */
+.nb{position:fixed;inset:0;z-index:30;overflow-y:auto;
+  --paper:#f3f5fa;--surface:#ffffff;--ink:#151c33;--muted:#5b6480;--line:#d8deeb;
+  --accent:#2a44c9;--on-accent:#ffffff;--on-grade:#ffffff;--grid:rgba(42,68,201,.07);
+  --g1:#17834a;--g2:#4d8a1c;--g3:#9a7300;--g4:#c25a0c;--g5:#c42b36;
+  --display:"Schibsted Grotesk","Segoe UI",system-ui,sans-serif;--body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;
+  color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nb{
+  --paper:#0e1322;--surface:#161c30;--ink:#e8ebf6;--muted:#9ba4bf;--line:#2a3352;
+  --accent:#8c9dff;--on-accent:#0e1322;--on-grade:#0e1322;--grid:rgba(140,157,255,.07);
+  --g1:#4fcf86;--g2:#a2d564;--g3:#e8c34d;--g4:#f59c56;--g5:#ff6f76}}
+:root[data-theme="dark"] .nb{
+  --paper:#0e1322;--surface:#161c30;--ink:#e8ebf6;--muted:#9ba4bf;--line:#2a3352;
+  --accent:#8c9dff;--on-accent:#0e1322;--on-grade:#0e1322;--grid:rgba(140,157,255,.07);
+  --g1:#4fcf86;--g2:#a2d564;--g3:#e8c34d;--g4:#f59c56;--g5:#ff6f76}
+.nb-wrap{max-width:1120px;margin:0 auto;padding-block:calc(28px + env(safe-area-inset-top,0px)) calc(56px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
+.nb .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nb-back{justify-self:start;font:inherit;font-weight:700;font-size:.9rem;min-height:40px;padding:6px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);cursor:pointer}
+.nb-head{display:grid;gap:4px}
+.nb-eyebrow{margin:0;font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.nb h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,7vw,3.4rem);line-height:1.05;letter-spacing:-.02em;text-wrap:balance}
+.nb-summary{margin:4px 0 0;color:var(--muted);font-variant-numeric:tabular-nums}
+.nb-summary strong{color:var(--ink)}
+.nb-layout{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:860px){.nb-layout{grid-template-columns:340px minmax(0,1fr);align-items:start}.nb-panel{position:sticky;top:16px}}
+.nb-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px;box-shadow:0 6px 24px -14px rgba(20,30,70,.35)}
+.nb-panel h2{margin:0;font-family:var(--display);font-weight:700;font-size:1.25rem}
+.nb-field{display:grid;gap:6px}
+.nb-field>label,.nb legend{font-weight:700;font-size:.9rem}
+.nb-opt{font-weight:400;color:var(--muted)}
+.nb fieldset{border:0;margin:0;padding:0;display:grid;gap:6px;min-width:0}
+.nb legend{padding:0;margin-bottom:6px}
+.nb select,.nb input[type="text"],.nb input[type="date"]{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:46px}
+.nb select:focus-visible,.nb input:focus-visible,.nb button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nb-seg{display:grid;gap:6px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.nb-seg.nb-grades{grid-template-columns:repeat(5,minmax(0,1fr))}
+.nb-seg input{position:absolute;opacity:0;width:1px;height:1px}
+.nb-seg label{display:grid;place-items:center;min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--paper);cursor:pointer;font-weight:700;font-size:.95rem;text-align:center;transition:background-color .12s,color .12s,border-color .12s}
+.nb-seg.nb-grades label{font-family:var(--mono);font-size:1.2rem;color:var(--gc)}
+.nb-seg input:checked+label{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.nb-seg.nb-grades input:checked+label{background:var(--gc);border-color:var(--gc);color:var(--on-grade)}
+.nb-seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.nb-grade-name{margin:0;min-height:1.4em;font-size:.85rem;color:var(--muted)}
+.nb-save{font:inherit;font-family:var(--display);font-weight:700;font-size:1.05rem;min-height:50px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);cursor:pointer}
+.nb-status{margin:0;min-height:1.5em;font-size:.9rem;color:var(--muted)}
+.nb-status.error{color:var(--g5);font-weight:700}
+.nb-subjects{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));align-items:start}
+.nb-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;min-width:0}
+.nb-card.nb-empty{background:color-mix(in srgb,var(--surface) 55%,transparent);border-style:dashed}
+.nb-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.nb-card-title{min-width:0}
+.nb-code{margin:0;font-family:var(--display);font-weight:800;font-size:1.35rem;line-height:1.15;overflow-wrap:anywhere}
+.nb-name{margin:2px 0 0;font-size:.85rem;color:var(--muted);line-height:1.3}
+.nb-avg{text-align:right;line-height:1;color:var(--gc);white-space:nowrap}
+.nb-avg-label{font-size:.8rem;color:var(--muted);margin-right:4px}
+.nb-avg-num{font-family:var(--mono);font-weight:600;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.nb-none{margin:0;color:var(--muted);font-size:.9rem}
+.nb-chips{display:flex;flex-wrap:wrap;gap:6px}
+.nb-chip{display:inline-flex;align-items:baseline;gap:6px;min-height:38px;padding:6px 10px 6px 8px;border:1px solid color-mix(in srgb,var(--gc) 40%,transparent);border-radius:8px;background:color-mix(in srgb,var(--gc) 12%,var(--surface));color:var(--ink);font-family:var(--mono);cursor:pointer}
+.nb-chip[aria-expanded="true"]{outline:2px solid var(--gc);outline-offset:1px}
+.nb-chip-type{font-size:.7rem;letter-spacing:.05em;color:var(--muted)}
+.nb-chip-grade{font-weight:600;font-size:1.05rem;color:var(--gc)}
+.nb-by-type{margin:0;font-family:var(--mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.nb-detail{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.nb-detail-text{margin:0;display:grid;gap:2px;min-width:0;font-size:.9rem}
+.nb-detail-text span{color:var(--muted);overflow-wrap:anywhere}
+.nb-del{font:inherit;font-weight:700;font-size:.9rem;min-height:38px;padding:6px 14px;border-radius:8px;border:1px solid var(--g5);background:transparent;color:var(--g5);cursor:pointer}
+.nb-add{justify-self:start;font:inherit;font-weight:700;font-size:.9rem;min-height:40px;padding:6px 0;border:0;background:none;color:var(--accent);cursor:pointer}
+.nb .g1{--gc:var(--g1)}.nb .g2{--gc:var(--g2)}.nb .g3{--gc:var(--g3)}.nb .g4{--gc:var(--g4)}.nb .g5{--gc:var(--g5)}
+@media (prefers-reduced-motion:reduce){.nb-seg label{transition:none}}
 @media (max-width:720px){.cards{grid-template-columns:1fr}}
 @media (max-width:560px){.hero{grid-template-columns:1fr}.boss{text-align:left}.week{grid-template-columns:1fr}.day{border-right:0;border-bottom:1px solid var(--line)}.day:last-child{border-bottom:0}.curve{margin-left:0}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -313,27 +351,60 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
   </div>
 </nav>
 
-<div class="login" id="bookDlg" hidden role="dialog" aria-modal="true" aria-labelledby="bTitle">
-  <div class="lcard wide">
-    <div class="eyebrow">Notenbuch</div>
-    <h2 id="bTitle">Meine Noten</h2>
-    <p class="nbsum" id="nbSum"></p>
-    <form class="nbform" id="nbForm" novalidate>
-      <div class="nbrow">
-        <label>Fach<select id="nbSub"></select></label>
-        <label>Datum<input type="date" id="nbDate"></label>
-        <label>Notiz (optional)<input id="nbNote" maxlength="80" placeholder="z. B. Kapitel 3"></label>
+<section class="nb" id="bookView" hidden aria-labelledby="nbTitle">
+<div class="nb-wrap">
+  <button type="button" class="nb-back" id="nbBack">← Zurück zum Wochenplan</button>
+  <header class="nb-head">
+    <p class="nb-eyebrow">4AHITM · Schuljahr 2026/27</p>
+    <h1 id="nbTitle">Notenbuch</h1>
+    <p class="nb-summary" id="nbSummary"></p>
+  </header>
+  <main class="nb-layout">
+    <form id="nbForm" class="nb-panel" novalidate>
+      <h2>Note eintragen</h2>
+      <div class="nb-field">
+        <label for="nbSubject">Fach</label>
+        <select id="nbSubject"></select>
+        <input type="text" id="nbCustom" maxlength="20" placeholder="Fachkürzel, z. B. MEDT" aria-label="Eigenes Fachkürzel" hidden>
       </div>
-      <div class="nbrow">
-        <div><div class="nbmsg">Art</div><div class="seg" id="nbType"></div></div>
-        <div><div class="nbmsg">Note</div><div class="seg gr" id="nbGrade"></div></div>
+      <fieldset>
+        <legend>Art</legend>
+        <div class="nb-seg">
+          <input type="radio" name="nbkind" id="nbKindSA" value="SA"><label for="nbKindSA">Schularbeit</label>
+          <input type="radio" name="nbkind" id="nbKindT" value="T"><label for="nbKindT">Test</label>
+          <input type="radio" name="nbkind" id="nbKindMU" value="MÜ"><label for="nbKindMU">MÜ</label>
+          <input type="radio" name="nbkind" id="nbKindRef" value="Ref"><label for="nbKindRef">Referat</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Note</legend>
+        <div class="nb-seg nb-grades">
+          <input type="radio" name="nbgrade" id="nbG1" value="1"><label for="nbG1" class="g1">1<span class="sr-only"> Sehr gut</span></label>
+          <input type="radio" name="nbgrade" id="nbG2" value="2"><label for="nbG2" class="g2">2<span class="sr-only"> Gut</span></label>
+          <input type="radio" name="nbgrade" id="nbG3" value="3"><label for="nbG3" class="g3">3<span class="sr-only"> Befriedigend</span></label>
+          <input type="radio" name="nbgrade" id="nbG4" value="4"><label for="nbG4" class="g4">4<span class="sr-only"> Genügend</span></label>
+          <input type="radio" name="nbgrade" id="nbG5" value="5"><label for="nbG5" class="g5">5<span class="sr-only"> Nicht genügend</span></label>
+        </div>
+        <p class="nb-grade-name" id="nbGradeName" aria-hidden="true"></p>
+      </fieldset>
+      <div class="nb-field">
+        <label for="nbDate">Datum</label>
+        <input type="date" id="nbDate">
       </div>
-      <div class="nbact"><button type="submit" id="nbSave">Speichern</button><span class="nbmsg" id="nbMsg" role="status"></span></div>
+      <div class="nb-field">
+        <label for="nbNote">Notiz <span class="nb-opt">(optional)</span></label>
+        <input type="text" id="nbNote" maxlength="80" placeholder="z. B. Integralrechnung, Kapitel 3">
+      </div>
+      <button type="submit" class="nb-save" id="nbSave">Speichern</button>
+      <p class="nb-status" id="nbStatus" role="status"></p>
     </form>
-    <div class="nblist" id="nbList"></div>
-    <button type="button" class="ghost" id="bClose">Schließen</button>
-  </div>
+    <section aria-labelledby="nbSubjectsTitle">
+      <h2 id="nbSubjectsTitle" class="sr-only">Fächer</h2>
+      <div class="nb-subjects" id="nbSubjects"></div>
+    </section>
+  </main>
 </div>
+</section>
 
 <div class="login" id="notesDlg" hidden role="dialog" aria-modal="true" aria-labelledby="nTitle">
   <div class="lcard wide">
@@ -697,50 +768,83 @@ function chartHTML(){
     '<div class="gstats"><div><b>'+avg(reals.map(c=>gOf(c.id).real))+"</b>Ø echte Note</div><div><b>"+avg(exps.map(c=>gOf(c.id).exp))+"</b>Ø erwartet</div><div><b>"+both.filter(c=>gOf(c.id).exp===gOf(c.id).real).length+"/"+both.length+'</b>genau getroffen</div><div><b class="t">'+verdict+"</b>deine Einschätzung</div></div>"+
     '<table class="gtable"><tr><th>Eintrag</th><th>Datum</th><th>Erwartet</th><th>Echt</th></tr>'+rows.map(c=>{const g=gOf(c.id),d=new Date(c.due+"T00:00");return"<tr><td>"+esc(c.t)+"</td><td>"+dm(d)+"</td><td>"+(g.exp||"–")+"</td><td>"+(g.real||"–")+"</td></tr>"}).join("")+"</table>";
 }
-// Notenbuch: eigene Noten pro Fach (st._book), nur unter dem eigenen Namen gespeichert
-const SUBJ={AM:"Angewandte Mathematik",BSP:"Bewegung und Sport",D:"Deutsch",E:"Englisch",GGP:"Geografie, Geschichte, Pol. Bildung",INSY:"Informationssysteme",ITP:"Informationstechnische Projekte",ITSI:"IT-Sicherheit",NW:"Naturwissenschaften",NWTK:"Netzwerktechnik",RK:"Religion",SEW:"Softwareentwicklung",WIR:"Wirtschaft und Recht"};
-const NBT={SA:"Schularbeit",T:"Test","MÜ":"MÜ",Ref:"Referat"};
+// Notenbuch (Port des Notenbuch-HTML): Noten pro Fach in st._book, nur unter dem eigenen Namen gespeichert
+const SUBJECTS={AM:"Angewandte Mathematik",BSP:"Bewegung und Sport",D:"Deutsch",E:"Englisch",GGP:"Geografie, Geschichte, Politische Bildung",INSY:"Informationssysteme",ITP:"Informationstechnische Projekte",ITSI:"IT-Sicherheit",NW:"Naturwissenschaften",NWTK:"Netzwerktechnik",RK:"Religion",SEW:"Softwareentwicklung",WIR:"Wirtschaft und Recht"};
+const NB_TYPES={SA:"Schularbeit",T:"Test","MÜ":"MÜ",Ref:"Referat"};
+const NB_OTHER="__other";
+const nbEl=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
 const nbAvg=xs=>xs.reduce((a,b)=>a+b,0)/xs.length;
 const nbFmt=x=>x.toLocaleString("de-AT",{minimumFractionDigits:1,maximumFractionDigits:2});
-console.assert(nbAvg([1,2,2]).toFixed(2)==="1.67"&&nbFmt(1.5)==="1,5","Notenbuch Schnitt/Format");
-let nbType="T",nbGrade=0,nbOpen=null;
-function renderBook(){
-  const B=st._book||[],codes=Object.keys(SUBJ);
-  if(!$("nbSub").options.length)$("nbSub").innerHTML=codes.map(c=>'<option value="'+c+'">'+c+" – "+SUBJ[c]+"</option>").join("");
-  $("nbType").innerHTML=Object.entries(NBT).map(([k,v])=>'<button type="button" data-t="'+k+'" aria-pressed="'+(nbType===k)+'">'+v+"</button>").join("");
-  $("nbGrade").innerHTML=[1,2,3,4,5].map(n=>'<button type="button" class="g'+n+'" data-g="'+n+'" aria-pressed="'+(nbGrade===n)+'" title="'+GN[n]+'">'+n+"</button>").join("");
-  const used=codes.filter(c=>B.some(g=>g.subject===c));
-  $("nbSum").innerHTML=B.length?B.length+(B.length===1?" Note":" Noten")+" in "+used.length+(used.length===1?" Fach":" Fächern")+" · Schnitt über alle Fächer <b>Ø "+nbFmt(nbAvg(used.map(c=>nbAvg(B.filter(g=>g.subject===c).map(g=>g.grade)))))+"</b>":"Noch keine Noten. Wähle Fach, Art und Note und drück Speichern.";
-  $("nbList").innerHTML=codes.map(c=>{
-    const gs=B.filter(g=>g.subject===c).sort((a,b)=>a.date.localeCompare(b.date));
-    let h='<div class="nbsub'+(gs.length?"":" nbempty")+'"><div class="nbhead"><b>'+c+"</b><span>"+SUBJ[c]+"</span>";
-    if(!gs.length)return h+'<span class="nbavg" style="color:var(--muted)">–</span></div></div>';
-    const a=nbAvg(gs.map(g=>g.grade));
-    h+='<span class="nbavg g'+Math.round(a)+'">Ø '+nbFmt(a)+'</span></div><div class="nbchips">'+gs.map(g=>'<button type="button" class="nbchip g'+g.grade+'" data-nb="'+g.id+'" aria-expanded="'+(nbOpen===g.id)+'">'+g.type+"<b>"+g.grade+"</b></button>").join("")+"</div>";
-    const by=Object.keys(NBT).map(k=>{const xs=gs.filter(g=>g.type===k).map(g=>g.grade);return xs.length?k+" Ø "+nbFmt(nbAvg(xs)):null}).filter(Boolean).join(" · ");
-    h+='<p class="nbtype">'+by+"</p>";
-    const o=gs.find(g=>g.id===nbOpen);
-    if(o)h+='<div class="nbdet"><div><b>'+NBT[o.type]+": "+o.grade+" – "+GN[o.grade]+"</b><br><span>"+dm(new Date(o.date+"T00:00"))+(o.note?" · "+esc(o.note):"")+'</span></div><button type="button" class="nbdel" data-del="'+o.id+'">Löschen</button></div>';
-    return h+"</div>";
-  }).join("");
+const nbShort=d=>d?d.slice(8,10)+"."+d.slice(5,7)+".":"";
+const nbLong=d=>d?new Date(d+"T12:00").toLocaleDateString("de-AT",{day:"numeric",month:"long",year:"numeric"}):"";
+const nbValid=g=>g&&typeof g.subject==="string"&&g.subject&&NB_TYPES[g.type]&&[1,2,3,4,5].includes(g.grade);
+console.assert(nbAvg([1,2,2]).toFixed(2)==="1.67"&&nbFmt(1.5)==="1,5"&&nbShort("2026-11-03")==="03.11.","Notenbuch avg/fmt/short");
+let nbOpenId=null,nbSelected="AM",nbSelectKey="";
+const nbGrades=()=>(st._book||[]).filter(nbValid);
+function nbStatus(msg,isError){$("nbStatus").textContent=msg;$("nbStatus").classList.toggle("error",!!isError)}
+function nbList(){return[...new Set([...Object.keys(SUBJECTS),...nbGrades().map(g=>g.subject)])].sort((a,b)=>a.localeCompare(b,"de"))}
+function nbFill(list){
+  const key=list.join("|");
+  if(key!==nbSelectKey){nbSelectKey=key;
+    $("nbSubject").replaceChildren(...list.map(c=>{const o=nbEl("option",null,SUBJECTS[c]?c+" – "+SUBJECTS[c]:c);o.value=c;return o}),Object.assign(nbEl("option",null,"Anderes Fach …"),{value:NB_OTHER}))}
+  $("nbSubject").value=list.includes(nbSelected)?nbSelected:NB_OTHER;
+  $("nbCustom").hidden=$("nbSubject").value!==NB_OTHER;
 }
-function nbMsg(t,err){const m=$("nbMsg");m.textContent=t;m.classList.toggle("err",!!err)}
-function openBook(){nbOpen=null;$("nbDate").value=iso(today);nbMsg("");renderBook();$("bookDlg").hidden=false;$("nbSub").focus()}
-$("nbType").addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(b){nbType=b.dataset.t;renderBook()}});
-$("nbGrade").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(b){nbGrade=+b.dataset.g;nbMsg(GN[nbGrade]);renderBook()}});
+function renderBook(focusId){
+  const grades=nbGrades(),list=nbList();nbFill(list);
+  const withG=list.filter(c=>grades.some(g=>g.subject===c)),sm=$("nbSummary");
+  if(!grades.length)sm.textContent="Noch keine Noten eingetragen. Wähle links Fach, Art und Note.";
+  else{const overall=nbAvg(withG.map(c=>nbAvg(grades.filter(g=>g.subject===c).map(g=>g.grade))));
+    sm.replaceChildren(grades.length+" "+(grades.length===1?"Note":"Noten")+" in "+withG.length+" "+(withG.length===1?"Fach":"Fächern")+" · Schnitt über alle Fächer ",nbEl("strong",null,"Ø "+nbFmt(overall)))}
+  $("nbSubjects").replaceChildren(...list.map(c=>nbCard(c,grades.filter(g=>g.subject===c).sort((a,b)=>(a.date||"").localeCompare(b.date||"")))));
+  if(focusId)document.querySelector('.nb-chip[data-id="'+CSS.escape(focusId)+'"]')?.focus();
+}
+function nbCard(code,gs){
+  const c=nbEl("article","nb-card"+(gs.length?"":" nb-empty")),head=nbEl("div","nb-card-head"),title=nbEl("div","nb-card-title");
+  title.append(nbEl("h3","nb-code",code),nbEl("p","nb-name",SUBJECTS[code]||"Eigenes Fach"));head.append(title);
+  if(gs.length){const a=nbAvg(gs.map(g=>g.grade)),box=nbEl("div","nb-avg g"+Math.round(a));box.append(nbEl("span","nb-avg-label","Ø"),nbEl("span","nb-avg-num",nbFmt(a)));head.append(box)}
+  c.append(head);
+  if(!gs.length)c.append(nbEl("p","nb-none","Noch keine Noten"));
+  else{
+    const chips=nbEl("div","nb-chips");
+    for(const g of gs){const b=nbEl("button","nb-chip g"+g.grade);b.type="button";b.dataset.id=g.id;b.setAttribute("aria-expanded",String(nbOpenId===g.id));
+      b.setAttribute("aria-label",NB_TYPES[g.type]+" "+nbShort(g.date)+": Note "+g.grade+", "+GN[g.grade]);
+      b.append(nbEl("span","nb-chip-type",g.type),nbEl("span","nb-chip-grade",g.grade));
+      b.onclick=()=>{nbOpenId=nbOpenId===g.id?null:g.id;renderBook(g.id)};chips.append(b)}
+    c.append(chips);
+    const parts=Object.keys(NB_TYPES).map(k=>{const xs=gs.filter(g=>g.type===k).map(g=>g.grade);return xs.length?k+" Ø "+nbFmt(nbAvg(xs)):null}).filter(Boolean);
+    c.append(nbEl("p","nb-by-type",parts.join(" · ")));
+    const open=gs.find(g=>g.id===nbOpenId);if(open)c.append(nbDetail(open));
+  }
+  const add=nbEl("button","nb-add","+ Note eintragen");add.type="button";
+  add.onclick=()=>{nbSelected=code;nbFill(nbList());const f=$("nbForm");if(f.getBoundingClientRect().top<0)f.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});(f.querySelector('input[name="nbkind"]:checked')||$("nbKindSA")).focus({preventScroll:true})};
+  c.append(add);return c;
+}
+function nbDetail(g){
+  const d=nbEl("div","nb-detail"),t=nbEl("p","nb-detail-text");
+  t.append(nbEl("strong",null,NB_TYPES[g.type]+": "+g.grade+" – "+GN[g.grade]),nbEl("span",null,nbLong(g.date)));
+  if(g.note)t.append(nbEl("span",null,g.note));
+  const del=nbEl("button","nb-del","Löschen");del.type="button";
+  del.onclick=()=>{st._book=(st._book||[]).filter(x=>x.id!==g.id);nbOpenId=null;save();nbStatus("Gelöscht: "+g.subject+" "+g.type+" "+g.grade);renderBook()};
+  d.append(t,del);return d;
+}
+$("nbSubject").onchange=()=>{nbSelected=$("nbSubject").value;$("nbCustom").hidden=nbSelected!==NB_OTHER;if(nbSelected===NB_OTHER)$("nbCustom").focus()};
+$("nbForm").addEventListener("change",e=>{if(e.target.name==="nbgrade")$("nbGradeName").textContent=GN[e.target.value]});
 $("nbForm").addEventListener("submit",e=>{
-  e.preventDefault();
-  if(!(nbGrade>=1&&nbGrade<=5)){nbMsg("Wähle eine Note von 1 bis 5.",true);return}
-  const subject=$("nbSub").value,date=$("nbDate").value||iso(today);
-  st._book=[...(st._book||[]),{id:"b"+Date.now(),subject,type:nbType,grade:nbGrade,date,note:$("nbNote").value.trim().slice(0,80)}];
-  save();nbMsg("Gespeichert: "+subject+" · "+NBT[nbType]+" · "+nbGrade);nbGrade=0;$("nbNote").value="";renderBook();
+  e.preventDefault();const f=$("nbForm");
+  const subject=$("nbSubject").value===NB_OTHER?$("nbCustom").value.trim().toUpperCase():$("nbSubject").value;
+  const type=f.elements.nbkind.value,grade=Number(f.elements.nbgrade.value);
+  if(!subject)return nbStatus("Gib ein Fachkürzel ein.",true);
+  if(!NB_TYPES[type])return nbStatus("Wähle Schularbeit, Test, MÜ oder Referat.",true);
+  if(!(grade>=1&&grade<=5))return nbStatus("Wähle eine Note von 1 bis 5.",true);
+  st._book=[...(st._book||[]),{id:"b"+Date.now(),subject,type,grade,date:$("nbDate").value||iso(today),note:$("nbNote").value.trim().slice(0,80),created:Date.now()}];
+  save();nbSelected=subject;$("nbCustom").value="";$("nbNote").value="";
+  f.querySelectorAll('input[name="nbgrade"]').forEach(r=>{r.checked=false});$("nbGradeName").textContent="";
+  nbStatus("Gespeichert: "+subject+" · "+NB_TYPES[type]+" · "+grade);renderBook();
 });
-$("nbList").addEventListener("click",e=>{
-  const d=e.target.closest("[data-del]");
-  if(d){const g=(st._book||[]).find(x=>x.id===d.dataset.del);st._book=(st._book||[]).filter(x=>x!==g);nbOpen=null;save();nbMsg("Gelöscht: "+g.subject+" "+g.type+" "+g.grade);renderBook();return}
-  const c=e.target.closest("[data-nb]");if(c){nbOpen=nbOpen===c.dataset.nb?null:c.dataset.nb;renderBook()}
-});
-$("bClose").addEventListener("click",()=>{$("bookDlg").hidden=true;$("menuBtn").focus()});
+function openBook(){nbOpenId=null;$("nbDate").value=iso(today);nbStatus("");renderBook();$("bookView").hidden=false;$("bookView").scrollTop=0;$("nbBack").focus()}
+function closeBook(){$("bookView").hidden=true;$("menuBtn").focus()}
+$("nbBack").addEventListener("click",closeBook);
 function notesHTML(){
   const rows=DATA.concat(st._custom||[]).slice().sort((a,b)=>a.due.localeCompare(b.due));
   const cell=(c,k)=>{const g=gOf(c.id)[k];return'<button type="button" class="gchip'+(g?"":" todo")+'" data-grade="'+c.id+'" data-kind="'+k+'">'+(g?"<b>"+g+"</b>":"–")+"</button>"};
@@ -791,7 +895,7 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&!$("dl").hidden)closeDl();
   if(e.key==="Escape"&&!$("gradeDlg").hidden)closeGrade();
   if(e.key==="Escape"&&!$("chartDlg").hidden)closeChart();
-  if(e.key==="Escape"&&!$("bookDlg").hidden){$("bookDlg").hidden=true;$("menuBtn").focus()}
+  if(e.key==="Escape"&&!$("bookView").hidden&&$("gradeDlg").hidden)closeBook();
   if(e.key==="Escape"&&!$("notesDlg").hidden&&$("gradeDlg").hidden){$("notesDlg").hidden=true;$("menuBtn").focus()}
   if(e.key==="Escape"&&$("drawer").classList.contains("open")){setMenu(false);$("menuBtn").focus()}
   const b=e.target.closest&&e.target.closest("li[data-learn]");
