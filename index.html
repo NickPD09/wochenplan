@@ -11,7 +11,7 @@
   --bg:#f6f6f4; --panel:#ffffff; --panel2:#f0f0ed; --fg:#1c1d21; --muted:#6b6d74; --line:#e3e3df;
   --accent:#2e4a7d; --accent-soft:#e7ecf5; --warn:#b4532a; --ok:#2f7a4f;
   --hot:var(--warn); --gold:var(--accent);
-  --c-eng:#2f6fb0; --c-itsi:#6b55b8; --c-itp:#c0622e; --c-mathe:#b8325a; --c-insy:#1f8a6f; --c-haabs:#a7791a; --c-sew:#5b8a1f; --c-own:#6b6d74; --c-ggp:#b06d12; --c-deu:#b5427c; --c-nawi:#1b7fae; --c-nwtk:#23855f;
+  --c-eng:#2f6fb0; --c-itsi:#6b55b8; --c-itp:#c0622e; --c-mathe:#b8325a; --c-insy:#1f8a6f; --c-haabs:#a7791a; --c-sew:#5b8a1f; --c-own:#6b6d74; --c-shared:#3f6f8f; --c-ggp:#b06d12; --c-deu:#b5427c; --c-nawi:#1b7fae; --c-nwtk:#23855f;
   --f-display:"Instrument Sans",system-ui,sans-serif;
   --f-body:"Instrument Sans",system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,monospace;
@@ -22,14 +22,14 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#141518; --panel:#1b1c20; --panel2:#24252a; --fg:#ececee; --muted:#9a9ca4; --line:#2e3036;
   --accent:#8fa8d6; --accent-soft:#232b3a; --warn:#e08a5f; --ok:#6cc08f;
-  --c-eng:#6aa6e0; --c-itsi:#a594e6; --c-itp:#e8935f; --c-mathe:#e06b8f; --c-insy:#5cc4a3; --c-haabs:#d8ad55; --c-sew:#9bc45c; --c-own:#9a9ca4; --c-ggp:#e0a24d; --c-deu:#e27fb1; --c-nawi:#5bb6e0; --c-nwtk:#5ccb98;
+  --c-eng:#6aa6e0; --c-itsi:#a594e6; --c-itp:#e8935f; --c-mathe:#e06b8f; --c-insy:#5cc4a3; --c-haabs:#d8ad55; --c-sew:#9bc45c; --c-own:#9a9ca4; --c-shared:#7fb0cf; --c-ggp:#e0a24d; --c-deu:#e27fb1; --c-nawi:#5bb6e0; --c-nwtk:#5ccb98;
   --on-accent:#141518;
   --g1:#5fc48a; --g2:#a2cf62; --g3:#e0bd4f; --g4:#ef9a58; --g5:#f2727a;
   --shadow:none; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#141518; --panel:#1b1c20; --panel2:#24252a; --fg:#ececee; --muted:#9a9ca4; --line:#2e3036;
   --accent:#8fa8d6; --accent-soft:#232b3a; --warn:#e08a5f; --ok:#6cc08f;
-  --c-eng:#6aa6e0; --c-itsi:#a594e6; --c-itp:#e8935f; --c-mathe:#e06b8f; --c-insy:#5cc4a3; --c-haabs:#d8ad55; --c-sew:#9bc45c; --c-own:#9a9ca4; --c-ggp:#e0a24d; --c-deu:#e27fb1; --c-nawi:#5bb6e0; --c-nwtk:#5ccb98;
+  --c-eng:#6aa6e0; --c-itsi:#a594e6; --c-itp:#e8935f; --c-mathe:#e06b8f; --c-insy:#5cc4a3; --c-haabs:#d8ad55; --c-sew:#9bc45c; --c-own:#9a9ca4; --c-shared:#7fb0cf; --c-ggp:#e0a24d; --c-deu:#e27fb1; --c-nawi:#5bb6e0; --c-nwtk:#5ccb98;
   --on-accent:#141518;
   --g1:#5fc48a; --g2:#a2cf62; --g3:#e0bd4f; --g4:#ef9a58; --g5:#f2727a;
   --shadow:none; color-scheme:dark}
@@ -171,6 +171,10 @@ button{font-family:var(--f-body)}
 .addform input:focus,.addform textarea:focus,.lcard input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
 .addform button,.lcard button{justify-self:start;font-weight:600;font-size:.9rem;padding:8px 16px;border:0;border-radius:6px;background:var(--accent);color:var(--on-accent);cursor:pointer;margin-top:6px}
 .foot{display:flex;flex-wrap:wrap;gap:10px}
+.vis{border:0;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem}
+.vis legend{font-size:.78rem;color:var(--muted);font-weight:500;padding:0;margin-bottom:4px;width:100%}
+.vis label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.vis input{accent-color:var(--accent)}
 button.reset{font:inherit;font-size:.8rem;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:6px 12px;cursor:pointer}
 button.reset:hover{color:var(--fg)}
 button.reset.arm{color:var(--warn);border-color:var(--warn)}
@@ -478,8 +482,12 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
       <input id="addD" type="date" required>
       <label for="addTasks">Schritte (eine Zeile pro Schritt)</label>
       <textarea id="addTasks" rows="4" placeholder="Kapitel 3 lesen&#10;Übungen 1–5 rechnen"></textarea>
-      <button type="submit">Hinzufügen</button>
-      <p class="note">Nur für dich sichtbar: gespeichert unter deinem Namen.</p>
+      <fieldset class="vis"><legend>Wer sieht das?</legend>
+        <label><input type="radio" name="addVis" value="me" checked> Nur ich</label>
+        <label><input type="radio" name="addVis" value="all"> Alle (ganze Klasse)</label>
+      </fieldset>
+      <button type="submit" id="addBtn">Hinzufügen</button>
+      <p class="note" id="addHint">„Alle“ ist für jeden sichtbar, der die Seite öffnet. Löschen kann es nur, wer es angelegt hat.</p>
     </form>
   </details>
 
@@ -547,7 +555,26 @@ const MATERIAL={
 const FERIEN=new Set(["2026-10-26","2026-10-27","2026-10-28","2026-10-29","2026-10-30","2026-11-02"]);
 const DAYS=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
 // Klassen-Einträge (DATA) sind fix für alle; _custom = eigene Einträge, nur unter dem eigenen Namen gespeichert
-const items=()=>DATA.concat(st._custom||[]);
+// Geteilte Klassen-Einträge (von allen angelegt) aus Tabelle shared_items; Inhalt wird hier streng geprüft
+let SHARED=[];
+const items=()=>DATA.concat(SHARED,st._custom||[]);
+const isShared=c=>SHARED.includes(c);
+function cleanShared(r){
+  const d=r&&r.data||{},id=String(r&&r.id||"");
+  if(!/^s\d{6,20}$/.test(id)||typeof d.t!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(d.due||""))return null;
+  const tasks=(Array.isArray(d.tasks)?d.tasks:[]).filter(x=>typeof x==="string").map(x=>x.slice(0,80)).slice(0,20);
+  const t=d.t.slice(0,40);
+  return{id,t,b:t.slice(0,3).toUpperCase(),c:"--c-shared",due:d.due,tasks:tasks.length?tasks:["Erledigt"],author:String(r.author||"").slice(0,30)};
+}
+async function loadShared(){
+  if(!ONLINE)return;
+  try{
+    const r=await fetch(SUPABASE_URL+"/rest/v1/shared_items?select=id,author,data&order=created_at.asc",{headers:{apikey:SUPABASE_KEY},signal:AbortSignal.timeout(8000)});
+    if(!r.ok)return;
+    SHARED=(await r.json()).map(cleanShared).filter(Boolean);
+    if(user)render();
+  }catch(e){}
+}
 const byId=id=>items().find(c=>c.id===id);
 const esc=x=>String(x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const isOwn=c=>(st._custom||[]).includes(c);
@@ -617,7 +644,7 @@ async function login(raw,p){
   setSync(ONLINE?"online":"nur lokal");
   document.getElementById("login").hidden=true;
   document.getElementById("loginBtn").disabled=false;
-  render();
+  render();loadShared();
 }
 function showErr(t){const e=document.getElementById("loginErr");e.textContent=t;e.hidden=false}
 const today=new Date();today.setHours(0,0,0,0);
@@ -687,7 +714,7 @@ function render(){
     const dd=days(c.due),dt=new Date(c.due+"T00:00");
     const chip=fin?'<span class="chip ok">erledigt ✓</span>':'<span class="chip'+(dd<=1&&dd>=0?" soon":"")+'">'+wd[dt.getDay()]+" "+dm(dt)+" · "+rel(dd)+"</span>";
     return'<article class="card'+(fin?" done":"")+'" style="--c:var('+c.c+')">'+
-      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':"")+'</div></div>'+(isOwn(c)?'<button type="button" class="hide" data-hide="'+c.id+'" title="Eigene Aufgabe löschen">✕</button>':"")+'</div>'+
+      '<div class="chead"><div class="badge">'+esc(c.b)+'</div><div><h2>'+esc(c.t)+'</h2><div class="meta">'+chip+'<span class="chip">'+n+"/"+c.tasks.length+"</span>"+(isOwn(c)?'<span class="chip">nur du</span>':isShared(c)?'<span class="chip">von '+esc(c.author)+"</span>":"")+'</div></div>'+(isOwn(c)||(isShared(c)&&c.author===user)?'<button type="button" class="hide" data-hide="'+c.id+'" title="Eigene Aufgabe löschen">✕</button>':"")+'</div>'+
       '<div class="cbody">'+(MATERIAL[c.id]?'<button type="button" class="learn" data-learn="'+c.id+'">Lernen öffnen →</button>':'')+'<div class="mini"><i style="width:'+(n/c.tasks.length*100)+'%"></i></div>'+gradeRow(c,fin)+
       (c.note?'<p class="note">'+c.note+"</p>":"")+
       (c.cheat?'<pre class="cheat">'+c.cheat+"</pre>":"")+
@@ -723,7 +750,9 @@ $("cards").addEventListener("click",e=>{
   const b=e.target.closest("[data-hide]");if(!b)return;
   if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent="Entfernen?";setTimeout(()=>{if(b.isConnected){b.classList.remove("arm");b.textContent="✕"}},3000);return}
   const id=b.dataset.hide,own=(st._custom||[]).find(c=>c.id===id);
-  if(!own)return; // Klassen-Einträge kann man nicht löschen
+  const sh=SHARED.find(c=>c.id===id&&c.author===user);
+  if(sh){rpc("wp_del_shared",{p_name:user,p_pin:pin,p_id:id}).then(ok=>{if(!ok)throw 0;toast("Für alle gelöscht");return loadShared()}).catch(()=>toast("Löschen hat nicht geklappt"));return}
+  if(!own)return; // feste Klassen-Einträge kann man nicht löschen
   st._custom=st._custom.filter(c=>c!==own);own.tasks.forEach((_,i)=>delete st[id+i]);if(st._grades)delete st._grades[id];
   save();render();toast("Gelöscht");
 });
@@ -737,6 +766,15 @@ $("addForm").addEventListener("submit",e=>{
   const t=$("addT").value.trim(),due=$("addD").value;
   if(!t||!/^\d{4}-\d{2}-\d{2}$/.test(due))return;
   const tasks=$("addTasks").value.split("\n").map(x=>x.trim()).filter(Boolean).slice(0,20);
+  if(e.target.elements.addVis.value==="all"){
+    if(!ONLINE){toast("Für alle geht nur online");return}
+    $("addBtn").disabled=true;
+    rpc("wp_add_shared",{p_name:user,p_pin:pin,p_item:{t:t.slice(0,40),due,tasks:tasks.map(x=>x.slice(0,80))}})
+      .then(id=>{if(!id)throw new Error("PIN");e.target.reset();$("addbox").open=false;toast("Für alle hinzugefügt");return loadShared()})
+      .catch(()=>toast("Konnte nicht für alle speichern"))
+      .finally(()=>{$("addBtn").disabled=false});
+    return;
+  }
   st._custom=[...(st._custom||[]),{id:"u"+Date.now(),t,b:t.slice(0,3).toUpperCase(),c:"--c-own",due,tasks:tasks.length?tasks:["Erledigt"]}];
   save();render();e.target.reset();$("addbox").open=false;toast("Hinzugefügt (nur für dich)");
 });
@@ -955,6 +993,7 @@ $("logout").addEventListener("click",()=>{
   user=null;pin=null;st={};$("nameIn").value="";$("pinIn").value="";$("loginErr").hidden=true;$("login").hidden=false;render();$("nameIn").focus();
 });
 render();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&user)loadShared()});
 let last=null;try{last=localStorage.getItem(KEY+":last")}catch(e){}
 try{last=JSON.parse(last)}catch(e){last=null} // alte Einträge (nur Name) → neu einloggen
 if(Array.isArray(last))login(last[0],last[1]);else $("nameIn").focus();
