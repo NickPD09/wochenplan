@@ -234,21 +234,21 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
 .lcard .ntable .gchip:hover{border-color:var(--accent);color:var(--accent)}
 .nwrap{overflow-x:auto;max-height:60vh}
 @media (prefers-reduced-motion:reduce){.drawer{transition:none}}
-/* Notenbuch: Layout wie das Notenbuch-HTML — karierte Heftseite, Formular links (sticky), Fächer als Karten rechts */
+/* Notenbuch: Layout wie das Notenbuch-HTML — schlichte Seite in Schwarz/Weiß, Formular links (sticky), Fächer als Karten rechts */
 .nb{position:fixed;inset:0;z-index:30;overflow-y:auto;
-  --paper:#f3f5fa;--surface:#ffffff;--ink:#151c33;--muted:#5b6480;--line:#d8deeb;
-  --accent:#2a44c9;--on-accent:#ffffff;--on-grade:#ffffff;--grid:rgba(42,68,201,.07);
+  --paper:#f4f4f5;--surface:#ffffff;--ink:#111113;--muted:#62626b;--line:#e2e2e6;
+  --accent:#111113;--on-accent:#ffffff;--on-grade:#ffffff;
   --g1:#17834a;--g2:#4d8a1c;--g3:#9a7300;--g4:#c25a0c;--g5:#c42b36;
   --display:"Schibsted Grotesk","Segoe UI",system-ui,sans-serif;--body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
-  background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;
+  background-color:var(--paper);
   color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nb{
-  --paper:#0e1322;--surface:#161c30;--ink:#e8ebf6;--muted:#9ba4bf;--line:#2a3352;
-  --accent:#8c9dff;--on-accent:#0e1322;--on-grade:#0e1322;--grid:rgba(140,157,255,.07);
+  --paper:#0b0b0c;--surface:#161618;--ink:#ededef;--muted:#a1a1aa;--line:#2a2a2e;
+  --accent:#ededef;--on-accent:#0b0b0c;--on-grade:#0b0b0c;
   --g1:#4fcf86;--g2:#a2d564;--g3:#e8c34d;--g4:#f59c56;--g5:#ff6f76}}
 :root[data-theme="dark"] .nb{
-  --paper:#0e1322;--surface:#161c30;--ink:#e8ebf6;--muted:#9ba4bf;--line:#2a3352;
-  --accent:#8c9dff;--on-accent:#0e1322;--on-grade:#0e1322;--grid:rgba(140,157,255,.07);
+  --paper:#0b0b0c;--surface:#161618;--ink:#ededef;--muted:#a1a1aa;--line:#2a2a2e;
+  --accent:#ededef;--on-accent:#0b0b0c;--on-grade:#0b0b0c;
   --g1:#4fcf86;--g2:#a2d564;--g3:#e8c34d;--g4:#f59c56;--g5:#ff6f76}
 .nb-wrap{max-width:1120px;margin:0 auto;padding-block:calc(28px + env(safe-area-inset-top,0px)) calc(56px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
 .nb .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -260,7 +260,7 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
 .nb-summary strong{color:var(--ink)}
 .nb-layout{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
 @media (min-width:860px){.nb-layout{grid-template-columns:340px minmax(0,1fr);align-items:start}.nb-panel{position:sticky;top:16px}}
-.nb-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px;box-shadow:0 6px 24px -14px rgba(20,30,70,.35)}
+.nb-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px;box-shadow:0 6px 24px -14px rgba(0,0,0,.25)}
 .nb-panel h2{margin:0;font-family:var(--display);font-weight:700;font-size:1.25rem}
 .nb-field{display:grid;gap:6px}
 .nb-field>label,.nb legend{font-weight:700;font-size:.9rem}
