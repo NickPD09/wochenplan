@@ -1,0 +1,335 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PM-Lernzettel SPE</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: eine Lernspalte, Kapitel als Abschnitte mit Merkbox + Tabellen + Selbsttest */
+:root{
+  --bg:#f6f8fa; --paper:#ffffff; --fg:#17202a; --muted:#5b6876; --line:#d9e0e7;
+  --accent:#0b6e8a; --accent-soft:#e2f1f5; --crit:#c2410c; --crit-soft:#fdeee5;
+  --display:"Bricolage Grotesque",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f151b; --paper:#161e26; --fg:#e4eaf0; --muted:#97a5b3; --line:#2a3642;
+  --accent:#4fb8d4; --accent-soft:#16303a; --crit:#f08a4b; --crit-soft:#3a2216; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --paper:#161e26; --fg:#e4eaf0; --muted:#97a5b3; --line:#2a3642;
+  --accent:#4fb8d4; --accent-soft:#16303a; --crit:#f08a4b; --crit-soft:#3a2216; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body)}
+.wrap{max-width:860px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:2.1rem;font-weight:800}
+h2{font-size:1.45rem;font-weight:800;display:flex;gap:10px;align-items:baseline}
+h2 .k{font:500 .8rem var(--mono);color:var(--accent);letter-spacing:.04em}
+h3{font-size:1.05rem;font-weight:600;margin-top:6px}
+p{margin:0} ul,ol{margin:0;padding-left:1.2em}
+.sub{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:6px}
+nav a{font:500 .78rem var(--mono);color:var(--accent);background:var(--accent-soft);padding:4px 9px;border-radius:4px;text-decoration:none}
+nav a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px clamp(16px,3vw,28px);display:grid;gap:12px;min-width:0}
+.merk{background:var(--accent-soft);border-radius:6px;padding:10px 14px}
+.merk b{color:var(--accent)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+tr.crit td{color:var(--crit);font-weight:600}
+.f{font-family:var(--mono);background:var(--accent-soft);padding:1px 6px;border-radius:3px;white-space:nowrap}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.grid2>div{min-width:0}
+.quad{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;font-size:.9rem}
+.quad div{padding:8px;border-radius:4px;background:var(--bg)}
+.quad .h{background:none;color:var(--muted);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.quad .hot{background:var(--crit-soft);color:var(--crit);font-weight:600}
+/* Gantt */
+.gantt{display:grid;gap:4px;font-size:.82rem}
+.gr{display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center}
+.track{position:relative;height:16px;background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px calc(100%/6))}
+.bar{position:absolute;top:2px;height:12px;border-radius:2px;background:var(--accent)}
+.bar.c{background:var(--crit)}
+.buf{position:absolute;top:6px;height:4px;background:var(--muted);opacity:.45}
+.axis{display:flex;justify-content:space-between;font:500 .72rem var(--mono);color:var(--muted)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:8px;margin-right:5px;vertical-align:middle;border-radius:2px}
+details{border-top:1px dashed var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:600;color:var(--accent)}
+details ol{margin-top:8px;display:grid;gap:6px}
+details li span{display:block;color:var(--muted)}
+.note{font-size:.85rem;color:var(--muted)}
+@media (max-width:520px){.gr{grid-template-columns:96px 1fr}}
+@media print{body{background:#fff;font-size:12px}.wrap{padding:0;gap:14px;max-width:none}section{break-inside:auto;border:none;padding:0 0 10px;border-bottom:1px solid #ccc;border-radius:0}nav{display:none}h2,h3{break-after:avoid}table,.merk,.quad,.gantt{break-inside:avoid}}
+</style>
+
+<div class="wrap">
+<header style="display:grid;gap:10px">
+  <h1>Projektmanagement – Lernzettel</h1>
+  <p class="sub">SPE · alle 6 Handouts zusammengefasst (Kap. 1, 2.1–2.5, 4.1–4.3, 5.1–5.5). Jedes Kapitel endet mit Selbsttest-Fragen.</p>
+  <nav>
+    <a href="#k1">1 Grundbegriffe</a><a href="#k2a">2.1–2.2 Idee & Kreativität</a><a href="#k2b">2.3–2.5 Ziele & Stakeholder</a><a href="#k41">4.1–4.2 PSP & AP</a><a href="#k43">4.3 Zeitplanung</a><a href="#k5">5 Querschnitt</a>
+  </nav>
+</header>
+
+<!-- ============ KAPITEL 1 ============ -->
+<section id="k1">
+  <h2><span class="k">KAP 1</span>Grundbegriffe des PM</h2>
+  <div class="merk"><b>Projekt =</b> einmaliges Vorhaben mit Ziel, Endtermin, begrenzten Ressourcen, Komplexität und Risiko. Hat ein Ende → <b>kein Prozess</b>.</div>
+  <div class="grid2">
+    <div><h3>Gründe für Projekte</h3><ul><li>individuelle Probleme, komplexere Aufgaben</li><li>Innovation (Technik, Marketing, Organisation)</li><li>Abwechslung → motiviert</li><li>Globalisierung (verteilte Teams)</li></ul></div>
+    <div><h3>6 Projektmerkmale</h3><ol><li>inhaltliche Zielsetzung</li><li>zeitliche Zielsetzung (Endpunkt)</li><li>relative Neuartigkeit</li><li>beschränkte Ressourcen</li><li>Komplexität</li><li>Risiko (technisch, zeitlich, Aufwand, Ziel, Verwertbarkeit)</li></ol></div>
+  </div>
+  <h3>Projektablauf</h3>
+  <div class="tbl"><table><tr><th>Phase</th><th>Inhalt</th><th>Dokumente</th></tr>
+    <tr><td>Initiierung</td><td>Machbarkeitsstudie, Varianten, Projektentscheid</td><td>Projektantrag, Projektauftrag</td></tr>
+    <tr><td>Planung (Projektbeginn)</td><td>Definition → Analyse → Realisierung</td><td>Meilensteinliste, PSP, Arbeitspakete, Netzplan</td></tr>
+    <tr><td>Durchführung</td><td>einzelne Phasen bis Projektende</td><td>Meilensteinberichte</td></tr></table></div>
+  <h3>Projektarten</h3>
+  <div class="tbl"><table><tr><th>nach</th><th>Typen</th><th>Beispiel</th></tr>
+    <tr><td>Auftraggeber</td><td>intern / extern</td><td>eigener Webshop / Kundenauftrag</td></tr>
+    <tr><td>Ziel</td><td>Sachziel / prozessorientiert</td><td>neues Produkt / System optimieren</td></tr>
+    <tr><td>Häufigkeit</td><td>repetitiv / nicht repetitiv</td><td>Firmenausflug / Diplomarbeit</td></tr></table></div>
+  <h3>Strategische Aspekte (Lösungsweg × Team)</h3>
+  <div class="tbl"><table><tr><th>Typ</th><th>Lösungsweg</th><th>Team / Merkmal</th></tr>
+    <tr><td>Routineprojekt</td><td>klar</td><td>eingespielt</td></tr>
+    <tr><td>Komplexes Standardprojekt</td><td>klar</td><td>neu/groß → viel Kommunikation</td></tr>
+    <tr><td>Potenzialprojekt</td><td>unklar</td><td>kleine Teams</td></tr>
+    <tr><td>Pionierprojekt</td><td>unklar</td><td>starke Zusammenarbeit, hohe Innovations- &amp; Misserfolgschance</td></tr></table></div>
+  <div class="grid2">
+    <div><h3>Multiprojektmanagement</h3><ul><li><b>Programm-M.:</b> Projekte mit gemeinsamem Ziel</li><li><b>Portfolio-M.:</b> alle Projekte gereiht nach Unternehmensbeitrag, Ressourcen, Innovation, Risiko</li><li>Hilfsorgane: <b>Lenkungsausschuss</b> (Brücke PM ↔ Leitung), <b>PMO</b> (entlastet, Standards), <b>PM-Kreis</b> (Koordination)</li></ul></div>
+    <div><h3>Projektmanager verantwortet</h3><ul><li>Ziele vorgeben, planen</li><li>reibungslose Abwicklung</li><li>Organisation & Arbeitsumgebung</li><li>Kommunikationsstruktur</li><li>Projektcontrolling</li></ul></div>
+  </div>
+  <p><b>Zertifizierung:</b> PMI (USA), IPMA (Schweiz). Ablauf: Einstiegszertifikat (Theorie) → höhere Kompetenzstufen (Praxis) → Rezertifizierung.</p>
+  <details><summary>Selbsttest Kap. 1</summary><ol>
+    <li>Warum ist ein Projekt kein Prozess?<span>Es hat einen definierten Endpunkt und ist einmalig.</span></li>
+    <li>Klarer Lösungsweg, aber neues großes Team?<span>Komplexes Standardprojekt.</span></li>
+    <li>Unterschied Programm- vs. Portfoliomanagement?<span>Programm = gemeinsames Ziel; Portfolio = alle Projekte priorisiert.</span></li>
+    <li>Welche Dokumente gehören zur Initiierung?<span>Projektantrag, Projektauftrag.</span></li>
+  </ol></details>
+</section>
+
+<!-- ============ KAPITEL 2.1–2.2 ============ -->
+<section id="k2a">
+  <h2><span class="k">KAP 2.1–2.2</span>Projektidee & Kreativitätstechniken</h2>
+  <div class="merk"><b>Ablauf:</b> Projektidee → Vorstudie → Varianten → SWOT → Projektantrag</div>
+  <div class="grid2">
+    <div><h3>Warum ein Projekt?</h3><ul><li>neue Technik, Umweltschutz</li><li>mit Konkurrenz mithalten</li><li>Probleme lösen</li></ul></div>
+    <div><h3>Fragen im Projektantrag</h3><ul><li>Was ist die Aufgabe? Was bringt es?</li><li>Was, wenn wir es nicht machen?</li><li>Wer & wie viel Geld?</li></ul></div>
+  </div>
+  <h3>Vorstudie (= Machbarkeitsstudie)</h3>
+  <p>Klärt mit wenig Aufwand, <b>ob sich das Projekt lohnt</b>. Inhalt: Ist-Zustand, Ziele, Machbarkeit, Lösungsvarianten, Empfehlung → <b>Nein = Stopp, Ja = weiter</b>.</p>
+  <div class="tbl"><table><tr><th>Machbarkeit</th><th>Leitfrage</th></tr>
+    <tr><td>Geld</td><td>Lohnt es sich wirtschaftlich?</td></tr><tr><td>Technik</td><td>Können wir das umsetzen?</td></tr>
+    <tr><td>Risiko</td><td>Was kann schiefgehen?</td></tr><tr><td>Personal</td><td>Haben wir genug Leute?</td></tr></table></div>
+  <p><b>Varianten:</b> mehrere Wege grob vergleichen, z. B. Webshop mieten (schnell, günstig, wenig Kontrolle) vs. selbst programmieren (anpassbar, teuer, lang).</p>
+  <h3>SWOT</h3>
+  <div class="quad">
+    <div class="h"></div><div class="h">positiv</div><div class="h">negativ</div>
+    <div class="h">intern</div><div><b>S</b>trengths – Stärken</div><div><b>W</b>eaknesses – Schwächen</div>
+    <div class="h">extern</div><div><b>O</b>pportunities – Chancen</div><div><b>T</b>hreats – Bedrohungen</div>
+  </div>
+  <h3>Kreativitätstechniken</h3>
+  <p class="note">Wozu: wenn rationales Lösen nicht reicht · frühe Phase (Ziele, Varianten) · Risiken erkennen · Stakeholder einschätzen. Gruppe 5–10 Personen, gemischte Fachrichtungen, Moderator.</p>
+  <div class="tbl"><table><tr><th>Technik</th><th>Kernfakten</th></tr>
+    <tr><td>Brainstorming</td><td>5–7 Pers., 10–20 min, mündlich. Regeln: frei assoziieren, Menge vor Qualität, <b>keine Kritik</b> während Sammlung</td></tr>
+    <tr><td>6-3-5 (Brainwriting)</td><td>6 Pers. × 3 Ideen × 6 Runden à 5 min = <span class="f">108 Ideen / 30 min</span>, schriftlich, Blatt weitergeben</td></tr>
+    <tr><td>Synektik</td><td>Problem verstehen → verfremden → Verbindungen → Lösung. 8–12 Pers., Stunden bis Tage, geschulter Moderator</td></tr>
+    <tr><td>Morphologischer Kasten</td><td>Fritz Zwicky. Teilbereiche (max. 6–7) × Optionen → Kombinationen bilden & bewerten</td></tr>
+    <tr><td>Mindmap</td><td>Thema Mitte, Hauptäste BLOCKSCHRIFT, 1 Wort pro Ast, Äste außen dünner, Farben/Symbole</td></tr>
+    <tr><td>Bionik</td><td>Biologie + Technik: Vögel→Flugzeug, Knochen→Tragwerk, Nervenzellen→neuronale Netze, Haifischhaut→Airbus</td></tr>
+    <tr><td>Delphi</td><td>Experten-Lösungen anonym verteilt → Kritik → wiederholen bis Konsens. + ehrlich, kein Treffen; − zeit-/orga-aufwendig</td></tr></table></div>
+  <div class="tbl"><table><tr><th>Ziel</th><th>Technik</th></tr>
+    <tr><td>schnell viele Ideen</td><td>Brainstorming, 6-3-5</td></tr><tr><td>völlig neue Ansätze</td><td>Synektik, Bionik</td></tr>
+    <tr><td>alle Kombinationen</td><td>Morphologischer Kasten</td></tr><tr><td>Gedanken strukturieren</td><td>Mindmap</td></tr>
+    <tr><td>Zukunft vorhersagen</td><td>Delphi</td></tr></table></div>
+  <details><summary>Selbsttest Kap. 2.1–2.2</summary><ol>
+    <li>Wie kommt man bei 6-3-5 auf 108?<span>6 × 3 × 6 = 108.</span></li>
+    <li>SWOT: „Viele Konkurrenz-Apps“ ist welches Feld?<span>T – Bedrohung (extern, negativ).</span></li>
+    <li>Wo steht die Vorstudie im Ablauf?<span>Nach der Projektidee, vor Varianten/SWOT/Projektantrag.</span></li>
+    <li>Welche Technik arbeitet anonym mit Experten?<span>Delphi-Methode.</span></li>
+  </ol></details>
+</section>
+
+<!-- ============ KAPITEL 2.3–2.5 ============ -->
+<section id="k2b">
+  <h2><span class="k">KAP 2.3–2.5</span>Ziele, Stakeholder, Projektauftrag</h2>
+  <div class="merk"><b>Gutes Ziel:</b> erreichbar + <b>messbar</b>, gibt <b>keinen Lösungsweg</b> vor.</div>
+  <div class="grid2">
+    <div><h3>Magisches Dreieck</h3><p><b>Leistung</b> (Umfang, Qualität) · <b>Termine</b> · <b>Kosten</b> – beeinflussen sich: mehr Leistung → mehr Zeit/Geld.</p><p class="note">Ergebnisziele = Resultat · Vorgehensziele = Weg (Termin, Budget).</p></div>
+    <div><h3>Ziel schlecht vs. gut</h3><p>✗ „Raschere Verfügbarkeit bei geringerem Lager“</p><p>✓ „Bei 80 % max. 1 h nach Bestellung bereit; Lager −20 %“</p></div>
+  </div>
+  <p><b>Zielhierarchie:</b> Gesamtziel → Teilziele → operative Einzelziele (top-down, bottom-up, gemischt). Bsp.: Absatz +20 % → Webshop → Verfügbarkeit 99,9 %.</p>
+  <p><b>Zielbeziehungen:</b> Konkurrenz (behindern) · Komplementarität (fördern) · Neutralität (unabhängig). Zielkonflikt → <b>Nutzwertanalyse</b>.</p>
+  <p><b>Zielvereinbarung (4 Fragen):</b> Wozu? · Für wen? · Endergebnis? · Erfolgskriterien?</p>
+  <h3>Abgrenzung & Kontext</h3>
+  <div class="tbl"><table><tr><th></th><th>sachlich</th><th>zeitlich</th><th>sozial</th></tr>
+    <tr><td><b>Abgrenzung</b> (Grenzen)</td><td>Ziele, Inhalte</td><td>Start-/Endereignis</td><td>Rollen, Aufgaben</td></tr>
+    <tr><td><b>Kontext</b> (Beziehungen)</td><td>Strategie, andere Projekte</td><td>Vor-/Nachprojektphase</td><td>Stakeholder</td></tr></table></div>
+  <p class="note">4 Umfelder: Leitbild · Projektportfolio · zeitliches Umfeld · soziales Umfeld.</p>
+  <h3>Stakeholder</h3>
+  <p>Interessiert, betroffen oder beeinflussend. <b>Intern:</b> Team, Leitung · <b>Extern:</b> Kunden, Lieferanten, Interessenvertretungen, Anrainer. Analyse: identifizieren → Infos sammeln → Verhalten vorhersagen.</p>
+  <div class="quad">
+    <div class="h"></div><div class="h">geringer Einfluss</div><div class="h">hoher Einfluss</div>
+    <div class="h">hohes Konfliktpot.</div><div>B, C: Haltung beobachten</div><div class="hot">D: Maßnahmen unumgänglich</div>
+    <div class="h">geringes Konfliktpot.</div><div>A: vernachlässigen</div><div>E, F: Konfliktvermeidung prüfen</div>
+  </div>
+  <h3>Projektauftrag</h3>
+  <p>= <b>formaler Projektbeginn</b>, standardisiertes Formular, grenzt ab (sachlich, sozial, zeitlich). Danach: Anforderungsanalyse + Pflichtenheft.</p>
+  <ul><li>Bezeichnung, Auftraggeber · Hintergrund, Ergebnis, Ziele</li><li>Beschreibung, Meilensteine, Freigaben · Start & Ende</li><li>Ressourcen, Risiken · Organisation, Unterschrift</li></ul>
+  <p><b>Meilenstein</b> = überprüfbares Zwischenergebnis (Inhalt + Termin). Meilensteinliste: Ergebnis, Soll-, Ist-Termin.</p>
+  <details><summary>Selbsttest Kap. 2.3–2.5</summary><ol>
+    <li>Ecken des magischen Dreiecks?<span>Leistung, Termine, Kosten.</span></li>
+    <li>Stakeholder mit hohem Einfluss + hohem Konfliktpotenzial?<span>Feld D – Maßnahmen unumgänglich.</span></li>
+    <li>Unterschied Abgrenzung / Kontextanalyse?<span>Abgrenzung zieht Grenzen; Kontext betrachtet Beziehungen.</span></li>
+    <li>Was markiert den formalen Projektstart?<span>Unterschriebener Projektauftrag.</span></li>
+  </ol></details>
+</section>
+
+<!-- ============ KAPITEL 4.1–4.2 ============ -->
+<section id="k41">
+  <h2><span class="k">KAP 4.1–4.2</span>PSP, Arbeitspakete, IMV-Matrix</h2>
+  <div class="merk"><b>Roter Faden:</b> großes Projekt → kleine Pakete → klare Zuständigkeit.</div>
+  <p><b>Strukturplanung</b> zerlegt das Projekt → Basis für Zeit-, Kosten-, Controlling-Planung + Arbeitsteilung.</p>
+  <div class="tbl"><table><tr><th></th><th>Produktstrukturplan (PdSP)</th><th>Objektstrukturplan (OSP)</th></tr>
+    <tr><td>Inhalt</td><td>Teile, Baugruppen</td><td>PdSP + Hilfsobjekte (Werkzeuge, Programme)</td></tr>
+    <tr><td>Bsp. Bankfiliale</td><td>Möbel, Beleuchtung, EDV</td><td>+ provisorischer Schalterraum</td></tr></table></div>
+  <p class="note">Ebenen: Projektstruktur ⊃ Objektstruktur ⊃ Produktstruktur. Darstellung als Baum oder eingerückte Liste, Nummern eindeutig (z. B. 1.2.1).</p>
+  <h3>Projektstrukturplan (PSP)</h3>
+  <p>Enthält <b>alle</b> Tätigkeiten/Ergebnisse. Grundlage für Organisationsplan, Matrizen, Gantt, Netzplan.</p>
+  <div class="grid2">
+    <div><b>Gliederung</b><ul><li>objektorientiert → Bestandteile</li><li>tätigkeitsorientiert → Arbeitsschritte</li><li>phasenorientiert → Phasen</li><li>gemischt → 1 Kriterium pro Ebene</li></ul></div>
+    <div><b>Regeln</b><ul><li><b>vollständig</b></li><li><b>überdeckungsfrei</b> (nichts doppelt)</li><li>2. Ebene enthält <b>Projektmanagement</b></li><li>Mindmap als Entwurf; top-down / bottom-up / gemischt</li></ul></div>
+  </div>
+  <h3>Arbeitspaket (AP)</h3>
+  <p>Kleinste Einheit im PSP: <b>genau 1 Verantwortlicher</b>, selbstständig erledigbar, klar abgegrenzt.</p>
+  <div class="tbl"><table><tr><th>Größenregel</th><th>gilt für</th></tr>
+    <tr><td class="f">4/40 h</td><td>Faustregel</td></tr><tr><td class="f">8/80 h</td><td>größere Projekte</td></tr><tr><td class="f">2–10 h</td><td>Schülerprojekte</td></tr></table></div>
+  <p class="note">AP-Formular: Nr. & Name · Verantwortlicher · Ziele/Leistung · Aufwand/Kosten · vor-/nachgelagerte APs · To-dos & Termine. Agil: Tasks 4–8 h (max. 1 Tag), Status nur „nicht begonnen/fertig“, Timeboxing.</p>
+  <h3>Matrizen</h3>
+  <p><b>Funktionenmatrix:</b> Aufgaben × Stellen, X = arbeitet mit. <b>IMV-Matrix:</b> <b>I</b> = informiert · <b>M</b> = Mitarbeiter · <b>V</b> = Verantwortlicher (<b>genau 1 pro Aufgabe</b>).</p>
+  <div class="tbl"><table><tr><th>Aufgabe</th><th>Roland</th><th>Marianne</th><th>Gerda</th></tr>
+    <tr><td>Spenden</td><td>I</td><td>M</td><td>V</td></tr><tr><td>Pressearbeit</td><td>M</td><td>V</td><td>M</td></tr>
+    <tr><td>Radio/TV</td><td>M</td><td>V</td><td></td></tr><tr><td>Plakate</td><td>I</td><td>V</td><td>M</td></tr></table></div>
+  <details><summary>Selbsttest Kap. 4.1–4.2</summary><ol>
+    <li>Zwei Hauptregeln des PSP?<span>Vollständig und überdeckungsfrei.</span></li>
+    <li>Wie viele Verantwortliche hat ein AP?<span>Genau einen.</span></li>
+    <li>Was steht in der 2. PSP-Ebene immer?<span>Projektmanagement.</span></li>
+    <li>OSP vs. PdSP?<span>OSP = PdSP + Hilfsobjekte (Werkzeuge, Programme).</span></li>
+  </ol></details>
+</section>
+
+<!-- ============ KAPITEL 4.3 ============ -->
+<section id="k43">
+  <h2><span class="k">KAP 4.3</span>Zeitplanung</h2>
+  <h3>Gantt / Balkendiagramm</h3>
+  <p>Henry L. Gantt, ~1910. X = Zeit, Y = Arbeitspakete (Frühes oben), Balken = Anfang–Ende, <b>Meilenstein = Dauer 0</b>, Pfeile = Abhängigkeiten. Grenze: komplexe Abhängigkeiten → besser Netzplan.</p>
+  <h3>Netzplantechnik</h3>
+  <ul><li><b>Vorgang</b> = braucht Zeit · <b>Ereignis</b> = Zeitpunkt ohne Dauer</li>
+    <li><b>Puffer</b> = Spielraum ohne Projektende zu verschieben · <b>kritischer Weg</b> = Puffer 0</li>
+    <li>Phase 1 <b>Strukturanalyse</b> (Tätigkeiten, Zuständige, Vorbedingungen) → Phase 2 <b>Zeitanalyse</b></li>
+    <li><b>CPM</b> = Vorgangspfeilnetz · <b>MPM</b> = Vorgangsknotennetz · <b>PERT</b> = Ereignisknotennetz</li></ul>
+  <div class="grid2">
+    <div><h3>MPM-Knoten</h3><div class="tbl"><table style="text-align:center"><tr><td>FAZ</td><td>Dauer</td><td>FEZ</td></tr><tr><td colspan="3"><b>Vorgang i</b></td></tr><tr><td>SAZ</td><td>Puffer</td><td>SEZ</td></tr></table></div>
+      <p class="note">F = frühester, S = spätester, A = Anfang, E = Ende, Z = Zeitpunkt</p></div>
+    <div><h3>Vorgangsbeziehungen</h3><ul><li><b>EA</b> Normalfolge: j startet nach Ende i</li><li><b>EE</b> Endefolge: enden gleichzeitig</li><li><b>AA</b> Anfangsfolge: starten gleichzeitig</li><li><b>AE</b> Sprungfolge: beginnt i, muss j fertig sein</li></ul></div>
+  </div>
+  <h3>Rechnen</h3>
+  <div class="tbl"><table><tr><th>Schritt</th><th>Formel</th><th>Regel</th></tr>
+    <tr><td>1 Vorwärts</td><td><span class="f">FAZ<sub>Start</sub> = 0</span> <span class="f">FEZ = FAZ + D</span></td><td>mehrere Vorgänger → <b>größter</b> FEZ</td></tr>
+    <tr><td>2 Rückwärts</td><td><span class="f">SEZ<sub>Ende</sub> = FEZ<sub>Ende</sub></span> <span class="f">SAZ = SEZ − D</span></td><td>mehrere Nachfolger → <b>kleinster</b> SAZ</td></tr>
+    <tr><td>3 Puffer</td><td><span class="f">P = SAZ − FAZ = SEZ − FEZ</span></td><td>P = 0 → kritisch; Dauer = FEZ<sub>Ende</sub></td></tr></table></div>
+  <h3>Beispiel MD ADV (Wochen) – komplett gelöst</h3>
+  <div class="tbl"><table>
+    <tr><th class="n">Nr</th><th>Vorgang</th><th class="n">D</th><th>Vorg.</th><th class="n">FAZ</th><th class="n">FEZ</th><th class="n">SAZ</th><th class="n">SEZ</th><th class="n">P</th></tr>
+    <tr class="crit"><td class="n">1</td><td>Vorstudie, Start</td><td class="n">2</td><td>–</td><td class="n">0</td><td class="n">2</td><td class="n">0</td><td class="n">2</td><td class="n">0</td></tr>
+    <tr class="crit"><td class="n">2</td><td>IST-Erhebung/-Analyse</td><td class="n">6</td><td>1</td><td class="n">2</td><td class="n">8</td><td class="n">2</td><td class="n">8</td><td class="n">0</td></tr>
+    <tr><td class="n">3</td><td>Marktanalyse</td><td class="n">4</td><td>1</td><td class="n">2</td><td class="n">6</td><td class="n">4</td><td class="n">8</td><td class="n">2</td></tr>
+    <tr class="crit"><td class="n">4</td><td>Zieldefinition</td><td class="n">2</td><td>2; 3</td><td class="n">8</td><td class="n">10</td><td class="n">8</td><td class="n">10</td><td class="n">0</td></tr>
+    <tr><td class="n">5</td><td>Pflichtenheft</td><td class="n">6</td><td>4</td><td class="n">10</td><td class="n">16</td><td class="n">12</td><td class="n">18</td><td class="n">2</td></tr>
+    <tr><td class="n">6</td><td>Ausschreibung vorbereiten</td><td class="n">2</td><td>4</td><td class="n">10</td><td class="n">12</td><td class="n">16</td><td class="n">18</td><td class="n">6</td></tr>
+    <tr class="crit"><td class="n">7</td><td>Kriterienkatalog</td><td class="n">8</td><td>4</td><td class="n">10</td><td class="n">18</td><td class="n">10</td><td class="n">18</td><td class="n">0</td></tr>
+    <tr class="crit"><td class="n">8</td><td>Ausschreibung durchführen</td><td class="n">8</td><td>5; 6; 7</td><td class="n">18</td><td class="n">26</td><td class="n">18</td><td class="n">26</td><td class="n">0</td></tr>
+    <tr class="crit"><td class="n">9</td><td>Evaluation, Zuschlag</td><td class="n">4</td><td>8</td><td class="n">26</td><td class="n">30</td><td class="n">26</td><td class="n">30</td><td class="n">0</td></tr>
+  </table></div>
+  <div class="merk"><b>Dauer = 30 Wochen · Kritischer Pfad 1 → 2 → 4 → 7 → 8 → 9</b><br>Bsp. Vorgang 4: FAZ = max(FEZ₂ 8, FEZ₃ 6) = 8 · Vorgang 4 rückwärts: SEZ = min(SAZ₅ 12, SAZ₆ 16, SAZ₇ 10) = 10</div>
+  <div class="gantt" aria-label="Gantt-Diagramm des Beispiels">
+    <div class="gr"><span></span><div class="axis"><span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span></div></div>
+    <div class="gr"><span>1 Vorstudie</span><div class="track"><i class="bar c" style="left:0%;width:6.67%"></i></div></div>
+    <div class="gr"><span>2 IST</span><div class="track"><i class="bar c" style="left:6.67%;width:20%"></i></div></div>
+    <div class="gr"><span>3 Markt</span><div class="track"><i class="bar" style="left:6.67%;width:13.33%"></i><i class="buf" style="left:20%;width:6.67%"></i></div></div>
+    <div class="gr"><span>4 Ziele</span><div class="track"><i class="bar c" style="left:26.67%;width:6.67%"></i></div></div>
+    <div class="gr"><span>5 Pflichtenheft</span><div class="track"><i class="bar" style="left:33.33%;width:20%"></i><i class="buf" style="left:53.33%;width:6.67%"></i></div></div>
+    <div class="gr"><span>6 Ausschr. vorb.</span><div class="track"><i class="bar" style="left:33.33%;width:6.67%"></i><i class="buf" style="left:40%;width:20%"></i></div></div>
+    <div class="gr"><span>7 Kriterien</span><div class="track"><i class="bar c" style="left:33.33%;width:26.67%"></i></div></div>
+    <div class="gr"><span>8 Ausschreibung</span><div class="track"><i class="bar c" style="left:60%;width:26.67%"></i></div></div>
+    <div class="gr"><span>9 Zuschlag</span><div class="track"><i class="bar c" style="left:86.67%;width:13.33%"></i></div></div>
+    <div class="legend"><span><i style="background:var(--crit)"></i>kritisch</span><span><i style="background:var(--accent)"></i>nicht kritisch</span><span><i style="background:var(--muted);opacity:.45;height:4px"></i>Puffer</span></div>
+  </div>
+  <p><b>Aktionsplan:</b> für Arbeitssitzungen, zwischen Meilensteinen: <b>Was? · Wer? · Bis wann?</b></p>
+  <details><summary>Selbsttest Kap. 4.3</summary><ol>
+    <li>Welches Verfahren ist ein Vorgangsknotennetz?<span>MPM.</span></li>
+    <li>Vorgänger mit FEZ 8 und 6 – welcher FAZ?<span>8 (größter FEZ).</span></li>
+    <li>Nachfolger mit SAZ 12, 16, 10 – welcher SEZ?<span>10 (kleinster SAZ).</span></li>
+    <li>Was bedeutet P = 0?<span>Kritischer Vorgang – jede Verzögerung verschiebt das Projektende.</span></li>
+    <li>Dauer eines Meilensteins?<span>0.</span></li>
+  </ol></details>
+</section>
+
+<!-- ============ KAPITEL 5 ============ -->
+<section id="k5">
+  <h2><span class="k">KAP 5.1–5.5</span>Querschnittsaufgaben</h2>
+  <h3>Risikomanagement</h3>
+  <p>Risikoarten: technisch, wirtschaftlich, politisch, soziokulturell. 4 Schritte:</p>
+  <ol><li><b>Identifikation</b> – über PSP, Checklisten, Experten, Umfeldanalyse, Rahmenbedingungen</li><li><b>Analyse</b> – Ursachen/Folgen, Ursache-Wirkungs-Diagramm</li><li><b>Bewertung</b> – Wahrscheinlichkeit × Schaden</li><li><b>Risikogestaltung</b> – Maßnahmen festlegen</li></ol>
+  <div class="quad">
+    <div class="h"></div><div class="h">Einfluss niedrig</div><div class="h">Einfluss hoch</div>
+    <div class="h">Wahrsch. hoch</div><div>B1: passende Maßnahmen</div><div class="hot">A: Sofortmaßnahmen, Abbruch möglich</div>
+    <div class="h">Wahrsch. niedrig</div><div>C: vernachlässigen</div><div>B2: Vorsorge durch Versicherung</div>
+  </div>
+  <p class="note">4-Felder = qualitativ. Quantitativ: Schadenshöhe über PSP oder Monte-Carlo-Simulation (Großprojekte).</p>
+  <div class="tbl"><table><tr><th>Maßnahme</th><th>Art</th><th>Bedeutung</th></tr>
+    <tr><td>Vermeidung</td><td>präventiv</td><td>Risiko gar nicht eingehen (Chancen fallen weg)</td></tr>
+    <tr><td>Verringerung</td><td>präventiv</td><td>technisch/organisatorisch/personell senken</td></tr>
+    <tr><td>Überwälzung</td><td>korrektiv</td><td>Partner/Versicherung trägt Schaden (kostet Prämie)</td></tr>
+    <tr><td>Übernahme</td><td>korrektiv</td><td>selbst tragen, Rücklagen bilden</td></tr></table></div>
+  <p class="note">Nur Risiken übernehmen, die man selbst beeinflussen kann.</p>
+  <h3>Projektcontrolling = Soll-Ist-Vergleich</h3>
+  <ul><li><b>Termine:</b> Terminlisten → Grund suchen (Umfang geändert, Realisierungsprobleme, Schätzung unrealistisch) → gegensteuern (Personal, Arbeitszeit)</li>
+    <li><b>Kosten:</b> Histogramm, Summenkurve, Kosten-Trendlinie – nur zusammen mit Leistung aussagekräftig</li></ul>
+  <div class="tbl"><table><tr><th>Sachfortschritt</th><th>Messung</th></tr>
+    <tr><td>Statusschritt</td><td>festgelegte, prüfbare Leistungsabschnitte</td></tr>
+    <tr><td>50-50</td><td>Start = 50 %, fertig = 100 %</td></tr>
+    <tr><td>0-100</td><td>0 % bis fertig, dann 100 %</td></tr>
+    <tr><td>Mengen-Proportionalität</td><td>erledigte zählbare Einheiten</td></tr>
+    <tr><td>Zeit-Proportionalität</td><td>abgelaufene Zeit</td></tr></table></div>
+  <h3>Dokumentation & Berichtswesen</h3>
+  <p><b>Projekthandbuch</b> sammelt alles: Vorstudie, Auftrag, Analysen, Organisation, PSP/APs, Ablauf-/Termin-/Kosten-/Finanzplan, Verträge, Controlling, Berichte, Protokolle.</p>
+  <p><b>Berichte</b> – aktuell, empfängerbezogen, entscheidungsorientiert: Status-, Abweichungs-, Fortschritts-, Phasen-, Abschlussbericht. <b>Protokolle</b> bei jeder Besprechung: Besprechungs-, Arbeits-, Telefonprotokoll.</p>
+  <h3>Weitere PM-Aufgaben</h3>
+  <div class="tbl"><table>
+    <tr><td>Beschaffung/Einsatzmittel</td><td>richtige Menge, Qualität, Zeit, Budget</td></tr>
+    <tr><td>Krisenmanagement</td><td>Existenzbedrohung: vermeiden, vorsorgen, bewältigen</td></tr>
+    <tr><td>Konfliktmanagement</td><td>früh erkennen, deeskalieren, beseitigen</td></tr>
+    <tr><td>Change-Management</td><td>Änderungen abgestimmt umsetzen (v. a. Software)</td></tr>
+    <tr><td>Vertrags-/Claim-Mgmt.</td><td>Leistungsauffassung, Nachforderungen (Claims)</td></tr>
+    <tr><td>Qualitätsmanagement</td><td>Qualität von Anfang an einplanen</td></tr>
+    <tr><td>Projektmarketing</td><td>Identität (Name, Logo), Team motivieren, Stakeholder überzeugen</td></tr></table></div>
+  <h3>Projektabschluss</h3>
+  <p>Braucht klar geplantes Ende. Aufgaben: <b>inhaltlich</b> (Übergabe, Abnahme, Nachkalkulation, Evaluierung) · <b>organisatorisch</b> (Organisation auflösen, Bericht, Archiv, Know-how-Transfer) · <b>emotional-sozial</b> (Feedback, würdigen, Konflikte bereinigen) · <b>Abschlusssitzung</b>.</p>
+  <div class="merk"><b>Zweistufig:</b> vorläufiger Abschluss → Nachbetreuung (meist <b>3–6 Monate</b>) → endgültiger Abschluss (Bericht, Nachkalkulation, Erfahrung sichern, Leitung entlasten)</div>
+  <p><b>Abschlussbericht</b> (letztes Dokument): Gesamtdarstellung, Verlaufsanalyse (Termine, Kosten, Leistung), Ergebnisse, Probleme, Empfehlungen. <b>Evaluierung:</b> Ergebnisse, Akzeptanz, Ablaufqualität, Zufriedenheit (z. B. Fragebogen).</p>
+  <h3>Informatik-Hilfsmittel</h3>
+  <p>Office (Text, Tabellen z. B. Earned Value, Präsentation, Charts, PDF) · PM-Software je nach Größe: einfache Tools → MS Project / Phproject (klein–mittel) → große Pakete (Multiprojekt, Ressourcen, Risiko, Change) · Kommunikation: Mail, Messaging, Video, Groupware, Plattformen.</p>
+  <details><summary>Selbsttest Kap. 5</summary><ol>
+    <li>Die 4 Schritte des Risikomanagements?<span>Identifikation, Analyse, Bewertung, Risikogestaltung.</span></li>
+    <li>Hohe Wahrscheinlichkeit + hoher Einfluss?<span>Feld A – Sofortmaßnahmen, Abbruch möglich.</span></li>
+    <li>Versicherung abschließen = welche Maßnahme?<span>Risikoüberwälzung (korrektiv).</span></li>
+    <li>AP gestartet, nicht fertig – Fortschritt bei 50-50 und 0-100?<span>50 % bzw. 0 %.</span></li>
+    <li>Wie lange dauert die Nachbetreuung meist?<span>3–6 Monate.</span></li>
+  </ol></details>
+</section>
+
+<p class="note">Hinweis: Der Ordner „Kapitel 5.2.5 und 5.2.6“ war leer – dazu ist nichts enthalten.</p>
+</div>
+
+</body></html>
