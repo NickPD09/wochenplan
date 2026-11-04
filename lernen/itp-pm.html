@@ -58,6 +58,10 @@ summary{cursor:pointer;font-weight:600;color:var(--accent)}
 details ol{margin-top:8px;display:grid;gap:6px}
 details li span{display:block;color:var(--muted)}
 .note{font-size:.85rem;color:var(--muted)}
+.rf td.x{text-align:center;font:600 1rem var(--mono);color:var(--crit);width:28px}
+.rf th.x{text-align:center;width:28px}
+.rf td.w{color:var(--muted);font-size:.85rem}
+.rf caption{text-align:left;font-weight:600;padding:10px 0 4px;font-family:var(--display)}
 @media (max-width:520px){.gr{grid-template-columns:96px 1fr}}
 @media print{body{background:#fff;font-size:12px}.wrap{padding:0;gap:14px;max-width:none}section{break-inside:auto;border:none;padding:0 0 10px;border-bottom:1px solid #ccc;border-radius:0}nav{display:none}h2,h3{break-after:avoid}table,.merk,.quad,.gantt{break-inside:avoid}}
 </style>
@@ -67,7 +71,7 @@ details li span{display:block;color:var(--muted)}
   <h1>Projektmanagement – Lernzettel</h1>
   <p class="sub">SPE · alle 6 Handouts zusammengefasst (Kap. 1, 2.1–2.5, 4.1–4.3, 5.1–5.5). Jedes Kapitel endet mit Selbsttest-Fragen.</p>
   <nav>
-    <a href="#k1">1 Grundbegriffe</a><a href="#k2a">2.1–2.2 Idee & Kreativität</a><a href="#k2b">2.3–2.5 Ziele & Stakeholder</a><a href="#k41">4.1–4.2 PSP & AP</a><a href="#k43">4.3 Zeitplanung</a><a href="#k5">5 Querschnitt</a>
+    <a href="#k1">1 Grundbegriffe</a><a href="#k2a">2.1–2.2 Idee & Kreativität</a><a href="#k2b">2.3–2.5 Ziele & Stakeholder</a><a href="#k41">4.1–4.2 PSP & AP</a><a href="#k43">4.3 Zeitplanung</a><a href="#k5">5 Querschnitt</a><a href="#test">Test R/F</a>
   </nav>
 </header>
 
@@ -327,6 +331,60 @@ details li span{display:block;color:var(--muted)}
     <li>AP gestartet, nicht fertig – Fortschritt bei 50-50 und 0-100?<span>50 % bzw. 0 %.</span></li>
     <li>Wie lange dauert die Nachbetreuung meist?<span>3–6 Monate.</span></li>
   </ol></details>
+</section>
+
+<section id="test">
+  <h2><span class="k">TEST</span>Richtig/Falsch – Lösungen</h2>
+  <p class="note">Bewertung: richtig +1, nichts 0, falsch −1 (pro Frage min. 0). ✕ = richtiges Kreuz.</p>
+  <div class="tbl"><table class="rf">
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">1. Welche Dokumente gehören NICHT zur Projektplanung?</th></tr>
+  <tr><th class="x">R</th><th class="x">F</th><th>Aussage</th><th>Warum</th></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Zieldefinition</td><td class="w">kommt schon in Initiierung/Vorstudie</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Projektauftrag</td><td class="w">Initiierung (Projektantrag, -auftrag)</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Meilensteinbericht</td><td class="w">Durchführung</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Risikoanalyse</td><td class="w">gehört zur Projektplanung</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">2. Was beinhaltet der Projektantrag?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Die Projektergebnisse</td><td class="w">gibt es erst am Ende</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Den Variantenentscheid</td><td class="w">Varianten kommen davor (Vorstudie)</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Projektkosten und benötigte Ressourcen</td><td class="w">„Wer &amp; wie viel Geld?“</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Nutzen und Konsequenzen bei Nichtdurchführung</td><td class="w">„Was bringt es? Was, wenn nicht?“</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">3. Welche Beziehungen können zwischen Teilzielen bestehen?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Zielkontext</td><td class="w">keine Zielbeziehung</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Zielkomplementarität</td><td class="w">Ziele fördern einander</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Zielkonstruktivität</td><td class="w">erfunden; 3. Art wäre Neutralität</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Zielkonkurrenz</td><td class="w">Ziele behindern einander</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">4. Merkmale einer Einfluss-Projektorganisation?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Eignet sich gut für Kundenprojekte</td><td class="w">PL hat zu wenig Macht → eher kleine interne Projekte</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Team arbeitet für bestimmte Zeit zielorientiert zusammen</td><td class="w">das ist reine PO; hier bleiben alle in ihrer Abteilung</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Projektleiter hat keine Weisungsbefugnis</td><td class="w">koordiniert/berät nur (Stabsstelle)</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Personelle Kapazität flexibel ausgelastet</td><td class="w">Mitarbeiter machen nebenbei Linienarbeit</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">5. Welche Eigenschaften treffen auf den Projektmanager zu?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Für Erstellung der Projektdokumentation zuständig</td><td class="w">laut Lehrer F – nicht in seiner Aufgabenliste</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Formuliert Ziele im Projektauftrag, holt Genehmigung ein</td><td class="w">„Vorgabe von Zielen“</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Verantwortlich für das Projektcontrolling</td><td class="w">steht so in Kap. 1</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Ist kein Mitglied des Projektkernteams</td><td class="w">doch, er gehört dazu</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">6. Welche Aussagen treffen auf den PSP zu?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Streng sequentieller Ablauf → objektorientiert gliedern</td><td class="w">sequentiell → phasen-/tätigkeitsorientiert</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>AP ist kleinste Gliederungseinheit</td><td class="w">Definition</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Elemente einer Ebene unterscheiden sich vollständig</td><td class="w">überdeckungsfrei</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Bei Anforderungsänderungen PSP anpassen</td><td class="w">PSP muss vollständig bleiben</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">7. Funktionen eines Netzplans?</th></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Rechtzeitig Entscheidungen treffen können</td><td class="w">Steuerung</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Verteilung des Aufwands über die Projektdauer</td><td class="w">Zeit + Ressourcen planen</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Kritischer Weg = <b>am wenigsten</b> zeitintensive Folge</td><td class="w">Falle! Kritischer Weg = <b>längste</b> Folge, Puffer 0</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Grundlage für Stakeholderanalyse</td><td class="w">hat nichts mit Zeitplanung zu tun</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">8. Maßnahmen der Risikogestaltung?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Quantitative Risikobewertung</td><td class="w">= Schritt 3 Bewertung, keine Maßnahme</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Risiko auf Dritten überwälzen</td><td class="w">Risikoüberwälzung</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Identifikation anhand PSP</td><td class="w">= Schritt 1 Identifikation</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Projekt nicht durchführen</td><td class="w">Risikovermeidung</td></tr>
+  <tr><th colspan="4" style="text-transform:none;letter-spacing:0;color:var(--fg);font-size:.95rem">9. Earned-Value-Analyse?</th></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>EV = Wert auf Basis der <b>Ist</b>-Kosten</td><td class="w">EV = <b>geplante</b> Kosten der erledigten Arbeit</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>EV ≥ Ist-Kosten (AC)</td><td class="w"><span class="f">CPI = EV / AC ≥ 1</span> → im Budget</td></tr>
+  <tr><td class="x"></td><td class="x">✕</td><td>Critical Ratio 0,85 → alles in Ordnung</td><td class="w"><span class="f">CR = CPI · SPI</span>; &lt; 1 → Problem</td></tr>
+  <tr><td class="x">✕</td><td class="x"></td><td>Berechnung periodisch, nicht punktuell</td><td class="w">laufendes Controlling</td></tr>
+  </table></div>
+  <div class="merk"><b>Earned Value kurz:</b> <span class="f">PV</span> Planwert · <span class="f">EV</span> Plankosten der erledigten Arbeit · <span class="f">AC</span> Ist-Kosten · <span class="f">CPI = EV/AC</span> · <span class="f">SPI = EV/PV</span> · <span class="f">CR = CPI·SPI</span> → ≥ 1 = gut</div>
 </section>
 
 <p class="note">Hinweis: Der Ordner „Kapitel 5.2.5 und 5.2.6“ war leer – dazu ist nichts enthalten.</p>
