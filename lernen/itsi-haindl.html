@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITSI Lernseite – IT-Sicherheit & Kryptografie</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --card:#ffffff; --text:#1d2433; --muted:#5c6475;
+    --accent:#2f4fd8; --accent2:#e8ecff; --ok:#1f9d55; --bad:#d64545;
+    --warn:#f5b400; --border:#e2e6ef; --code:#eef1f8;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1117; --card:#181b24; --text:#e8eaf0; --muted:#9aa3b5;
+    --accent:#7a93ff; --accent2:#232a44; --ok:#3ccf7a; --bad:#ff6b6b;
+    --warn:#ffd25a; --border:#2b3040; --code:#1f2330;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+  header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  header h1{font-size:1.1rem;margin:0;flex:1}
+  nav{display:flex;gap:6px;flex-wrap:wrap}
+  nav button,.btn{background:var(--accent2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.9rem}
+  nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  main{max-width:960px;margin:0 auto;padding:20px 16px 80px}
+  section.page{display:none}
+  section.page.active{display:block}
+  h2{margin:28px 0 10px;font-size:1.5rem;border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:4px}
+  h3{margin:22px 0 8px;font-size:1.15rem;color:var(--accent)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin:12px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .def{border-left:4px solid var(--accent);padding:8px 12px;background:var(--accent2);border-radius:0 8px 8px 0;margin:8px 0}
+  .def b{color:var(--accent)}
+  .tip{border-left:4px solid var(--warn);padding:8px 12px;background:rgba(245,180,0,.1);border-radius:0 8px 8px 0;margin:8px 0}
+  .merk{border-left:4px solid var(--ok);padding:8px 12px;background:rgba(31,157,85,.1);border-radius:0 8px 8px 0;margin:8px 0}
+  table{border-collapse:collapse;width:100%;margin:8px 0;font-size:.95rem}
+  th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--accent2)}
+  code,.mono{font-family:ui-monospace,Consolas,monospace;background:var(--code);padding:2px 6px;border-radius:5px}
+  ul{padding-left:20px;margin:6px 0}
+  li{margin:3px 0}
+  details{margin:8px 0;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px}
+  summary{cursor:pointer;font-weight:600}
+  .pill{display:inline-block;background:var(--accent2);border-radius:999px;padding:2px 10px;font-size:.8rem;margin:2px}
+  /* Risiko-Matrix */
+  .matrix{display:grid;grid-template-columns:70px repeat(3,1fr);gap:4px;max-width:420px;margin:10px 0}
+  .matrix div{padding:10px;text-align:center;border-radius:6px;font-size:.9rem}
+  .m1{background:#cfe8ff;color:#123}.m2{background:#b3f0c8;color:#123}.m3{background:#ffe9a8;color:#123}.m6{background:#ffc98a;color:#123}.m9{background:#ff9a9a;color:#123}
+  .mlbl{background:transparent;font-weight:600}
+  /* Flashcards */
+  .fc-wrap{perspective:1000px;max-width:600px;margin:14px auto}
+  .fc{position:relative;height:220px;cursor:pointer;transition:transform .5s;transform-style:preserve-3d}
+  .fc.flip{transform:rotateY(180deg)}
+  .fc .face{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;padding:22px;text-align:center;border-radius:14px;background:var(--card);border:2px solid var(--accent);font-size:1.1rem}
+  .fc .back{transform:rotateY(180deg);background:var(--accent2);font-size:1rem}
+  .fc-ctrl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+  /* Quiz */
+  .q{margin:14px 0}
+  .q .opt{display:block;width:100%;text-align:left;margin:5px 0;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer}
+  .q .opt.right{background:rgba(31,157,85,.2);border-color:var(--ok)}
+  .q .opt.wrong{background:rgba(214,69,69,.2);border-color:var(--bad)}
+  .q .expl{display:none;font-size:.9rem;color:var(--muted);margin-top:6px}
+  .q.done .expl{display:block}
+  .score{font-size:1.2rem;font-weight:700;margin:12px 0}
+  input[type=text],input[type=number]{padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:1rem}
+  .out{font-family:ui-monospace,monospace;background:var(--code);padding:10px;border-radius:8px;margin-top:8px;word-break:break-all;min-height:40px}
+  .check{display:flex;align-items:center;gap:8px;margin:4px 0}
+  .progress{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin:8px 0}
+  .progress div{height:100%;background:var(--ok);width:0;transition:width .3s}
+  .flow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0}
+  .flow span{background:var(--accent2);border:1px solid var(--border);padding:6px 10px;border-radius:8px}
+  .flow i{font-style:normal;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔐 ITSI – IT-Sicherheit & Kryptografie</h1>
+  <nav>
+    <button data-p="einf" class="active">1 Einführung</button>
+    <button data-p="angriffe">2 Angriffe</button>
+    <button data-p="krypto">3 Kryptografie</button>
+    <button data-p="hist">4 Historisch</button>
+    <button data-p="sym">5 Symmetrisch / DES</button>
+    <button data-p="aes">6 AES & Modes</button>
+    <button data-p="karten">🃏 Karten</button>
+    <button data-p="quiz">✅ Quiz</button>
+  </nav>
+  <button class="btn" id="theme">🌙</button>
+</header>
+
+<main>
+
+<!-- ===================== 1 EINFÜHRUNG ===================== -->
+<section class="page active" id="einf">
+<h2>1. Einführung – Grundbegriffe</h2>
+
+<div class="card">
+<h3>Warum IT-Sicherheit?</h3>
+<ul>
+<li>IT-Systeme stecken überall (Gesundheit, Finanzen, Auto, Privatleben) → <b>Informationen = wertvolle Güter</b>.</li>
+<li>Immer mehr Leute sind an diesen Infos interessiert → <b>Anzahl der Schadensfälle wächst</b>.</li>
+<li>Ziel: Angriffe <b>verhindern</b>, <b>früh erkennen</b>, im Schadensfall <b>reagieren</b> → Schaden minimieren.</li>
+<li>Klassische Disziplinen: Netzwerksicherheit, Softwaresicherheit, Biometrie, IT-Sicherheitsmanagement, <b>IT-Forensik</b> (Blick in die Vergangenheit).</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Abgrenzung der Begriffe</h3>
+<div class="def"><b>IT-Sicherheit:</b> Schutz von IKT-Systemen (Informations- & Kommunikationssysteme) gegen Gefahren und Angriffe. Betrifft nur <b>elektronische</b> Infos → Teilgebiet der Informationssicherheit.</div>
+<div class="def"><b>Cyber Security / Internetsicherheit:</b> Schutz von Internet-basierten Systemen und Systemen, die mit dem Internet verbunden sind (z.B. Browser-Sicherheit).</div>
+<div class="def"><b>Informationssicherheit (Datensicherheit):</b> Schutz von Daten in <b>jeder Form</b> – Datenträger, RAM, Papier, Filme, Sprachaufzeichnungen, Flipcharts, sogar das Wissen im Kopf.</div>
+<p>Einzelaspekte: Rechenzentrums-Sicherheit (Zugang, Feuer, Ausfall), System-/Anwendungssicherheit, Netzwerksicherheit, Mobile Sicherheit, IoT-Sicherheit.</p>
+</div>
+
+<div class="card">
+<h3>Informationssicherheit vs. Datenschutz</h3>
+<table>
+<tr><th></th><th>Informationssicherheit</th><th>Datenschutz</th></tr>
+<tr><td><b>Zweck</b></td><td>Schutz <b>aller</b> Daten & Informationen durch Maßnahmen</td><td>Schutz <b>personenbezogener</b> Daten</td></tr>
+<tr><td><b>Basis</b></td><td>Bedrohungen & Schwachstellen identifizieren, Auswirkung + Eintrittswahrscheinlichkeit minimieren</td><td>Grundrecht auf <b>informationelle Selbstbestimmung</b> (jeder entscheidet selbst über seine Daten)</td></tr>
+<tr><td><b>Regelungen</b></td><td>Gesetze, Standards, Normen (z.B. <b>ISO/IEC 27001</b>)</td><td>Europäische <b>DSGVO</b></td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Sicherheitsziele (Schutzziele)</h3>
+<div class="merk"><b>C-I-A</b> – die 3 Hauptschutzziele:<br>
+<b>C</b>onfidentiality = Vertraulichkeit &nbsp;|&nbsp; <b>I</b>ntegrity = Integrität &nbsp;|&nbsp; <b>A</b>vailability = Verfügbarkeit</div>
+<p>Weitere Ziele:</p>
+<table>
+<tr><th>Ziel</th><th>Englisch</th><th>Bedeutung</th></tr>
+<tr><td>Authentizität</td><td>authenticity</td><td>Echtheit, Überprüfbarkeit, Vertrauenswürdigkeit. Prüfen = <b>Authentifikation</b>.</td></tr>
+<tr><td>Autorisierung</td><td>authorization</td><td>Zuweisen & Überprüfen von Zugriffsrechten; <b>Zugriffskontrolle</b> (access control) nach Authentifikation.</td></tr>
+<tr><td>Nicht-Abstreitbarkeit</td><td>non-repudiation</td><td>Rechtsverbindlicher Zusammenhang Inhalt ↔ Identität. Bsp: Bestellung im Onlineshop ist verbindlich.</td></tr>
+<tr><td>Ausfallsicherheit</td><td>resilience</td><td>Sicherheit gegen Ausfall – meist durch <b>Redundanz</b>.</td></tr>
+<tr><td>Zuverlässigkeit</td><td>reliability</td><td>System funktioniert wie definiert; eng mit Verfügbarkeit & Qualität verbunden.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Security vs. Safety</h3>
+<div class="grid">
+<div class="def"><b>Security = Angriffssicherheit</b><br>Resistenz gegen <b>Angreifer</b>. Schutz vor unberechtigten / vorsätzlichen Handlungen.</div>
+<div class="def"><b>Safety = Funktions-/Betriebssicherheit</b><br>System nimmt keine unzulässigen Zustände an, keine Fehlfunktion im Normalbetrieb. Berechtigte Handlungen → keine negativen Folgen.</div>
+</div>
+<div class="tip">Merkhilfe: <b>Security</b> = jemand will mir schaden. <b>Safety</b> = das System darf nicht von selbst kaputtgehen.</div>
+</div>
+
+<div class="card">
+<h3>Gefahr → Bedrohung → Gefährdung → Risiko</h3>
+<div class="def"><b>Gefahr (danger):</b> Ist „einfach da“, <b>ohne</b> konkreten zeitlichen/räumlichen/personellen Bezug. Bsp: Irgendwo bebt irgendwann die Erde.</div>
+<div class="def"><b>Bedrohung (threat):</b> Gefahr <b>mit</b> konkretem Bezug zu einem Schutzziel. Bsp: Erdbeben bei Neapel = Bedrohung, in Wien nicht.</div>
+<div class="def"><b>Gefährdung:</b> Bedrohung trifft auf <b>Schwachstelle</b>. Bsp: Haus im Erdbebengebiet, nicht erdbebensicher gebaut.</div>
+<div class="def"><b>Verwundbarkeit (vulnerability):</b> Schwachstelle/Sicherheitslücke, mit der Sicherheitsmechanismen umgangen werden können (schwaches Passwort, falsch konfigurierte Firewall, Programmierfehler).</div>
+<div class="merk"><b>Risiko = Eintrittswahrscheinlichkeit · Schadenshöhe</b></div>
+<p>Skala 1 (gering) – 3 (hoch), Ergebnis 1 (unbedeutend) – 9 (kritisch):</p>
+<div class="matrix">
+<div class="mlbl">Schaden ↓</div><div class="mlbl">W=1</div><div class="mlbl">W=2</div><div class="mlbl">W=3</div>
+<div class="mlbl">3</div><div class="m3">3 mittel</div><div class="m6">6 hoch</div><div class="m9">9 kritisch</div>
+<div class="mlbl">2</div><div class="m2">2 niedrig</div><div class="m3">4 mittel</div><div class="m6">6 hoch</div>
+<div class="mlbl">1</div><div class="m1">1 unbedeutend</div><div class="m2">2 niedrig</div><div class="m3">3 mittel</div>
+</div>
+<p><b>BSI-Gefährdungskategorien:</b> Höhere Gewalt (Hochwasser, Blitz) · Vorsätzliche Handlungen (Abhören, Malware, Diebstahl) · Technische Fehler (defekte Datenträger) · Fahrlässigkeit (versehentliches Löschen, schlechte Passwörter) · Organisatorischer Mangel (fehlende Regelungen).</p>
+</div>
+
+<div class="card">
+<h3>Schwachstellen & Exploits</h3>
+<div class="def"><b>Schwachstelle:</b> „fehlende oder unzureichend umgesetzte Sicherheitsmaßnahme“ (BSI-Standard 100-2) – Software-Fehler, der eine Lücke öffnet.</div>
+<div class="def"><b>Exploit:</b> Software, die eine Schwachstelle ausnutzt, um Zugriff / höhere Rechte zu erlangen. Enthält <b>Schadcode</b>, der den gewünschten Effekt bewirkt.</div>
+<p><b>Beispiel CVE-2010-2553:</b> Fehler im Media-Codec (Windows XP/Vista/7) = Schwachstelle → präparierte Video-Datei = Exploit → Code, der Daten löscht = Schadcode. <b>CVE</b> = Common Vulnerabilities and Exposures (Datenbank bekannter Schwachstellen).</p>
+<p><b>Häufigste Schwachstellen-Typen:</b> <span class="pill">Buffer Overflow</span><span class="pill">SQL Injection</span><span class="pill">Code Injection</span><span class="pill">Cross-Site Scripting</span></p>
+<div class="def"><b>Zero-Day Exploit:</b> Es gibt noch keinen Patch – Entwickler hatten „null Tage“ Zeit. Oft auch: Hersteller kennt die Lücke noch gar nicht.</div>
+<p><b>Angriff</b> = Ausführen eines Exploits, um ein Zielsystem zu stören/abstürzen zu lassen oder Daten zu lesen/ändern/löschen. Fertige Exploits: <b>Metasploit</b> (Penetration Testing), <b>exploit-db.com</b> (>40 000 Exploits).</p>
+</div>
+</section>
+
+<!-- ===================== 2 ANGRIFFE ===================== -->
+<section class="page" id="angriffe">
+<h2>2. Begriffe aus der Welt der Angriffe</h2>
+
+<div class="card">
+<h3>Malware-Arten</h3>
+<table>
+<tr><th>Begriff</th><th>Erklärung</th></tr>
+<tr><td><b>Malware</b></td><td>Oberbegriff für Schadsoftware (Viren, Würmer, Trojaner, Botnets, Rootkits, Spyware …)</td></tr>
+<tr><td><b>Virus</b></td><td>Zerstörerisches Mini-Programm, kommt meist mit präparierten („verseuchten“) Anwendungen</td></tr>
+<tr><td><b>Wurm</b></td><td>Verteilt sich <b>automatisch</b> über offene Netzwerkverbindungen</td></tr>
+<tr><td><b>Trojaner</b></td><td>„Getarnter“ Virus – Benutzer installiert ihn ungewollt; macht etwas anderes als erwartet (Hintertür, Passwörter aufzeichnen)</td></tr>
+<tr><td><b>Ransomware</b></td><td>Erpressungstrojaner: verschlüsselt Daten / sperrt System, fordert Lösegeld (ransom + malware)</td></tr>
+<tr><td><b>Emotet</b></td><td>Multifunktionstrojaner: lädt Banking-Trojaner (Trickbot) / Krypto-Miner nach, klaut Passwörter, verbreitet sich wurmartig, Remote-Zugriff, verändert sich ständig, greift <b>Backups</b> an</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Netzwerk-Angriffe</h3>
+<table>
+<tr><th>Begriff</th><th>Erklärung</th></tr>
+<tr><td><b>Resource Exhaustion</b></td><td>Hardware durch Überlastung lahmlegen (Ping Flood, Verbindungsanfragen, SSL-Verbindungen)</td></tr>
+<tr><td><b>DoS</b></td><td>Denial-of-Service: Verfügbarkeit eines <b>Dienstes</b> stören</td></tr>
+<tr><td><b>DDoS</b></td><td>Distributed DoS: viele Angreifer gleichzeitig, z.B. per <b>Botnet</b></td></tr>
+<tr><td><b>Spoofing</b></td><td>Nachrichten mit <b>gefälschter Absenderadresse</b> (IP, E-Mail)</td></tr>
+<tr><td><b>Sniffing</b></td><td>Kompletten Netzwerkverkehr „mithören“ – eigentlich Diagnose-Tool (z.B. <b>Wireshark</b>)</td></tr>
+<tr><td><b>Eavesdropping</b></td><td><b>Unberechtigtes</b> Abhören von Datenpaketen; unverschlüsselter Verkehr (HTTP, Mails, Chats) ist lesbar</td></tr>
+<tr><td><b>Defacement</b></td><td>Webseite inhaltlich verändern („Gesicht ändern“)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Social Engineering – Faktor Mensch</h3>
+<div class="def"><b>Social Engineering:</b> Ausnutzen menschlicher Schwächen, um bestimmte Reaktionen zu provozieren.</div>
+<table>
+<tr><th>Technik</th><th>Erklärung</th></tr>
+<tr><td><b>Phishing</b></td><td>Nutzt Spoofing; gefälschte Mails/SMS/Anrufe, damit Nutzer z.B. Passwörter verraten</td></tr>
+<tr><td><b>Spear Phishing</b></td><td><b>Personalisiert</b>: Angreifer sammelt Infos (Social Media) und gibt sich als bekannte Person aus</td></tr>
+<tr><td><b>Ködern</b></td><td>Neugier/Gier ausnutzen – z.B. USB-Sticks mit Schadsoftware verteilen</td></tr>
+<tr><td><b>Pretexting</b></td><td>Erfundene Geschichten/Lügen (Enkeltrick, falsche Hilfsorganisation)</td></tr>
+<tr><td><b>Reverse Social Engineering</b></td><td>Angreifer bietet dem hilfesuchenden Opfer scheinbar Hilfe an → Vertrauen</td></tr>
+<tr><td><b>CEO Fraud / BEC</b></td><td>Business E-Mail Compromise: Betrüger gibt sich als Chef/Anwalt/Kunde aus und lässt Finanzabteilung Geld überweisen. Vorbereitung teils über Monate (APT). Schäden: zweistellige Millionenhöhe/Jahr</td></tr>
+</table>
+<p><b>Phishing-Ablauf (Folie):</b></p>
+<div class="flow"><span>1. Infos über Dienstleister holen</span><i>→</i><span>2. Gefälschte Mail an Mitarbeiter</span><i>→</i><span>3. Mitarbeiter hält sie für echt</span><i>→</i><span>4. Kontonummer geändert</span><i>→</i><span>5. Firma überweist an Angreifer</span></div>
+</div>
+
+<div class="card">
+<h3>Cybercrime</h3>
+<div class="merk">„Layer 8“ = der Mensch. Die Schwachstelle Mensch macht <b>ca. 60 %</b> aller Sicherheitsrisiken aus! Studie Iron Mountain: Chefs im Mittelstand sind das größte Risiko.</div>
+<p><b>Geistige Barrieren:</b> Folgen von Angriffen werden unterschätzt · SOC ist kein „Profit-Center“ · Security-Experten gelten als Bedenkenträger · Security nur wegen Compliance · zu viel Technikgläubigkeit.</p>
+<p><b>Verlust der Sicherheit durch:</b> Technische Mängel · Menschliches Fehlverhalten · Organisatorische Mängel.</p>
+<div class="grid">
+<div class="def"><b>Angreifer:</b> Cyberkriminelle, Wettbewerber, Hacker, Nachrichtendienste, Beschäftigte, Script-Kiddies, Terroristen</div>
+<div class="def"><b>Motivation:</b> Kontrolle, Lösegeld, Kreditkartendaten, Identitätsdiebstahl, Kundendaten, Rache, Unternehmenspläne</div>
+<div class="def"><b>Folgen:</b> Datenverlust, Umsatzverlust bis Insolvenz, Stillstand, Reputationsschaden, Benachrichtigungskosten, Sanktionen</div>
+</div>
+<p><b>Merkmale Cyberkriminalität:</b> kein Tatort, keine Fingerabdrücke, keine Zeugen, keine Täterbeschreibung, kein Vandalismus, multifunktionale Tools (z.B. Trojaner mit nmap).</p>
+</div>
+</section>
+
+<!-- ===================== 3 KRYPTOGRAFIE ===================== -->
+<section class="page" id="krypto">
+<h2>3. Kryptografie – Grundlagen</h2>
+
+<div class="card">
+<h3>Kryptologie</h3>
+<div class="def"><b>Kryptologie</b> = Wissenschaft der Ver-/Entschlüsselung + Analyse der Verfahren. Besteht aus:</div>
+<div class="grid">
+<div class="def"><b>Kryptografie:</b> Methoden zur Ver- & Entschlüsselung, um Infos vor Dritten geheim zu halten.</div>
+<div class="def"><b>Kryptoanalyse:</b> Analyse & Bewertung der Sicherheit – wie knackt man das?</div>
+</div>
+<p>Wort: griech. <i>kryptós</i> (geheim) + <i>gráphein</i> (schreiben). Wichtigste Hilfsmittel: <b>Mathematik</b> und <b>Computer</b>.</p>
+</div>
+
+<div class="card">
+<h3>Warum Kryptografie? (5 Ziele)</h3>
+<table>
+<tr><td><b>Vertraulichkeit</b></td><td>Geheimhaltung – bekannteste Anwendung</td></tr>
+<tr><td><b>Integrität</b></td><td>Empfänger kann prüfen, dass Nachricht unversehrt ist</td></tr>
+<tr><td><b>Authentizität</b></td><td>Identität des Absenders nachprüfbar</td></tr>
+<tr><td><b>Gültigkeit</b></td><td>Nachricht kann durch zwischenzeitliche Ereignisse ihre Bedeutung verlieren</td></tr>
+<tr><td><b>Nichtabstreitbarkeit</b></td><td>Absender kann Urheberschaft später nicht leugnen</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Allgemeines Modell: Alice, Bob & Mallory</h3>
+<p><b>Alice</b> sendet an <b>Bob</b>, <b>Mallory</b> (der Angreifer) sitzt auf der Leitung.</p>
+<div class="grid">
+<div class="merk"><b>Kryptografie KANN verhindern, dass</b><ul><li>Mallory mit abgefangenen Daten etwas anfangen kann</li><li>Mallory Daten <b>unbemerkt</b> verändert</li><li>Mallory sich <b>unbemerkt</b> als Bob/Alice ausgibt</li><li>Alice <b>unerkannt</b> behauptet, ihre Nachricht sei eine Fälschung</li></ul></div>
+<div class="tip"><b>Kryptografie KANN NICHT verhindern, dass</b><ul><li>Mallory Nachrichten verändert</li><li>Mallory Daten abfängt</li><li>Mallory die Leitung zerstört / Kommunikation verhindert (<b>DoS</b>)</li></ul></div>
+</div>
+<div class="tip">Unterschied: Krypto verhindert nicht das Verändern selbst – aber dass es <b>unbemerkt</b> bleibt.</div>
+</div>
+
+<div class="card">
+<h3>Epochen der Verschlüsselung</h3>
+<p><b>500 v.Chr. – 1950:</b> Geheime Kommunikation → <b>Steganographie</b> (verstecken) vs. <b>Kryptographie</b> (verschlüsseln) → Substitution (Chiffrierung = Buchstaben ersetzen / Codierung = Wörter ersetzen) oder Transposition → monoalphabetisch (Cäsar), polyalphabetisch (Vigenère, Enigma), One-Time-Pad.</p>
+<p><b>1950 – heute:</b> computergestützt → <b>symmetrisch</b> (geheimer Schlüssel: Block-/Stromchiffren, DES, AES) und <b>asymmetrisch</b> (Public Key: Diffie-Hellman, RSA, ElGamal, Elliptische Kurven); Quantenkryptographie.</p>
+</div>
+</section>
+
+<!-- ===================== 4 HISTORISCH ===================== -->
+<section class="page" id="hist">
+<h2>4. Historische (einfache) Verfahren</h2>
+
+<div class="card">
+<h3>Skytale (Sparta, >2500 Jahre)</h3>
+<ul>
+<li>Band wendelförmig um Stab wickeln, Botschaft längs schreiben, Band ohne Stab versenden.</li>
+<li>Empfänger braucht Stab mit <b>gleichem Durchmesser</b> → Durchmesser = <b>Schlüssel</b>.</li>
+<li>Gehört zu den <b>Transpositionsverfahren</b> (Buchstaben werden umgeordnet, nicht ersetzt).</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Cäsar-Chiffre</h3>
+<p>Jeder Buchstabe wird um <i>n</i> verschoben (Folie: n=5). Nur <b>26 Schlüssel</b> (0 ist sinnlos) → sogar <b>Ciphertext-Only-Attacke</b> möglich.</p>
+<ul>
+<li><b>Brute-Force</b> = vollständige Schlüsselsuche (alle 26 probieren)</li>
+<li><b>Häufigkeitsanalyse</b>: im Deutschen ist <b>E</b> mit Abstand am häufigsten (~17 %), dann N, I, S, R …</li>
+</ul>
+<div class="mono">IJW RJSXHM RFHMY KJMQJW → DER MENSCH MACHT FEHLER (Shift 5)</div>
+<h3>🛠 Cäsar-Tool</h3>
+<input type="text" id="cIn" placeholder="Text eingeben" style="width:60%">
+<input type="number" id="cShift" value="5" min="0" max="25" style="width:70px"> Shift
+<div class="fc-ctrl" style="justify-content:flex-start"><button class="btn" onclick="caesar(1)">Verschlüsseln</button><button class="btn" onclick="caesar(-1)">Entschlüsseln</button><button class="btn" onclick="bruteForce()">Brute-Force (alle 25)</button></div>
+<div class="out" id="cOut"></div>
+</div>
+
+<div class="card">
+<h3>Substitutions- vs. Permutations-Chiffren</h3>
+<div class="grid">
+<div class="def"><b>Substitution:</b> Buchstaben werden nach einer <b>Tabelle ersetzt</b> (Cäsar ist ein Spezialfall; auch beliebige ASCII-Zeichen möglich). Immer gleiche Abbildung → <b>monoalphabetisch</b> → Häufigkeitsanalyse funktioniert.</div>
+<div class="def"><b>Permutation:</b> Buchstaben werden <b>nicht ersetzt, sondern durcheinander gewürfelt</b>. Bsp: 5er-Blöcke mit Schlüssel (4,1,2,5,3). Knackbar durch Probieren (je nach Schlüssellänge); Häufigkeitsanalyse verrät die Sprache.</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Polyalphabetische Verfahren</h3>
+<p>Lösung gegen Häufigkeitsanalyse: ein Buchstabe wird <b>nicht immer gleich</b> abgebildet.</p>
+<div class="def"><b>Vigenère-Chiffre:</b> Schlüsselwort (z.B. ALICE) wird wiederholt unter den Text geschrieben, Buchstaben werden <b>addiert</b> (A=0, B=1 …, nach Z wieder A) → Vigenère-Quadrat.<br>
+<span class="mono">ALLES + ALICE = AWTGW</span><br>
+Knacken: Ist die Schlüssellänge bekannt → nur mehrere Cäsar-Chiffren lösen.</div>
+<div class="def"><b>Vernam-Chiffre:</b> Vigenère mit Schlüssel <b>so lang wie der Klartext</b> (Gilbert Vernam). Nicht mit Häufigkeitsanalyse oder Brute-Force zu brechen.</div>
+<div class="def"><b>One-Time-Pad (OTP):</b> Vernam + Schlüssel ist <b>rein zufällig</b> + wird <b>nur einmal</b> verwendet → <b>absolut sicher</b> (jeder Klartext kann in jeden Chiffretext mit gleicher Wahrscheinlichkeit verschlüsselt werden).</div>
+<div class="tip"><b>Nachteile OTP:</b> Schlüssel riesig (doppelter Datenverkehr) · Schlüsselübertragung kann abgehört werden · echte Zufallszahlen in großer Menge sind schwer herzustellen.</div>
+</div>
+
+<div class="card">
+<h3>Rotorchiffren & Enigma</h3>
+<ul>
+<li>Kreisrunde Scheiben (Rotoren) mit je 26 Kontakten pro Seite, fix verdrahtet.</li>
+<li>Nach jedem Tastendruck dreht Rotor 1 weiter; nach voller Umdrehung springt Rotor 2 (wie Tachometer).</li>
+<li>= <b>polyalphabetische Substitutionschiffre</b>; Wiederholung erst nach <b>26³ = 17 576</b> Buchstaben (3 Rotoren).</li>
+<li><b>Enigma</b>: 1918 Arthur Scherbius, 3 Rotoren + <b>Reflektor</b> (schickt Signal zurück). Sollte sicherer machen – bewirkte eher das Gegenteil.</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================== 5 SYMMETRISCH / DES ===================== -->
+<section class="page" id="sym">
+<h2>5. Symmetrische Verschlüsselung & DES</h2>
+
+<div class="card">
+<h3>Prinzip</h3>
+<p>Man kann sich nicht mit jedem Partner auf ein geheimes Verfahren einigen → Verfahren ist öffentlich, Geheimnis ist der <b>Schlüssel</b>.</p>
+<div class="merk"><b>Kerckhoffs' Prinzip:</b> Die Sicherheit beruht <b>nur auf der Geheimhaltung des Schlüssels</b>, nicht des Algorithmus. Gegenteil: <b>Security by Obscurity</b> (schlecht!).</div>
+<p><b>Formeln:</b></p>
+<div class="mono">E(Klartext, S<sub>E</sub>) = Ciphertext &nbsp;→&nbsp; e(m,k) = c<br>D(Ciphertext, S<sub>D</sub>) = Klartext &nbsp;→&nbsp; d(c,k) = m<br>symmetrisch: S<sub>E</sub> = S<sub>D</sub> = K &nbsp;&nbsp; D(E(m,K),K) = m</div>
+<ul>
+<li>Gleicher Schlüssel zum Ver- und Entschlüsseln; je 2 Teilnehmer brauchen einen Schlüssel.</li>
+<li>Anzahl der Schlüssel wächst <b>quadratisch</b> mit der Teilnehmerzahl.</li>
+</ul>
+<div class="grid">
+<div class="merk"><b>Vorteile:</b> große Datenmengen schnell · meist kurze Schlüssel (außer OTP)</div>
+<div class="tip"><b>Nachteile:</b> sichere Schlüsselverteilung (Telefon, schriftlich …) · nicht für digitale Signatur geeignet</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Konfusion & Diffusion (Claude Shannon)</h3>
+<div class="grid">
+<div class="def"><b>Konfusion:</b> Verbirgt Zusammenhang Schlüssel ↔ Chiffrat. Umsetzung: <b>Substitution</b> (S-Boxen).</div>
+<div class="def"><b>Diffusion:</b> Ein Klartextsymbol beeinflusst viele Chiffrat-Symbole; verbirgt Statistik. Umsetzung: <b>Bit-Permutation</b>.</div>
+</div>
+<p>Einzeln unsicher, kombiniert = <b>Produktchiffre</b> mit <b>Rundenfunktion</b> (heute Standard).</p>
+<p>Einteilung: Kryptografie → symmetrisch → <b>Blockchiffren</b> (DES, AES) und <b>Stromchiffren</b>.</p>
+</div>
+
+<div class="card">
+<h3>DES – Data Encryption Standard</h3>
+<table>
+<tr><td>Entwickelt</td><td>Anfang 70er bei <b>IBM</b> („Lucifer“, Feistelchiffre)</td></tr>
+<tr><td>Standard</td><td><b>1977</b> durch NBS (heute NIST); NSA beteiligt, Schlüssel verkürzt, Design geheim</td></tr>
+<tr><td>Blockgröße</td><td><b>64 Bit</b></td></tr>
+<tr><td>Schlüssel</td><td><b>56 Bit</b> (+ 8 Prüfbits = 64) → heute zu kurz</td></tr>
+<tr><td>Runden</td><td><b>16</b> identische Runden, je eigener Rundenschlüssel (48 Bit)</td></tr>
+<tr><td>Struktur</td><td><b>Feistelnetzwerk</b></td></tr>
+<tr><td>Ablösung</td><td>2000 durch <b>AES</b>; <b>3DES</b> wird noch verwendet</td></tr>
+</table>
+<p>Nur 3 einfache Funktionen: <b>XOR</b>, <b>Permutation</b> (Bitreihenfolge ändern), <b>Substitution</b> (Bitfolge ersetzen).</p>
+
+<h3>Feistelnetzwerk</h3>
+<p>Eingangspermutation IP → 64 Bit in zwei Hälften L und R (je 32 Bit) → 16 Runden → Ausgangspermutation IP<sup>-1</sup>.</p>
+<div class="mono">L<sub>i</sub> = R<sub>i-1</sub><br>R<sub>i</sub> = L<sub>i-1</sub> ⊕ f(R<sub>i-1</sub>, k<sub>i</sub>)</div>
+<div class="tip"><b>Vorteil Feistel:</b> Ver- und Entschlüsselung sind <b>gleich</b> – nur die Rundenschlüssel in <b>umgekehrter Reihenfolge</b>.</div>
+
+<h3>Die f-Funktion (4 Schritte)</h3>
+<div class="flow"><span>R<sub>i-1</sub> (32 Bit)</span><i>→</i><span>1. Expansion E (32→48 Bit)</span><i>→</i><span>2. XOR mit k<sub>i</sub> (48 Bit)</span><i>→</i><span>3. 8 S-Boxen (je 6→4 Bit, 48→32)</span><i>→</i><span>4. Permutation P</span><i>→</i><span>32 Bit</span></div>
+<ul>
+<li><b>Expansion E:</b> Ziel Diffusion (manche Bits werden verdoppelt).</li>
+<li><b>S-Boxen:</b> 8 Tabellen, 6 Bit rein, 4 Bit raus, <b>nichtlinear</b>, <b>ausschlaggebend für Sicherheit</b>. Äußere 2 Bits = Zeile, innere 4 Bits = Spalte.</li>
+<li><b>Permutation P:</b> Diffusion – nach <b>5 Runden</b> hängt jedes Bit von jedem Schlüssel- und Klartextbit ab.</li>
+</ul>
+
+<h3>Schlüsselfahrplan</h3>
+<ul>
+<li>64 Bit → 8 Prüfbits prüfen → <b>PC-1</b> → 56 Bit → zwei 28-Bit-Hälften C<sub>0</sub>, D<sub>0</sub>.</li>
+<li>Pro Runde <b>Linksrotation</b>: um <b>1 Bit</b> in Runden 1, 2, 9, 16; sonst um <b>2 Bit</b>. Gesamt 4·1 + 12·2 = 28 → C<sub>16</sub>=C<sub>0</sub>.</li>
+<li><b>PC-2</b> wählt 48 Bit → Rundenschlüssel k<sub>i</sub>.</li>
+<li>Entschlüsselung: keine Rotation in Runde 1, <b>Rechts</b>rotation um 1 in Runden 2, 9, 16; sonst um 2.</li>
+</ul>
+
+<h3>Sicherheit von DES</h3>
+<ul>
+<li>Kritik: Schlüsselraum zu klein (<b>2<sup>56</sup></b>) · S-Box-Design geheim (NSA-Hintertür?).</li>
+<li>Resistent gegen differentielle & lineare Kryptanalyse (IBM/NSA kannten diese offenbar schon).</li>
+<li><b>Brute-Force heute machbar:</b> 1998 EFF „Deep Crack“ ($250 000, 56 h) · 1999 22 h 15 min · 2006-08 COPACOBANA (120 FPGAs, 6,4 Tage, ~$10 000).</li>
+</ul>
+<table>
+<tr><th>Verfahren</th><th>Block</th><th>Schlüssel</th><th>Bemerkung</th></tr>
+<tr><td>AES / Rijndael</td><td>128</td><td>128/192/256</td><td>DES-„Ersatz“, weltweiter Standard</td></tr>
+<tr><td>Triple DES</td><td>64</td><td>112 (effektiv)</td><td>konservative Wahl</td></tr>
+<tr><td>Mars, RC6, Serpent, Twofish</td><td>128</td><td>128/192/256</td><td>AES-Finalisten</td></tr>
+<tr><td>IDEA</td><td>64</td><td>128</td><td>bis 2000 patentiert</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ===================== 6 AES & MODES ===================== -->
+<section class="page" id="aes">
+<h2>6. Betriebsmodi & AES</h2>
+
+<div class="card">
+<h3>Operational Modes (Betriebsarten von Blockchiffren)</h3>
+<table>
+<tr><th>Mode</th><th>Funktion</th><th>Problem / Nutzen</th></tr>
+<tr><td><b>ECB</b> Electronic Codebook</td><td>Nachricht in 64-Bit-Blöcke, letzten auffüllen (Padding), jeden Block einzeln verschlüsseln</td><td>Gleicher Klartextblock → gleicher Chiffreblock. Angreifer kann Blöcke entfernen, wiederholen (<b>Replay</b>), vertauschen; Dictionary-Attack</td></tr>
+<tr><td><b>CBC</b> Cipher Block Chaining</td><td>Klartext wird vor Verschlüsselung mit vorherigem Chiffreblock <b>XOR</b>-verknüpft; erster Block mit <b>IV</b> (Initialisierungsvektor, zufällig)</td><td>Keine Wiederholungen sichtbar, kein Block-Kopieren. Aber: Bits ändern → nächster Block ändert sich, gleicher Block = Müll. Lösung: 64-Bit <b>CRC</b> anhängen. Nachteil: ganzer Block muss ankommen</td></tr>
+<tr><td><b>CFB</b> Cipher Feedback</td><td>für kleine Datenmengen</td><td></td></tr>
+<tr><td><b>OFB</b> Output Feedback</td><td>Blockchiffre als Zufallsgenerator → <b>Stromchiffre</b> (Pseudozufallsstrom XOR Daten)</td><td>wie One-Time-Pad-Anwendung</td></tr>
+<tr><td><b>CTR</b> Counter Mode</td><td>andere Art, Blockchiffre als Stromchiffre zu nutzen</td><td></td></tr>
+<tr><td><b>CBC-MAC (CCM)</b></td><td>wie CBC, letzter Block dient als <b>MAC-Tag</b> (Integrität)</td><td></td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>AES – Advanced Encryption Standard</h3>
+<ul>
+<li>Heute <b>meistverwendete symmetrische Chiffre</b>; in IPSec, TLS; Standard für hoheitliche Verschlüsselung.</li>
+<li>Auswahl durch <b>NIST</b>: Jan 1997 Ausschreibung → Aug 1998 15 Kandidaten → Aug 1999 5 Finalisten (Mars, RC6, Rijndael, Serpent, Twofish) → <b>Okt 2000 Rijndael</b> (J. Daemen & V. Rijmen) gewinnt.</li>
+<li>Anforderungen: 128-Bit-Block, Schlüssel 128/192/256, sicher, effizient in SW & HW, Design öffentlich.</li>
+<li><b>Kein Feistelnetzwerk!</b> Byte-orientiert, Zustand = 4×4-Matrix (16 Byte).</li>
+</ul>
+<table>
+<tr><th>Schlüssellänge</th><th>Runden</th><th>Unterschlüssel (= Runden + 1)</th></tr>
+<tr><td>128 Bit</td><td>10</td><td>11</td></tr>
+<tr><td>192 Bit</td><td>12</td><td>13</td></tr>
+<tr><td>256 Bit</td><td>14</td><td>15</td></tr>
+</table>
+
+<h3>Eine AES-Runde (Schichten / Layers)</h3>
+<div class="flow"><span>Key Addition (k<sub>0</sub>)</span><i>→</i><span>1. Byte Substitution</span><i>→</i><span>2. ShiftRows</span><i>→</i><span>3. MixColumn</span><i>→</i><span>4. Key Addition (k<sub>i</sub>)</span></div>
+<table>
+<tr><th>Schicht</th><th>Was passiert</th><th>Zweck</th></tr>
+<tr><td><b>Byte Substitution</b></td><td>16 <b>identische</b> S-Boxen, <b>bijektiv</b> (eindeutig umkehrbar), meist als Tabelle in Software</td><td>Einziges <b>nichtlineares</b> Element → Konfusion</td></tr>
+<tr><td><b>ShiftRows</b></td><td>Zeilen der Matrix zyklisch nach links verschieben: Zeile 0 um 0, Zeile 1 um 1, Zeile 2 um 2, Zeile 3 um 3</td><td>Diffusion (Byte-Level-Permutation)</td></tr>
+<tr><td><b>MixColumn</b></td><td>Jede 4-Byte-Spalte × feste 4×4-Matrix (01,02,03 hex) im endlichen Körper <b>GF(2<sup>8</sup>)</b>; in der <b>letzten Runde ausgelassen</b></td><td>Diffusion (Spalten „vermischen“)</td></tr>
+<tr><td><b>Key Addition</b></td><td>Statusmatrix C ⊕ Unterschlüssel k<sub>i</sub>; <b>Key Whitening</b> = auch am Anfang und Ende</td><td>Schlüssel einbringen; ist ihre eigene Inverse</td></tr>
+</table>
+<p><b>Entschlüsselung:</b> Da kein Feistel → alle Schichten müssen invertiert werden: Inverse MixColumn, Inverse ShiftRows, Inverse Byte Substitution; Key Addition bleibt gleich.</p>
+<p><b>Software:</b> Rundenfunktionen (außer Key Addition) in 4 Tabellen à 256 Einträge (32 Bit) → eine Runde = 16 Table-Lookups; >1,6 Gbit/s auf 64-Bit-CPUs.</p>
+<h3>Sicherheit von AES</h3>
+<ul>
+<li><b>Brute-Force:</b> unmöglich (128/192/256 Bit).</li>
+<li><b>Analytisch:</b> kein praktikabler Angriff bekannt, der besser als Brute-Force ist.</li>
+<li><b>Seitenkanalangriffe:</b> viele veröffentlicht – greifen aber die <b>Implementierung</b> an, nicht den Algorithmus.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>📋 Zusammenfassung DES vs. AES</h3>
+<table>
+<tr><th></th><th>DES</th><th>AES</th></tr>
+<tr><td>Jahr</td><td>1977</td><td>2000</td></tr>
+<tr><td>Block</td><td>64 Bit</td><td>128 Bit</td></tr>
+<tr><td>Schlüssel</td><td>56 Bit</td><td>128/192/256 Bit</td></tr>
+<tr><td>Runden</td><td>16</td><td>10/12/14</td></tr>
+<tr><td>Struktur</td><td>Feistelnetzwerk</td><td>Schichten (kein Feistel)</td></tr>
+<tr><td>Einheit</td><td>Bit</td><td>Byte (4×4-Matrix)</td></tr>
+<tr><td>Status</td><td>unsicher (Brute-Force)</td><td>sicher, Standard</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ===================== KARTEIKARTEN ===================== -->
+<section class="page" id="karten">
+<h2>🃏 Karteikarten</h2>
+<p>Klicke auf die Karte zum Umdrehen. <span id="fcCount"></span></p>
+<div class="fc-wrap"><div class="fc" id="fc" onclick="this.classList.toggle('flip')"><div class="face front" id="fcF"></div><div class="face back" id="fcB"></div></div></div>
+<div class="fc-ctrl">
+<button class="btn" onclick="fcNav(-1)">◀ Zurück</button>
+<button class="btn" onclick="fcShuffle()">🔀 Mischen</button>
+<button class="btn" onclick="fcNav(1)">Weiter ▶</button>
+</div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section class="page" id="quiz">
+<h2>✅ Quiz</h2>
+<div class="score" id="score">0 / 0 richtig</div>
+<div class="progress"><div id="qbar"></div></div>
+<div id="quizBox"></div>
+<div class="fc-ctrl"><button class="btn" onclick="buildQuiz()">🔄 Quiz zurücksetzen</button></div>
+</section>
+
+</main>
+
+<script>
+// ---------- Navigation ----------
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('section.page').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); document.getElementById(b.dataset.p).classList.add('active');
+  window.scrollTo(0,0);
+});
+// ---------- Theme ----------
+const tBtn=document.getElementById('theme');
+function setTheme(t){document.documentElement.dataset.theme=t;tBtn.textContent=t==='dark'?'☀️':'🌙';try{localStorage.setItem('itsi-theme',t)}catch(e){}}
+try{setTheme(localStorage.getItem('itsi-theme')||'light')}catch(e){setTheme('light')}
+tBtn.onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+// ---------- Cäsar ----------
+function shiftText(t,n){n=((n%26)+26)%26;return t.replace(/[A-Za-z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-b+n)%26+b)})}
+function caesar(dir){const t=document.getElementById('cIn').value,n=+document.getElementById('cShift').value;document.getElementById('cOut').textContent=shiftText(t,dir*n)}
+function bruteForce(){const t=document.getElementById('cIn').value;let s='';for(let i=1;i<26;i++)s+=i+': '+shiftText(t,-i)+'\n';document.getElementById('cOut').style.whiteSpace='pre';document.getElementById('cOut').textContent=s}
+
+// ---------- Karteikarten ----------
+const cards=[
+["C-I-A steht für?","Confidentiality (Vertraulichkeit), Integrity (Integrität), Availability (Verfügbarkeit)"],
+["Unterschied Gefahr vs. Bedrohung?","Gefahr: ohne konkreten Bezug (irgendwo bebt die Erde). Bedrohung: Gefahr mit konkretem zeitl./räuml./pers. Bezug (Erdbeben bei Neapel)."],
+["Formel für Risiko?","Risiko = Eintrittswahrscheinlichkeit · Schadenshöhe"],
+["Was ist eine Gefährdung?","Bedrohung trifft auf Schwachstelle (Haus im Erdbebengebiet nicht erdbebensicher gebaut)."],
+["Security vs. Safety?","Security = Angriffssicherheit (Schutz vor Angreifern). Safety = Funktions-/Betriebssicherheit (keine Fehlfunktion im Normalbetrieb)."],
+["Was ist ein Exploit?","Software, die eine Schwachstelle ausnutzt, um Zugriff/höhere Rechte zu erlangen; enthält Schadcode."],
+["Zero-Day Exploit?","Exploit, für den es noch keinen Patch gibt – Entwickler hatten 0 Tage Zeit."],
+["Wofür steht CVE?","Common Vulnerabilities and Exposures – Datenbank bekannter Schwachstellen."],
+["Wurm vs. Virus?","Wurm verbreitet sich automatisch über Netzwerkverbindungen; Virus kommt mit präparierten Anwendungen."],
+["Was ist ein Trojaner?","Getarnter Virus, den der Benutzer selbst installiert; tut etwas anderes als erwartet (Hintertür, Passwörter)."],
+["Ransomware?","Erpressungstrojaner: verschlüsselt Daten, fordert Lösegeld (ransom + malware)."],
+["DoS vs. DDoS?","DoS stört Verfügbarkeit eines Dienstes; DDoS mit vielen Angreifern (Botnet)."],
+["Spoofing?","Nachrichten mit gefälschter Absenderadresse (IP, E-Mail)."],
+["Phishing vs. Spear Phishing?","Phishing: massenhaft gefälschte Mails. Spear Phishing: personalisiert mit gesammelten Infos über das Opfer."],
+["Sniffing vs. Eavesdropping?","Sniffing: Netzwerkverkehr mithören (Diagnose, Wireshark). Eavesdropping: unberechtigtes Abhören von Datenpaketen."],
+["Social Engineering?","Ausnutzen menschlicher Schwächen, um Reaktionen zu provozieren (Ködern, Pretexting, Reverse SE, CEO Fraud)."],
+["CEO Fraud / BEC?","Business E-Mail Compromise: Täter gibt sich als Chef aus und lässt Mitarbeiter Geld überweisen."],
+["Wie viel % der Sicherheitsrisiken = Mensch?","ca. 60 % (Layer 8)"],
+["Kryptografie vs. Kryptoanalyse?","Kryptografie: Methoden zum Ver-/Entschlüsseln. Kryptoanalyse: Sicherheit der Verfahren bewerten/knacken. Beides = Kryptologie."],
+["Die 5 Ziele der Kryptografie?","Vertraulichkeit, Integrität, Authentizität, Gültigkeit, Nichtabstreitbarkeit"],
+["Was kann Krypto NICHT verhindern?","Dass Mallory Nachrichten verändert, Daten abfängt oder die Leitung zerstört (DoS)."],
+["Schlüssel bei der Skytale?","Der Durchmesser des Stabes. Verfahren = Transposition."],
+["Wie viele Schlüssel hat Cäsar?","26 (Schlüssel 0 ist sinnlos → 25 nützliche). Brute-Force & Häufigkeitsanalyse möglich."],
+["Häufigster Buchstabe im Deutschen?","E (~17 %)"],
+["Substitution vs. Permutation?","Substitution: Buchstaben ersetzen (Tabelle). Permutation: Buchstaben umordnen/würfeln."],
+["Monoalphabetisch vs. polyalphabetisch?","Mono: immer gleiche Abbildung (Cäsar) → Häufigkeitsanalyse klappt. Poly: wechselnde Abbildung (Vigenère, Enigma)."],
+["Vigenère-Chiffre?","Schlüsselwort wird wiederholt unter den Text geschrieben, Buchstaben addiert (A=0). Mit bekannter Schlüssellänge = mehrere Cäsar."],
+["Vernam-Chiffre?","Vigenère mit Schlüssel so lang wie der Klartext."],
+["Wann ist eine Vernam-Chiffre ein One-Time-Pad?","Schlüssel rein zufällig UND nur einmal verwendet → absolut sicher."],
+["3 Nachteile des One-Time-Pad?","Schlüssel sehr lang/unhandlich; Schlüsselübertragung abhörbar; echte Zufallszahlen schwer herzustellen."],
+["Nach wie vielen Buchstaben wiederholt sich die Enigma (3 Rotoren)?","26³ = 17 576"],
+["Kerckhoffs' Prinzip?","Sicherheit beruht nur auf Geheimhaltung des Schlüssels, nicht des Algorithmus. Gegenteil: Security by Obscurity."],
+["Formel symmetrische Verschlüsselung?","e(m,k)=c, d(c,k)=m; S_E = S_D"],
+["Vor-/Nachteile symmetrisch?","+ schnell, große Datenmengen, kurze Schlüssel. − Schlüsselverteilung, nicht für digitale Signatur."],
+["Konfusion vs. Diffusion?","Konfusion: Zusammenhang Schlüssel↔Chiffrat verbergen (Substitution/S-Box). Diffusion: ein Klartextbit beeinflusst viele Chiffratbits (Permutation)."],
+["DES: Blockgröße, Schlüssellänge, Runden?","64 Bit Block, 56 Bit Schlüssel (+8 Prüfbits), 16 Runden, Feistelnetzwerk"],
+["Rundenfunktion Feistel?","L_i = R_{i-1};  R_i = L_{i-1} ⊕ f(R_{i-1}, k_i)"],
+["4 Schritte der DES f-Funktion?","1. Expansion E (32→48), 2. XOR mit Rundenschlüssel, 3. S-Box-Substitution (48→32), 4. Permutation P"],
+["Welches Element ist bei DES ausschlaggebend für die Sicherheit?","Die S-Boxen (nichtlinear, 6 Bit rein, 4 Bit raus, 8 Stück)"],
+["DES Schlüsselfahrplan – Rotationen?","Linksrotation um 1 Bit in Runden 1, 2, 9, 16; sonst um 2 Bit. PC-1 (64→56), PC-2 (56→48)."],
+["Vorteil des Feistelnetzwerks?","Ver- und Entschlüsselung gleich, nur Rundenschlüssel in umgekehrter Reihenfolge."],
+["Warum ist DES heute unsicher?","Schlüsselraum 2^56 zu klein → Brute-Force machbar (Deep Crack 1998, COPACOBANA 6,4 Tage für ~$10 000)."],
+["Problem von ECB?","Gleicher Klartextblock → gleicher Chiffreblock; Blöcke können vertauscht/wiederholt werden (Replay)."],
+["Wie funktioniert CBC?","Klartext XOR vorheriger Chiffreblock, dann verschlüsseln. Erster Block mit zufälligem IV."],
+["Wofür steht IV?","Initialization Vector – zufällige Daten für den ersten Block, muss dem Empfänger bekannt sein."],
+["Welche Modes machen aus einer Blockchiffre eine Stromchiffre?","OFB (Output Feedback) und CTR (Counter Mode)"],
+["AES: Blockgröße, Schlüssellängen, Runden?","128 Bit Block; 128/192/256 Bit Schlüssel → 10/12/14 Runden; Unterschlüssel = Runden+1"],
+["Wer hat AES entwickelt und wann gewählt?","Rijndael von J. Daemen & V. Rijmen, Oktober 2000 durch NIST"],
+["Die 4 Schichten einer AES-Runde?","Byte Substitution, ShiftRows, MixColumn, Key Addition"],
+["Welche AES-Schicht ist nichtlinear?","Byte Substitution (16 identische, bijektive S-Boxen)"],
+["ShiftRows?","Zeilen zyklisch links verschieben: Zeile 0 um 0, 1 um 1, 2 um 2, 3 um 3."],
+["MixColumn?","Jede Spalte × feste 4×4-Matrix (01,02,03) in GF(2^8); in letzter Runde ausgelassen."],
+["Key Whitening?","Unterschlüssel wird auch am Anfang (k0) und Ende verwendet."],
+["Basiert AES auf einem Feistelnetzwerk?","Nein → alle Schichten müssen zum Entschlüsseln invertiert werden (Key Addition ist eigene Inverse)."],
+["Was greifen Seitenkanalangriffe an?","Die Implementierung des Algorithmus, nicht den Algorithmus selbst."],
+["Informationssicherheit vs. Datenschutz – Regelungen?","Infosicherheit: ISO/IEC 27001. Datenschutz: DSGVO."],
+];
+let fcOrder=cards.map((_,i)=>i),fcI=0;
+function fcShow(){const c=cards[fcOrder[fcI]];document.getElementById('fc').classList.remove('flip');setTimeout(()=>{document.getElementById('fcF').textContent=c[0];document.getElementById('fcB').textContent=c[1]},150);document.getElementById('fcCount').textContent=`Karte ${fcI+1} / ${cards.length}`}
+function fcNav(d){fcI=(fcI+d+cards.length)%cards.length;fcShow()}
+function fcShuffle(){fcOrder.sort(()=>Math.random()-.5);fcI=0;fcShow()}
+fcShow();
+
+// ---------- Quiz ----------
+const quiz=[
+["Wofür steht das 'I' in C-I-A?",["Identität","Integrität","Information","Isolation"],1,"Integrity = Integrität: Daten sind unversehrt."],
+["Ein Erdbeben in Wien ist laut Folien …",["eine Bedrohung","eine Gefahr","ein Risiko","eine Gefährdung"],1,"In Wien bebt die Erde nie → kein konkreter Bezug → nur Gefahr, keine Bedrohung."],
+["Risiko = ?",["Schaden + Wahrscheinlichkeit","Schaden / Wahrscheinlichkeit","Wahrscheinlichkeit · Schadenshöhe","Schwachstelle · Bedrohung"],2,"Risiko = Eintrittswahrscheinlichkeit · Schadenshöhe"],
+["Safety bedeutet …",["Schutz vor Angreifern","Funktionssicherheit / Betriebssicherheit","Datenschutz","Verschlüsselung"],1,"Safety = Betriebssicherheit; Security = Angriffssicherheit."],
+["Ein Exploit ohne verfügbaren Patch heißt …",["Zero-Day","Rootkit","Backdoor","Honeypot"],0,"Zero-Day: Entwickler hatten 0 Tage Zeit."],
+["Welche Malware verbreitet sich automatisch über Netzwerke?",["Virus","Trojaner","Wurm","Spyware"],2,"Würmer verbreiten sich selbstständig über offene Netzwerkverbindungen."],
+["Mails mit gefälschter Absenderadresse nennt man …",["Sniffing","Spoofing","Defacement","Pretexting"],1,"Spoofing = gefälschte Absenderadresse."],
+["Personalisiertes Phishing mit Infos aus Social Media heißt …",["Spear Phishing","Vishing","Ködern","Reverse Social Engineering"],0,"Spear Phishing ist gezielt und personalisiert."],
+["Wie viel Prozent der Sicherheitsrisiken macht der Mensch aus?",["ca. 20 %","ca. 40 %","ca. 60 %","ca. 90 %"],2,"Laut Folien ca. 60 % – 'Layer 8'."],
+["Die Sicherheit von Verfahren bewerten/knacken = ?",["Kryptografie","Kryptoanalyse","Steganographie","Kryptologie"],1,"Kryptoanalyse. Kryptologie ist der Oberbegriff."],
+["Was kann Kryptografie NICHT verhindern?",["Dass Mallory Daten lesen kann","Dass Mallory sich unbemerkt als Bob ausgibt","Dass Mallory die Leitung zerstört (DoS)","Dass Alice ihre Nachricht abstreitet"],2,"DoS/Abfangen kann Krypto nicht verhindern – nur dass es unbemerkt bleibt."],
+["Die Skytale gehört zu den …",["Substitutionsverfahren","Transpositionsverfahren","polyalphabetischen Verfahren","Stromchiffren"],1,"Buchstaben werden umgeordnet → Transposition. Schlüssel = Stabdurchmesser."],
+["Welcher Angriff knackt Cäsar auch ohne Brute-Force?",["Replay-Attacke","Häufigkeitsanalyse","Seitenkanalangriff","SQL Injection"],1,"E ist im Deutschen mit ~17 % am häufigsten."],
+["Vigenère ist …",["monoalphabetisch","polyalphabetisch","eine Transposition","ein One-Time-Pad"],1,"Schlüsselwort wiederholt → wechselnde Abbildung = polyalphabetisch."],
+["Ein One-Time-Pad ist absolut sicher, wenn …",["der Schlüssel lang genug ist","der Schlüssel zufällig ist und nur einmal benutzt wird","der Algorithmus geheim ist","AES verwendet wird"],1,"Zufällig + nur einmal = unknackbar."],
+["Kerckhoffs' Prinzip besagt …",["Algorithmus muss geheim bleiben","Nur der Schlüssel muss geheim sein","Schlüssel darf öffentlich sein","Sicherheit durch Verstecken"],1,"Gegenteil: Security by Obscurity."],
+["DES Schlüssellänge (effektiv)?",["48 Bit","56 Bit","64 Bit","128 Bit"],1,"56 Bit + 8 Prüfbits = 64 Bit."],
+["Wie viele Runden hat DES?",["8","10","16","32"],2,"16 Runden, Feistelnetzwerk."],
+["Welches DES-Element ist nichtlinear und entscheidend für die Sicherheit?",["Expansion E","Permutation P","S-Boxen","XOR"],2,"S-Boxen: 6 Bit rein, 4 Bit raus, nichtlinear."],
+["R_i = ?",["L_{i-1}","R_{i-1} ⊕ k_i","L_{i-1} ⊕ f(R_{i-1}, k_i)","f(L_{i-1}, k_i)"],2,"Feistel: L_i = R_{i-1}; R_i = L_{i-1} ⊕ f(R_{i-1}, k_i)"],
+["Ab welcher Runde hängt bei DES jedes Bit von jedem Schlüssel-/Klartextbit ab?",["1","5","8","16"],1,"Diffusion durch E, S-Boxen und P → nach 5 Runden."],
+["Welcher Mode produziert für gleiche Klartextblöcke gleiche Chiffreblöcke?",["CBC","ECB","OFB","CTR"],1,"ECB verschlüsselt jeden Block unabhängig → Muster erkennbar."],
+["Was braucht CBC für den ersten Block?",["MAC-Tag","Initialisierungsvektor (IV)","Prüfsumme","Rundenschlüssel"],1,"IV = zufällige Daten, verhindert Block-Replay."],
+["AES Blockgröße?",["64 Bit","96 Bit","128 Bit","256 Bit"],2,"Immer 128 Bit; Schlüssel 128/192/256."],
+["AES mit 256-Bit-Schlüssel hat wie viele Runden?",["10","12","14","16"],2,"128→10, 192→12, 256→14."],
+["Welche AES-Schicht wird in der letzten Runde ausgelassen?",["Byte Substitution","ShiftRows","MixColumn","Key Addition"],2,"MixColumn entfällt in der letzten Runde."],
+["Welches AES-Element ist das einzige nichtlineare?",["ShiftRows","MixColumn","Byte Substitution (S-Box)","Key Addition"],2,"S-Boxen sind identisch, bijektiv und nichtlinear."],
+["AES basiert auf …",["einem Feistelnetzwerk","Schichten (Layers), kein Feistel","Rotoren","One-Time-Pad"],1,"Darum müssen alle Schichten invertiert werden."],
+["Seitenkanalangriffe greifen … an.",["den Algorithmus","die Implementierung","den Schlüssel direkt","den IV"],1,"Sie nutzen Zeit, Strom usw. der konkreten Implementierung."],
+["Wer hat Rijndael (AES) entwickelt?",["Rivest, Shamir, Adleman","Diffie & Hellman","Daemen & Rijmen","Schneier"],2,"Joan Daemen & Vincent Rijmen, gewählt Okt 2000."],
+];
+let qRight=0,qDone=0;
+function buildQuiz(){
+  qRight=0;qDone=0;const box=document.getElementById('quizBox');box.innerHTML='';
+  const order=quiz.map((_,i)=>i).sort(()=>Math.random()-.5);
+  order.forEach((qi,n)=>{
+    const q=quiz[qi];const d=document.createElement('div');d.className='q card';
+    d.innerHTML=`<b>${n+1}. ${q[0]}</b>`;
+    q[1].forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=o;
+      b.onclick=()=>{if(d.classList.contains('done'))return;d.classList.add('done');qDone++;
+        if(i===q[2]){b.classList.add('right');qRight++}else{b.classList.add('wrong');d.querySelectorAll('.opt')[q[2]].classList.add('right')}
+        upd()};d.appendChild(b)});
+    const e=document.createElement('div');e.className='expl';e.textContent='💡 '+q[3];d.appendChild(e);box.appendChild(d);
+  });upd();
+}
+function upd(){document.getElementById('score').textContent=`${qRight} / ${qDone} richtig (${quiz.length} Fragen)`;document.getElementById('qbar').style.width=(qDone/quiz.length*100)+'%'}
+buildQuiz();
+</script>
+</body>
+</html>
