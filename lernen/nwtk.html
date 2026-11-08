@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NWTK Lernen – IP, Routing, TCP/UDP</title>
+<style>
+:root{--bg:#0f1115;--card:#181b22;--line:#2a2f3a;--txt:#e6e8ee;--mut:#9aa3b2;--acc:#4f9cff;--ok:#3ecf8e;--bad:#ff5c6c;--warn:#f5b84d}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
+header{padding:20px 16px;border-bottom:1px solid var(--line);background:var(--card)}
+header h1{margin:0;font-size:22px}
+header p{margin:4px 0 0;color:var(--mut);font-size:14px}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+nav a{color:var(--txt);text-decoration:none;font-size:13px;padding:5px 10px;border:1px solid var(--line);border-radius:999px}
+nav a:hover{border-color:var(--acc)}
+main{max-width:960px;margin:0 auto;padding:16px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0}
+h2{margin:0 0 10px;font-size:20px;color:var(--acc)}
+h3{margin:16px 0 6px;font-size:16px}
+ul{margin:6px 0;padding-left:22px}
+li{margin:3px 0}
+code,kbd{background:#0b0d12;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#1f232d}
+.merk{border-left:4px solid var(--warn);background:#1f1b12;padding:10px 12px;border-radius:6px;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer}
+button.sec{background:#2a2f3a}
+button:disabled{opacity:.4;cursor:default}
+/* Step-through */
+.steps{background:#0b0d12;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px}
+.steps .ctl{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.steps .n{color:var(--mut);font-size:13px;margin-left:auto}
+.steps .t{font-weight:600;margin-bottom:4px}
+.steps .d{color:var(--mut)}
+.cache{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.cache div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;min-width:160px}
+.cache b{display:block;color:var(--acc);margin-bottom:3px}
+/* Flashcards */
+.card{border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;background:#0b0d12}
+.card .q{font-weight:600}
+.card .a{display:none;margin-top:8px;color:var(--ok);border-top:1px dashed var(--line);padding-top:8px}
+.card.open .a{display:block}
+.card small{color:var(--mut)}
+/* Quiz */
+.qz{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#0b0d12}
+.qz label{display:block;padding:6px 8px;border-radius:6px;cursor:pointer}
+.qz label:hover{background:#1f232d}
+.qz.done label.ok{background:#12301f;color:var(--ok)}
+.qz.done label.bad{background:#3a1419;color:var(--bad)}
+.qz .ex{display:none;margin-top:6px;color:var(--mut);font-size:14px}
+.qz.done .ex{display:block}
+#score{font-weight:700;margin-top:10px}
+/* Subnet trainer */
+.sn input{width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:#0b0d12;color:var(--txt);font-size:15px}
+.sn .row{display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:center;margin:6px 0}
+.sn .res{margin-top:10px;font-size:14px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+</style>
+</head>
+<body>
+<header>
+  <h1>NWTK IV – Wiederholung 3. Jahrgang</h1>
+  <p>IP-Grundlagen · Subnetting · Direkte/Indirekte Zustellung (ARP) · TCP & UDP · Ports — zum Lernen und Abfragen</p>
+</header>
+<nav>
+  <a href="#ip">IP-Layer</a><a href="#header">IPv4-Header</a><a href="#host">Host-Routing</a><a href="#router">Router</a>
+  <a href="#zustellung">Zustellung (ARP)</a><a href="#adr">Adressen</a><a href="#subnet">Subnetting</a><a href="#vlsm">VLSM</a>
+  <a href="#transport">TCP/UDP</a><a href="#ports">Ports</a><a href="#trainer">Subnet-Trainer</a><a href="#cards">Karteikarten</a><a href="#quiz">Quiz</a>
+</nav>
+<main>
+
+<section id="ip">
+<h2>1. Network Layer (Schicht 3) & IP</h2>
+<p>4 Grundaufgaben: <b>Adressierung</b> der Endgeräte · <b>Encapsulation</b> (Segment → Paket) · <b>Routing</b> · <b>De-Encapsulation</b>.</p>
+<div class="grid">
+<div><h3>IP ist …</h3>
+<ul>
+<li><b>Connectionless</b> – kein Verbindungsaufbau, keine ACKs/Sync vorher.</li>
+<li><b>Best Effort</b> – keine Garantie, kein Neusenden, weiß nicht ob Ziel online ist.</li>
+<li><b>Media Independent</b> – egal ob Kupfer, Glas, WLAN.</li>
+</ul></div>
+<div><h3>Daraus folgt</h3>
+<ul>
+<li>IP ist <b>unreliable</b>: kann Fehler nicht beheben, nichts neu senden, nichts sortieren → das macht <b>TCP</b>.</li>
+<li>Die IP-Adressen ändern sich von Quelle bis Ziel <b>nicht</b> (Ausnahme NAT). MAC-Adressen ändern sich pro Hop!</li>
+<li><b>MTU</b> kommt vom Data-Link-Layer. Zu großes Paket → <b>Fragmentierung</b> (nur IPv4, kostet Latenz; IPv6 fragmentiert nicht).</li>
+</ul></div>
+</div>
+</section>
+
+<section id="header">
+<h2>2. IPv4-Header – wichtige Felder</h2>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td>Version</td><td>4 Bit, bei IPv4 = <code>0100</code></td></tr>
+<tr><td>Differentiated Services (DS)</td><td>QoS – DiffServ (früher ToS / IntServ)</td></tr>
+<tr><td>Header Checksum</td><td>Erkennt Fehler im <i>Header</i></td></tr>
+<tr><td>TTL (Time to Live)</td><td>Hop-Zähler, jeder Router −1; bei 0 → Paket verworfen</td></tr>
+<tr><td>Protocol</td><td>Welches Protokoll folgt: ICMP, TCP, UDP …</td></tr>
+<tr><td>Source / Destination Address</td><td>je 32 Bit – die zwei wichtigsten Felder</td></tr>
+</table>
+<p><small>Header wird binär gelesen, 4 Byte pro Zeile, von links nach rechts.</small></p>
+</section>
+
+<section id="host">
+<h2>3. Wie ein Host routet</h2>
+<p>Ein Host kann senden an: <b>sich selbst</b> (<code>127.0.0.1</code> / <code>::1</code>), <b>lokale Hosts</b> (gleiches LAN), <b>remote Hosts</b> (anderes Netz).</p>
+<div class="merk"><b>Entscheidung lokal/remote:</b> eigene IP <b>AND</b> Subnetzmaske = eigene Netz-ID. Ziel-IP <b>AND</b> Maske = Ziel-Netz-ID. Gleich → lokal (direkt). Ungleich → <b>Default Gateway</b>.</div>
+<h3>Default Gateway (DGW)</h3>
+<ul>
+<li>Router oder Layer-3-Switch, muss eine IP im <b>selben Netz</b> wie das LAN haben.</li>
+<li>Host kennt DGW statisch oder per <b>DHCP</b> (IPv6: Router Solicitation / Advertisement).</li>
+<li>Im Host ist das DGW eine statische Route „last resort“ (<code>0.0.0.0/0</code>).</li>
+<li>Ohne (oder mit falschem) DGW kommt kein Paket aus dem LAN raus.</li>
+<li>Routing-Tabelle anzeigen: <code>route print</code> oder <code>netstat -r</code> (Windows).</li>
+</ul>
+</section>
+
+<section id="router">
+<h2>4. Router-Routing-Tabelle</h2>
+<table>
+<tr><th>Typ</th><th>Woher</th><th>Code in <code>show ip route</code></th></tr>
+<tr><td>Directly Connected</td><td>automatisch, wenn Interface up + IP</td><td><b>C</b> (Netz), <b>L</b> (eigene Interface-IP)</td></tr>
+<tr><td>Remote – statisch</td><td>Admin konfiguriert manuell</td><td><b>S</b></td></tr>
+<tr><td>Remote – dynamisch</td><td>Routing-Protokoll</td><td><b>O</b> = OSPF, <b>D</b> = EIGRP</td></tr>
+<tr><td>Default Route</td><td>wenn nichts passt</td><td><b>S*</b></td></tr>
+</table>
+<div class="grid">
+<div><h3>Statisch</h3><ul><li>manuell konfigurieren und bei Änderung manuell anpassen</li><li>gut für kleine Netze ohne Redundanz</li><li>oft für die Default Route</li></ul></div>
+<div><h3>Dynamisch</h3><ul><li>findet Netze automatisch</li><li>hält Infos aktuell, wählt besten Pfad</li><li>reagiert auf Topologie-Änderung</li><li>kann statische Default Route weiterverteilen</li></ul></div>
+</div>
+<p>Eine Routing-Tabellen-Zeile besteht aus: <code>Net-ID | Next Hop | Metric</code>.</p>
+</section>
+
+<section id="zustellung">
+<h2>5. Direkte vs. Indirekte Zustellung (ARP) – Schritt für Schritt</h2>
+<p>Topologie aus der Präsentation: <b>Host A</b> 1.0.0.1 (MAC A), <b>Host B</b> 1.0.0.2 (MAC B) im Netz 1.0.0.0, DGW <b>R1</b> 1.0.0.9 (MAC R). <b>Host C</b> 2.0.0.1 (MAC C) im Netz 2.0.0.0, DGW <b>R4</b> 2.0.0.9 (MAC S). Weg A→C: R1 → R2 → R4.</p>
+<table>
+<tr><th>Routing Table R1</th><th>R2</th><th>R4</th></tr>
+<tr><td>1.0.0.0 local 0<br>2.0.0.0 R2 2<br>3.0.0.0 R3 1</td><td>1.0.0.0 R1 1<br>2.0.0.0 R4 1<br>3.0.0.0 R3 1</td><td>1.0.0.0 R2 2<br>2.0.0.0 local 0<br>3.0.0.0 R2 2</td></tr>
+</table>
+
+<div class="steps" id="st">
+  <div class="ctl">
+    <button class="sec" onclick="stMode('d')">Direkt: A → B</button>
+    <button class="sec" onclick="stMode('i')">Indirekt: A → C</button>
+    <span class="n" id="stN"></span>
+  </div>
+  <div class="t" id="stT"></div>
+  <div class="d" id="stD"></div>
+  <div class="cache" id="stC"></div>
+  <div class="ctl" style="margin-top:10px"><button onclick="stStep(-1)" id="stPrev">◀ zurück</button><button onclick="stStep(1)" id="stNext">weiter ▶</button></div>
+</div>
+
+<div class="merk"><b>Merksatz:</b> ARP fragt immer nur nach der MAC des <u>nächsten Hops im eigenen Netz</u> – nie nach der MAC eines Hosts in einem fremden Netz. IP-Adressen (sa/da) bleiben Ende-zu-Ende gleich, MAC sa/da wechseln bei jedem Router.</div>
+<h3>ARP-Cache Endzustand</h3>
+<table>
+<tr><th>Host A</th><th>Host B</th><th>Host C</th><th>R1</th><th>R4</th></tr>
+<tr><td>1.0.0.2 → MAC B<br>1.0.0.9 → MAC R</td><td>1.0.0.1 → MAC A<br>1.0.0.9 → MAC R</td><td>2.0.0.9 → MAC S</td><td>1.0.0.1 → MAC A<br>1.0.0.2 → MAC B</td><td>2.0.0.1 → MAC C</td></tr>
+</table>
+</section>
+
+<section id="adr">
+<h2>6. IPv4-Adressen</h2>
+<p>32 Bit, hierarchisch: <b>Netzteil + Hostteil</b>. Die Subnetzmaske trennt beide (Bit für Bit, <b>AND</b>). Prefix-Länge = Anzahl der 1er in der Maske (<code>/24</code>).</p>
+<p><b>Logisches AND:</b> 1·1=1, sonst 0. &nbsp; <code>192.168.10.77 AND 255.255.255.0 = 192.168.10.0</code></p>
+<div class="grid">
+<div><h3>Drei Adressen pro Netz</h3><ul>
+<li><b>Netzadresse</b> – Hostbits alle 0 (192.168.10.0)</li>
+<li><b>Hosts</b> – erste .1, letzte .254</li>
+<li><b>Broadcast</b> – Hostbits alle 1 (192.168.10.255)</li></ul></div>
+<div><h3>Sendearten</h3><ul>
+<li><b>Unicast</b> – 1 Ziel</li>
+<li><b>Broadcast</b> – alle im Netz</li>
+<li><b>Multicast</b> – Gruppe, z. B. 224.10.10.5</li></ul></div>
+</div>
+<h3>Private Adressen (RFC 1918) – nicht im Internet routbar → NAT am Edge-Router</h3>
+<table>
+<tr><th>Block</th><th>Bereich</th></tr>
+<tr><td>10.0.0.0/8</td><td>10.0.0.0 – 10.255.255.255</td></tr>
+<tr><td>172.16.0.0/12</td><td>172.16.0.0 – 172.31.255.255</td></tr>
+<tr><td>192.168.0.0/16</td><td>192.168.0.0 – 192.168.255.255</td></tr>
+</table>
+<h3>Spezialadressen</h3>
+<ul>
+<li><b>Loopback</b> 127.0.0.0/8 (meist 127.0.0.1) – testet, ob TCP/IP am Host läuft</li>
+<li><b>Link-Local / APIPA</b> 169.254.0.0/16 – Windows vergibt sich selbst, wenn kein DHCP antwortet</li>
+</ul>
+<h3>Klassen (veraltet, RFC 790)</h3>
+<table>
+<tr><th>Klasse</th><th>Bereich</th><th>Standard-Maske</th></tr>
+<tr><td>A</td><td>0 – 127</td><td>/8</td></tr>
+<tr><td>B</td><td>128 – 191</td><td>/16</td></tr>
+<tr><td>C</td><td>192 – 223</td><td>/24</td></tr>
+<tr><td>D</td><td>224 – 239</td><td>Multicast</td></tr>
+<tr><td>E</td><td>240 – 255</td><td>experimentell</td></tr>
+</table>
+<p>Classful verschwendete Adressen → ersetzt durch <b>Classless</b> (CIDR). Vergabe: <b>IANA</b> → 5 <b>RIRs</b> → ISPs → Firmen.</p>
+</section>
+
+<section id="subnet">
+<h2>7. Subnetting</h2>
+<p><b>Warum?</b> Switches fluten Broadcasts an alle Ports, nur <b>Router stoppen Broadcasts</b>. Große Broadcast-Domänen = viel Traffic. Subnetting verkleinert sie, verbessert Performance, ermöglicht Security-Regeln zwischen Subnetzen. Aufteilung nach Standort, Abteilung oder Gerätetyp.</p>
+<div class="merk"><b>Formeln:</b> Hosts = 2<sup>h</sup> − 2 &nbsp;·&nbsp; Subnetze = 2<sup>geliehene Bits</sup> &nbsp;·&nbsp; Blockgröße = 256 − letztes Masken-Oktett</div>
+<table>
+<tr><th>Prefix</th><th>Maske</th><th>Subnetze (aus /24)</th><th>Hosts</th></tr>
+<tr><td>/24</td><td>255.255.255.0</td><td>1</td><td>254</td></tr>
+<tr><td>/25</td><td>255.255.255.128</td><td>2</td><td>126</td></tr>
+<tr><td>/26</td><td>255.255.255.192</td><td>4</td><td>62</td></tr>
+<tr><td>/27</td><td>255.255.255.224</td><td>8</td><td>30</td></tr>
+<tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
+<tr><td>/29</td><td>255.255.255.248</td><td>32</td><td>6</td></tr>
+<tr><td>/30</td><td>255.255.255.252</td><td>64</td><td>2 (Punkt-zu-Punkt)</td></tr>
+</table>
+<p>Oktett-Grenzen: /8 → 16.777.214 Hosts, /16 → 65.534, /24 → 254.</p>
+</section>
+
+<section id="vlsm">
+<h2>8. VLSM – Variable Length Subnet Mask</h2>
+<p>Beispiel: 4 LANs + 3 WAN-Links = 7 Subnetze, größtes LAN 28 Hosts → /27 (8 × 30 Hosts) passt. <b>Aber:</b> WAN-Links brauchen nur 2 Adressen → je 28 verschwendet, 84 gesamt.</p>
+<ul>
+<li>VLSM = „ein Subnetz nochmal subnetten“ → das letzte /27 in acht /30 zerlegen.</li>
+<li><b>Regel:</b> immer mit dem <b>größten</b> Host-Bedarf beginnen, dann absteigend bis zum kleinsten.</li>
+</ul>
+</section>
+
+<section id="transport">
+<h2>9. Transport Layer – TCP & UDP</h2>
+<p>Aufgaben: Gespräche verfolgen · Daten <b>segmentieren</b> und wieder zusammensetzen · Header hinzufügen · mehrere Verbindungen per <b>Multiplexing</b> auf einer Leitung unterscheiden.</p>
+<table>
+<tr><th></th><th>TCP</th><th>UDP</th></tr>
+<tr><td>Verbindung</td><td>verbindungsorientiert (Session / 3-Way-Handshake), <b>stateful</b></td><td>connectionless</td></tr>
+<tr><td>Zuverlässigkeit</td><td>ACKs, Neusenden, Reihenfolge wiederherstellen</td><td>best effort, verlorene Daten werden nicht neu gesendet</td></tr>
+<tr><td>Flow Control</td><td>ja (Window Size)</td><td>nein</td></tr>
+<tr><td>Header</td><td>20 Byte (min.), viele Felder</td><td><b>8 Byte</b>, 4 Felder</td></tr>
+<tr><td>Overhead</td><td>hoch</td><td>sehr gering</td></tr>
+<tr><td>Anwendungen</td><td>HTTP/HTTPS, FTP, SSH, SMTP, POP3, IMAP, Telnet</td><td>DNS, DHCP, TFTP, SNMP, VoIP, Live-Streaming</td></tr>
+</table>
+<div class="grid">
+<div><h3>TCP-Header-Felder</h3>
+<table>
+<tr><td>Source / Dest Port</td><td>je 16 Bit</td></tr>
+<tr><td>Sequence Number</td><td>32 Bit – Reihenfolge / Zusammensetzen</td></tr>
+<tr><td>Acknowledgment Nr.</td><td>32 Bit – nächstes erwartetes Byte</td></tr>
+<tr><td>Header Length</td><td>4 Bit („data offset“)</td></tr>
+<tr><td>Reserved</td><td>6 Bit</td></tr>
+<tr><td>Control Bits (Flags)</td><td>6 Bit – SYN, ACK, FIN …</td></tr>
+<tr><td>Window Size</td><td>16 Bit – wie viele Bytes der Empfänger annimmt</td></tr>
+<tr><td>Checksum</td><td>16 Bit – Header + Daten</td></tr>
+<tr><td>Urgent</td><td>16 Bit</td></tr>
+</table></div>
+<div><h3>UDP-Header-Felder</h3>
+<table>
+<tr><td>Source Port</td><td>16 Bit</td></tr>
+<tr><td>Destination Port</td><td>16 Bit</td></tr>
+<tr><td>Length</td><td>16 Bit</td></tr>
+<tr><td>Checksum</td><td>16 Bit</td></tr>
+</table>
+<h3>Wann UDP?</h3>
+<ul><li>Live-Video/VoIP: Verlust ok, Verzögerung nicht</li><li>kurze Request/Reply (DNS, DHCP)</li><li>App regelt Zuverlässigkeit selbst (SNMP, TFTP)</li></ul></div>
+</div>
+</section>
+
+<section id="ports">
+<h2>10. Portnummern & Sockets</h2>
+<p><b>Socket</b> = IP-Adresse + Port (z. B. <code>192.168.1.5:49152</code>). Source-Port = Anwendung am Client, Destination-Port = Dienst am Server.</p>
+<table>
+<tr><th>Gruppe</th><th>Bereich</th><th>Wer</th></tr>
+<tr><td>Well-known</td><td>0 – 1023</td><td>Standarddienste (HTTP, DNS …)</td></tr>
+<tr><td>Registered</td><td>1024 – 49151</td><td>von IANA an Hersteller vergeben (z. B. 1812 RADIUS)</td></tr>
+<tr><td>Private / Dynamic (ephemeral)</td><td>49152 – 65535</td><td>Client-OS vergibt dynamisch als Source-Port</td></tr>
+</table>
+<table>
+<tr><th>Port</th><th>Proto</th><th>Dienst</th><th>Port</th><th>Proto</th><th>Dienst</th></tr>
+<tr><td>20 / 21</td><td>TCP</td><td>FTP Data / Control</td><td>67 / 68</td><td>UDP</td><td>DHCP Server / Client</td></tr>
+<tr><td>22</td><td>TCP</td><td>SSH</td><td>69</td><td>UDP</td><td>TFTP</td></tr>
+<tr><td>23</td><td>TCP</td><td>Telnet</td><td>80</td><td>TCP</td><td>HTTP</td></tr>
+<tr><td>25</td><td>TCP</td><td>SMTP</td><td>110</td><td>TCP</td><td>POP3</td></tr>
+<tr><td>53</td><td>UDP+TCP</td><td>DNS</td><td>143</td><td>TCP</td><td>IMAP</td></tr>
+<tr><td>161</td><td>UDP</td><td>SNMP</td><td>443</td><td>TCP</td><td>HTTPS</td></tr>
+</table>
+<p><code>netstat</code> zeigt aktive TCP-Verbindungen (Proto, Local Address, Foreign Address, State) – wichtig um unbekannte Verbindungen (Sicherheitsrisiko) zu finden.</p>
+</section>
+
+<section id="trainer" class="sn">
+<h2>11. Subnet-Trainer (zufällige Aufgabe)</h2>
+<p id="snQ"></p>
+<div class="row"><label>Netzadresse</label><input id="snNet" placeholder="z. B. 192.168.1.64"></div>
+<div class="row"><label>Broadcast</label><input id="snBc" placeholder="z. B. 192.168.1.127"></div>
+<div class="row"><label>Nutzbare Hosts</label><input id="snH" placeholder="z. B. 62"></div>
+<div class="row"><label>Subnetzmaske</label><input id="snM" placeholder="z. B. 255.255.255.192"></div>
+<div style="display:flex;gap:8px;margin-top:8px"><button onclick="snCheck()">Prüfen</button><button class="sec" onclick="snNew()">Neue Aufgabe</button><button class="sec" onclick="snShow()">Lösung zeigen</button></div>
+<div class="res" id="snR"></div>
+</section>
+
+<section id="cards">
+<h2>12. Karteikarten (klicken = Antwort)</h2>
+<p><small>Alle <a href="#" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.add('open'));return false" style="color:var(--acc)">aufdecken</a> / <a href="#" onclick="document.querySelectorAll('.card').forEach(c=>c.classList.remove('open'));return false" style="color:var(--acc)">zudecken</a></small></p>
+<div id="cardBox"></div>
+</section>
+
+<section id="quiz">
+<h2>13. Quiz</h2>
+<div id="quizBox"></div>
+<button onclick="quizEval()">Auswerten</button> <button class="sec" onclick="location.reload()">Neu starten</button>
+<div id="score"></div>
+</section>
+
+</main>
+<script>
+/* ---------- Step-through ---------- */
+const ST = {
+ d:[
+  {t:"Host A will an 1.0.0.2 senden",d:"Netz-ID Ziel (1.0.0.0) == Netz-ID Quelle (1.0.0.0) → direkte Zustellung. A braucht die MAC von 1.0.0.2.",c:{"ARP-Cache A":"(leer)"}},
+  {t:"ARP-Request (Broadcast) von Host A",d:"„Wer hat 1.0.0.2? Sag mir deine MAC.“ – geht an FF:FF:FF:FF:FF:FF, alle im Netz 1.0.0.0 hören es.",c:{"ARP-Cache A":"(leer)"}},
+  {t:"ARP-Response von Host B",d:"„1.0.0.2 = MAC B“ – als Unicast zurück an A. A speichert es im ARP-Cache.",c:{"ARP-Cache A":"1.0.0.2 → MAC B"}},
+  {t:"Frame wird gesendet",d:"IP sa 1.0.0.1 · IP da 1.0.0.2 · MAC sa A · MAC da B. Kein Router beteiligt.",c:{"ARP-Cache A":"1.0.0.2 → MAC B","ARP-Cache B":"1.0.0.1 → MAC A"}}
+ ],
+ i:[
+  {t:"Host A will an 2.0.0.1 senden",d:"Netz-ID Ziel (2.0.0.0) ≠ Netz-ID Quelle (1.0.0.0) → indirekte Zustellung über Default Gateway R1 (1.0.0.9).",c:{"ARP-Cache A":"1.0.0.2 → MAC B"}},
+  {t:"ARP-Request: „Wer hat 1.0.0.9?“",d:"A fragt nach der MAC des Gateways – NICHT nach der MAC von 2.0.0.1 (anderes Netz, Broadcast kommt da nie hin).",c:{"ARP-Cache A":"1.0.0.2 → MAC B"}},
+  {t:"ARP-Response von R1",d:"„1.0.0.9 = MAC R“.",c:{"ARP-Cache A":"1.0.0.2 → MAC B\n1.0.0.9 → MAC R"}},
+  {t:"A → R1",d:"IP sa 1.0.0.1 · IP da 2.0.0.1 · MAC sa A · MAC da R. R1 schaut in Routing Table: 2.0.0.0 → next hop R2, metric 2.",c:{"ARP-Cache A":"1.0.0.2 → MAC B\n1.0.0.9 → MAC R","ARP-Cache R1":"1.0.0.1 → MAC A"}},
+  {t:"R1 → R2 → R4",d:"IP bleibt sa 1.0.0.1 / da 2.0.0.1. R2: 2.0.0.0 → R4 (metric 1). R4: 2.0.0.0 → local → Zielnetz erreicht. MACs wechseln pro Hop, TTL −1 pro Router.",c:{"ARP-Cache A":"1.0.0.2 → MAC B\n1.0.0.9 → MAC R"}},
+  {t:"R4: ARP-Request „Wer hat 2.0.0.1?“",d:"Erst der letzte Router im Zielnetz fragt per Broadcast nach der MAC von Host C.",c:{"ARP-Cache R4":"(leer)"}},
+  {t:"ARP-Response von Host C",d:"„2.0.0.1 = MAC C“. R4 speichert es.",c:{"ARP-Cache R4":"2.0.0.1 → MAC C","ARP-Cache C":"2.0.0.9 → MAC S"}},
+  {t:"R4 → Host C",d:"IP sa 1.0.0.1 · IP da 2.0.0.1 · MAC sa S (R4) · MAC da C. Angekommen – IP-Adressen unverändert, MACs 3× gewechselt.",c:{"ARP-Cache R4":"2.0.0.1 → MAC C","ARP-Cache C":"2.0.0.9 → MAC S"}}
+ ]};
+let stM='d',stI=0;
+function stMode(m){stM=m;stI=0;stDraw()}
+function stStep(n){stI=Math.max(0,Math.min(ST[stM].length-1,stI+n));stDraw()}
+function stDraw(){const s=ST[stM][stI];
+ stT.textContent=(stI+1)+". "+s.t;stD.textContent=s.d;stN.textContent="Schritt "+(stI+1)+" / "+ST[stM].length+(stM==='d'?" (direkt)":" (indirekt)");
+ stC.innerHTML=Object.entries(s.c).map(([k,v])=>`<div><b>${k}</b>${v.replace(/\n/g,'<br>')}</div>`).join('');
+ stPrev.disabled=stI===0;stNext.disabled=stI===ST[stM].length-1}
+stDraw();
+
+/* ---------- Subnet trainer ---------- */
+const ip2n=s=>s.trim().split('.').map(Number).reduce((a,b)=>(a*256)+b,0);
+const n2ip=n=>[24,16,8,0].map(k=>(n>>>k)&255).join('.');
+function calc(ip,p){const mask=p===0?0:(0xFFFFFFFF<<(32-p))>>>0;const net=(ip2n(ip)&mask)>>>0;const bc=(net|(~mask>>>0))>>>0;return{net:n2ip(net),bc:n2ip(bc),hosts:Math.max(0,2**(32-p)-2),mask:n2ip(mask)}}
+// self-check
+console.assert(JSON.stringify(calc('192.168.1.77',26))==='{"net":"192.168.1.64","bc":"192.168.1.127","hosts":62,"mask":"255.255.255.192"}','calc broken');
+let snCur;
+function snNew(){const p=25+Math.floor(Math.random()*6);const ip=[[10,172,192][Math.floor(Math.random()*3)],Math.floor(Math.random()*256),Math.floor(Math.random()*256),1+Math.floor(Math.random()*254)].join('.');
+ snCur={ip,p,sol:calc(ip,p)};snQ.innerHTML=`Host <code>${ip}/${p}</code> – Netzadresse, Broadcast, Anzahl nutzbarer Hosts, Maske?`;
+ ['snNet','snBc','snH','snM'].forEach(i=>document.getElementById(i).value='');snR.innerHTML=''}
+function snCheck(){const s=snCur.sol;const chk=[[snNet.value.trim(),s.net,'Netzadresse'],[snBc.value.trim(),s.bc,'Broadcast'],[snH.value.trim(),String(s.hosts),'Hosts'],[snM.value.trim(),s.mask,'Maske']];
+ snR.innerHTML=chk.map(([v,sol,n])=>`<div class="${v===sol?'ok':'bad'}">${v===sol?'✔':'✘'} ${n}: ${v||'–'}${v===sol?'':' → richtig: '+sol}</div>`).join('')}
+function snShow(){const s=snCur.sol;snR.innerHTML=`<div>Blockgröße = 256 − ${s.mask.split('.')[3]} = ${256-Number(s.mask.split('.')[3])}</div><div>Netz: <b>${s.net}</b> · Broadcast: <b>${s.bc}</b> · Hosts: <b>${s.hosts}</b> (2<sup>${32-snCur.p}</sup>−2) · Maske: <b>${s.mask}</b></div>`}
+snNew();
+
+/* ---------- Flashcards ---------- */
+const CARDS=[
+["Welche 4 Grundaufgaben hat der Network Layer?","Adressierung, Encapsulation, Routing, De-Encapsulation"],
+["IP ist … (3 Eigenschaften)","Connectionless, Best Effort, Media Independent"],
+["Was passiert, wenn TTL auf 0 fällt?","Der Router verwirft das Paket."],
+["Wofür steht das Protocol-Feld im IPv4-Header?","Welches Protokoll im Paket liegt: ICMP, TCP, UDP …"],
+["Wie entscheidet ein Host lokal vs. remote?","Eigene IP AND Maske vs. Ziel-IP AND Maske. Gleich → direkt, ungleich → Default Gateway."],
+["Nach welcher MAC fragt Host A per ARP, wenn das Ziel in einem anderen Netz liegt?","Nach der MAC des Default Gateways (z. B. 1.0.0.9 → MAC R), nicht nach der des Ziels."],
+["Was ändert sich auf dem Weg durch 3 Router: IP-Adressen oder MAC-Adressen?","MAC sa/da wechseln bei jedem Hop, IP sa/da bleiben gleich (außer NAT). TTL sinkt pro Router."],
+["Direkte Zustellung – wann?","Netz-ID von Quelle und Ziel sind gleich."],
+["Welcher ARP-Cache-Eintrag landet bei R4 nach A → C?","2.0.0.1 → MAC C"],
+["Routen-Codes: C, L, S, S*, O, D","C = connected Netz, L = lokale Interface-IP, S = statisch, S* = Default, O = OSPF, D = EIGRP"],
+["Welches Gerät stoppt Broadcasts?","Nur der Router. Switches fluten Broadcasts an alle Ports außer dem Eingangsport."],
+["Private Adressbereiche (RFC 1918)?","10.0.0.0/8 · 172.16.0.0/12 · 192.168.0.0/16"],
+["Was ist 169.254.x.x?","Link-Local / APIPA – selbst vergeben wenn kein DHCP-Server antwortet."],
+["Formel Hosts pro Subnetz?","2^h − 2 (h = Hostbits)"],
+["/27 → Maske, Subnetze aus /24, Hosts?","255.255.255.224 · 8 Subnetze · 30 Hosts"],
+["/30 wofür?","Punkt-zu-Punkt-WAN-Links – genau 2 nutzbare Hosts."],
+["VLSM-Regel?","Mit dem größten Host-Bedarf beginnen, dann absteigend weiter subnetten."],
+["TCP: 4 Features","Session aufbauen, zuverlässige Zustellung, richtige Reihenfolge, Flow Control"],
+["UDP-Header: Felder und Größe?","Source Port, Destination Port, Length, Checksum – 4 Felder, 8 Byte"],
+["Wofür ist die Window Size im TCP-Header?","Flow Control – wie viele Bytes der Empfänger gerade annehmen kann."],
+["Was ist ein Socket?","IP-Adresse + Portnummer, z. B. 10.0.0.5:443"],
+["Portbereiche?","Well-known 0–1023 · Registered 1024–49151 · Dynamic/Ephemeral 49152–65535"],
+["Ports: SSH, DNS, DHCP, HTTP, HTTPS, SMTP, POP3, IMAP","22 TCP · 53 UDP/TCP · 67/68 UDP · 80 TCP · 443 TCP · 25 TCP · 110 TCP · 143 TCP"],
+["Welche Apps nutzen UDP und warum?","VoIP/Streaming (Verzögerung schlimmer als Verlust), DNS/DHCP (kurze Anfragen), SNMP/TFTP (App regelt es selbst)"],
+["Was zeigt netstat?","Aktive TCP-Verbindungen: Proto, Local Address, Foreign Address, State"],
+["Wer vergibt IP-Adressen (Hierarchie)?","IANA → 5 RIRs → ISPs → Organisationen"],
+];
+cardBox.innerHTML=CARDS.map(([q,a],i)=>`<div class="card" onclick="this.classList.toggle('open')"><div class="q"><small>${i+1}.</small> ${q}</div><div class="a">${a}</div></div>`).join('');
+
+/* ---------- Quiz ---------- */
+const QUIZ=[
+{q:"Host 1.0.0.1/8 sendet an 2.0.0.1. Nach welcher MAC fragt er per ARP?",o:["MAC von 2.0.0.1","MAC des Default Gateways 1.0.0.9","MAC von Host B","Broadcast-MAC"],k:1,e:"Ziel liegt in fremdem Netz → ARP nach dem Gateway."},
+{q:"Was bleibt auf dem gesamten Weg A → R1 → R2 → R4 → C unverändert?",o:["MAC-Quelle","MAC-Ziel","IP-Quelle und IP-Ziel","TTL"],k:2,e:"IP-Adressen sind Ende-zu-Ende; MACs wechseln pro Hop, TTL sinkt."},
+{q:"IP ist „Best Effort“ bedeutet:",o:["IP sendet verlorene Pakete neu","IP garantiert nichts, keine ACKs","IP baut vorher eine Verbindung auf","IP sortiert Pakete"],k:1,e:"Zuverlässigkeit liefert TCP, nicht IP."},
+{q:"Welches Feld im IPv4-Header verhindert endlose Schleifen?",o:["Checksum","Protocol","TTL","DS"],k:2,e:"TTL wird pro Router um 1 verringert, bei 0 verworfen."},
+{q:"Routing-Code „S*“ bedeutet:",o:["OSPF-Route","statische Default Route","direkt verbunden","EIGRP"],k:1,e:"S = statisch, * = Kandidat für Default Route."},
+{q:"Welches Gerät leitet Broadcasts NICHT weiter?",o:["Hub","Switch","Router","Access Point"],k:2,e:"Jedes Router-Interface ist eine eigene Broadcast-Domäne."},
+{q:"192.168.5.200/26 → Netzadresse?",o:["192.168.5.0","192.168.5.128","192.168.5.192","192.168.5.64"],k:2,e:"Blockgröße 64: 0,64,128,192 → 200 liegt in 192–255."},
+{q:"Wie viele nutzbare Hosts hat ein /28?",o:["16","14","30","6"],k:1,e:"4 Hostbits → 2⁴ − 2 = 14."},
+{q:"Welche Adresse ist privat (RFC 1918)?",o:["172.32.0.1","172.20.5.5","192.169.1.1","11.0.0.1"],k:1,e:"172.16.0.0 – 172.31.255.255 ist privat; 172.32 nicht mehr."},
+{q:"Ein PC hat 169.254.10.3. Was ist passiert?",o:["Static IP konfiguriert","Kein DHCP-Server erreichbar (APIPA)","Loopback aktiv","Multicast beigetreten"],k:1,e:"Link-Local / APIPA = selbst vergeben."},
+{q:"Wie groß ist der UDP-Header?",o:["20 Byte","8 Byte","4 Byte","32 Byte"],k:1,e:"4 Felder × 16 Bit = 64 Bit = 8 Byte."},
+{q:"Welches TCP-Feld dient der Flow Control?",o:["Sequence Number","Checksum","Window Size","Urgent"],k:2,e:"Window Size = wie viele Bytes der Empfänger annimmt."},
+{q:"Welche Anwendung nutzt typischerweise UDP?",o:["HTTPS","SSH","VoIP","SMTP"],k:2,e:"Verzögerung ist schlimmer als ein paar verlorene Pakete."},
+{q:"Port 53 gehört zu:",o:["DHCP","DNS","SMTP","SNMP"],k:1,e:"DNS – UDP und TCP."},
+{q:"Portbereich 49152–65535 heißt:",o:["Well-known","Registered","Dynamic / Ephemeral","Reserved"],k:2,e:"Vom Client-OS dynamisch als Source-Port vergeben."},
+{q:"VLSM: womit beginnt man?",o:["kleinstes Subnetz","WAN-Links","größter Host-Bedarf","beliebig"],k:2,e:"Groß → klein, damit nichts überlappt."},
+{q:"Ein Host hat kein Default Gateway. Folge?",o:["Kein lokaler Traffic","Kein Traffic verlässt das LAN","DHCP fällt aus","ARP funktioniert nicht"],k:1,e:"Lokal geht alles, remote nichts."},
+{q:"Was ist ein Socket?",o:["MAC + IP","IP + Port","Port + Protokoll","Segment + Header"],k:1,e:"z. B. 192.168.1.5:443"},
+];
+quizBox.innerHTML=QUIZ.map((x,i)=>`<div class="qz" id="q${i}"><b>${i+1}. ${x.q}</b>${x.o.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join('')}<div class="ex">${x.e}</div></div>`).join('');
+function quizEval(){let s=0;QUIZ.forEach((x,i)=>{const el=document.getElementById('q'+i);el.classList.add('done');const sel=el.querySelector('input:checked');const labels=el.querySelectorAll('label');labels[x.k].classList.add('ok');if(sel){if(+sel.value===x.k)s++;else labels[+sel.value].classList.add('bad')}});
+ score.innerHTML=`${s} / ${QUIZ.length} richtig (${Math.round(s/QUIZ.length*100)} %)`;score.className=s>=QUIZ.length*0.7?'ok':'bad';score.scrollIntoView({behavior:'smooth'})}
+</script>
+</body>
+</html>
