@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MÜ Deutsch – Fantasy-Literatur &amp; Meinungsrede</title>
+<style>
+:root{
+  --bg:#f7f6f2; --card:#ffffff; --ink:#1d1d1f; --muted:#5b5b63; --line:#e3e1da;
+  --accent:#2f5d8a; --accent-soft:#e6eef6; --hl:#fff4c7;
+  --good:#2e7d4f; --good-soft:#e3f3e8; --bad:#b3261e; --bad-soft:#fbe9e7;
+  --c1:#2f6fbd; --c1-soft:#eaf2fc; --c2:#d4622a; --c2-soft:#fcefe8; --c3:#2e8b62; --c3-soft:#e8f5ee; --c0-soft:#efeee9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16171a; --card:#1f2024; --ink:#ececef; --muted:#a4a4ad; --line:#33343a;
+    --accent:#8db8e3; --accent-soft:#233140; --hl:#3d3615;
+    --good:#6fcf97; --good-soft:#1d3527; --bad:#f28b82; --bad-soft:#3b2220;
+    --c1:#7fb0ea; --c1-soft:#1c2a3b; --c2:#f0a070; --c2-soft:#3a2619; --c3:#6fcf97; --c3-soft:#1a3226; --c0-soft:#26272b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16171a; --card:#1f2024; --ink:#ececef; --muted:#a4a4ad; --line:#33343a;
+  --accent:#8db8e3; --accent-soft:#233140; --hl:#3d3615;
+  --good:#6fcf97; --good-soft:#1d3527; --bad:#f28b82; --bad-soft:#3b2220;
+  --c1:#7fb0ea; --c1-soft:#1c2a3b; --c2:#f0a070; --c2-soft:#3a2619; --c3:#6fcf97; --c3-soft:#1a3226; --c0-soft:#26272b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header.top{padding:28px 0 12px}
+header.top h1{font-size:1.9rem;line-height:1.2;margin:0 0 6px}
+header.top p{margin:0;color:var(--muted)}
+nav.bar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.bar .wrap{display:flex;gap:8px;align-items:center;overflow-x:auto;padding:10px 16px}
+nav.bar a{flex:none;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;background:var(--card);font-size:.9rem}
+nav.bar a:hover,nav.bar a.active{border-color:var(--accent);color:var(--accent)}
+nav.bar a.active{background:var(--accent-soft);font-weight:600}
+nav.bar .sp{flex:1 0 8px}
+section.blk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:18px 0}
+h2{margin:0 0 4px;font-size:1.5rem;color:var(--accent)}
+.lead{color:var(--muted);margin:0 0 6px}
+h3{margin:26px 0 10px;font-size:1.12rem;display:flex;gap:8px;align-items:center}
+h3 .tag{font-size:.75rem;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 7px;font-weight:700}
+h4{margin:0 0 4px;font-size:.95rem}
+p{margin:8px 0}
+ul,ol{padding-left:22px;margin:6px 0}
+li{margin:3px 0}
+.def{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:12px 16px;margin:12px 0}
+.tip{background:var(--hl);border-radius:10px;padding:12px 14px;margin:12px 0}
+.warn{background:var(--bad-soft);border-radius:10px;padding:12px 14px;margin:12px 0}
+.small{font-size:.88rem;color:var(--muted)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.card h4{color:var(--accent)}
+.card p{margin:0;font-size:.93rem}
+.spick .card{border-top:3px solid var(--accent)}
+.spick .card h4{text-transform:uppercase;letter-spacing:.04em;font-size:.78rem}
+.tbl{overflow-x:auto;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{background:var(--accent-soft);font-weight:600}
+td.k{font-weight:600}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
+.chain span{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:3px 11px;font-weight:600;font-size:.9rem}
+.chain i{color:var(--muted);font-style:normal}
+.tl{list-style:none;margin:10px 0 0;padding:0;position:relative}
+.tl:before{content:"";position:absolute;left:11px;top:8px;bottom:14px;width:2px;background:var(--line)}
+.tl li{position:relative;padding:0 0 16px 38px;margin:0}
+.tl li:before{content:"";position:absolute;left:3px;top:5px;width:18px;height:18px;border-radius:50%;background:var(--card);border:3px solid var(--accent)}
+.tl li.big:before{background:var(--accent)}
+.tl .when{font-weight:700;display:block}
+.tl .what{font-size:.93rem}
+.tl .names{display:block;font-size:.88rem;color:var(--muted)}
+.fn .card{text-align:center}
+.fn .card b{display:block;font-size:1.15rem;color:var(--accent)}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:12px 0}
+.vs .mid{font-size:1.4rem;color:var(--muted)}
+.vs .card.good{border-color:var(--good);background:var(--good-soft)}
+.group{border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}
+.group .gh{background:var(--accent-soft);padding:8px 14px;font-weight:700;color:var(--accent)}
+.group table td,.group table th{padding:7px 14px}
+.group table tr:last-child td{border-bottom:0}
+.letters{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.letters div{flex:1 1 150px;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.letters b{font-size:1.7rem;color:var(--accent);display:block;line-height:1.1}
+.letters span{font-weight:600}
+.letters small{display:block;color:var(--muted)}
+ol.mk{counter-reset:m;list-style:none;padding:0;display:grid;gap:6px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+ol.mk li{counter-increment:m;border:1px solid var(--line);border-radius:10px;padding:8px 12px 8px 44px;position:relative;margin:0}
+ol.mk li:before{content:counter(m);position:absolute;left:10px;top:8px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.p1{--pc:var(--c1);--ps:var(--c1-soft)}
+.p2{--pc:var(--c2);--ps:var(--c2-soft)}
+.p3{--pc:var(--c3);--ps:var(--c3-soft)}
+.p0{--pc:var(--line);--ps:var(--c0-soft)}
+.part{display:grid;grid-template-columns:200px 1fr;border:2px solid var(--pc);background:var(--ps);border-radius:14px}
+.part .side{padding:16px;border-right:1px solid var(--pc)}
+.part .name{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.part .num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--pc);background:var(--card);font-weight:700;font-size:1rem}
+.part .goal{color:var(--muted);font-size:.9rem;margin-top:8px}
+.part .body{padding:14px 18px}
+.part .body > b{display:block;margin-top:6px}
+.part .body > b:first-child{margin-top:0}
+.part .body ul{margin:2px 0 6px}
+.part .body .t{font-style:italic;color:var(--muted);font-size:.9rem;margin:8px 0 0}
+.arrow{color:var(--muted);font-size:1.5rem;line-height:1;padding:4px 0 4px 88px}
+.gapline{height:14px}
+.speech .seg{border-left:5px solid var(--pc);background:var(--ps);border-radius:10px;padding:10px 14px;margin:10px 0}
+.speech .lab{display:block;font-size:.78rem;font-weight:700;color:var(--pc);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+.speech .seg p{margin:0}
+input[type=search]{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:.95rem;margin:6px 0 4px}
+.pairs{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.pairs .card{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start}
+.pairs .card .x{color:var(--muted);padding-top:2px}
+.pairs .card b{display:block}
+.pairs .card span{font-size:.88rem;color:var(--muted)}
+button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.92rem;font-family:inherit}
+button:hover{border-color:var(--accent)}
+button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.qa details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0;background:var(--card)}
+.qa summary{cursor:pointer;font-weight:600}
+.qa summary::marker{color:var(--accent)}
+.qa .ans{margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--line)}
+.rf{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+.rf .s{margin:0}
+.rf .btns{display:flex;gap:6px}
+.rf .btns button{padding:6px 10px}
+.rf .ex{grid-column:1 / -1;display:none;margin:0;font-size:.92rem}
+.rf.shown .ex{display:block}
+.rf button.ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.rf button.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.score{font-weight:600}
+.flash{border:1px solid var(--line);border-radius:14px;min-height:190px;display:grid;place-items:center;text-align:center;padding:24px;cursor:pointer;background:var(--accent-soft);user-select:none;margin-top:10px}
+.flash .front{font-size:1.35rem;font-weight:700}
+.flash .back{display:none;font-size:1rem;margin-top:10px}
+.flash.open .back{display:block}
+.flash.open .front{font-size:1.05rem}
+.ctrl{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.count{text-align:center;color:var(--muted);font-size:.85rem;margin-top:6px}
+footer{color:var(--muted);font-size:.82rem;text-align:center;padding:10px 16px 40px}
+@media (max-width:640px){
+  header.top h1{font-size:1.5rem}
+  section.blk{padding:16px 14px}
+  .part{grid-template-columns:1fr}
+  .part .side{border-right:0;border-bottom:1px solid var(--pc)}
+  .arrow{padding-left:24px}
+  .vs{grid-template-columns:1fr}
+  .vs .mid{text-align:center}
+  .rf{grid-template-columns:1fr}
+}
+@media print{
+  nav.bar,.no-print,#karten,.toolbar{display:none !important}
+  body{background:#fff}
+  section.blk{break-inside:auto;border-color:#ccc}
+  .rf .ex{display:block}
+  .tl li,.part,.speech .seg,.card,.group,details{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>MÜ Deutsch: Fantasy-Literatur &amp; Meinungsrede</h1>
+    <p>Lernseite für die schriftliche Mitarbeitsüberprüfung · alles aus deinen Unterlagen</p>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Abschnitte">
+  <div class="wrap">
+    <a href="#spick">Spickzettel</a>
+    <a href="#fantasy">Fantasy</a>
+    <a href="#rede">Meinungsrede</a>
+    <a href="#stil">Stilmittel</a>
+    <a href="#test">Selbsttest</a>
+    <a href="#karten">Karteikarten</a>
+    <span class="sp"></span>
+    <button id="theme" type="button" title="Hell oder dunkel">Hell / Dunkel</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ===================== SPICKZETTEL ===================== -->
+<section class="blk spick" id="spick">
+  <h2>Spickzettel</h2>
+  <p class="lead">Das musst du sicher können. Wenn du nur zehn Minuten hast, lern diese Karten.</p>
+  <div class="grid">
+    <div class="card"><h4>Fantasy</h4><p>Genre der <b>Phantastik</b> mit Wurzeln in <b>Mythen und Sagen</b>; Magie und Übernatürliches gelten in einer fiktiven Welt als real</p></div>
+    <div class="card"><h4>Fantasywelt</h4><p>Mittelalter als Vorbild · Feudalismus · Magie und Religion vereint · Zwerge, Elben, Orks</p></div>
+    <div class="card"><h4>Handlung</h4><p><b>Quest</b> · Held mit Begleitern · Kampf gegen das eindeutig Böse</p></div>
+    <div class="card"><h4>Begründer</h4><p><b>J. R. R. Tolkien</b>, <i>Der Herr der Ringe</i>, Boom Ende der 1960er</p></div>
+    <div class="card"><h4>Wurzeln</h4><p>Heldenepen (<i>Ilias</i>, <i>Nibelungenlied</i>, Artus) → Romantik → Phantastik im 19. Jh.</p></div>
+    <div class="card"><h4>Kritik</h4><p>Trivialliteratur · Eskapismus · Serien-Klischees · Rassismus, Sexismus, Konservatismus</p></div>
+    <div class="card"><h4>Tolkien</h4><p>4 Funktionen: <b>Fantasy, Recovery, Escape, Consolation</b>; Flucht des Gefangenen, nicht des Deserteurs</p></div>
+    <div class="card"><h4>Subgenres</h4><p>High · Low (= Sword and Sorcery) · Urban mit Portal-Untergruppe · Dark · Humoristisch und 8 weitere</p></div>
+    <div class="card"><h4>Meinungsrede</h4><p>Druckfassung einer Rede, die ein <b>Publikum</b> von deiner <b>Position</b> überzeugen will · 405–495 oder 540–660 Wörter</p></div>
+    <div class="card"><h4>Aufbau</h4><p><b>Einleitung</b> (Begrüßung + Einstieg) → <b>Hauptteil</b> (Wiedergabe + Argumente) → <b>Schluss</b> (Appell, Ausblick …)</p></div>
+    <div class="card"><h4>Wiedergabe</h4><p>4–5 Sätze · <b>Präsens</b> · eigene Worte · <b>keine direkte Rede</b></p></div>
+    <div class="card"><h4>Stilmittel</h4><p>immer <b>Name → Beispiel → Wirkung</b></p></div>
+  </div>
+</section>
+
+<!-- ===================== TEIL A: FANTASY ===================== -->
+<section class="blk" id="fantasy">
+  <h2>Teil A · Fantasy-Literatur</h2>
+
+  <h3><span class="tag">A1</span>Definition und Merkmale</h3>
+  <div class="def"><b>Definition:</b> Fantasy (von englisch <i>fantasy</i> = „Phantasie“) ist ein modernes Subgenre der <b>Phantastik</b> mit Wurzeln in <b>Mythologie und Sagen</b>. Übernatürliche, märchenhafte und magische Elemente stehen im Vordergrund. Die Handlung spielt häufig in einer <b>fiktiven Welt</b>, in der das Fiktionale als real gilt.</div>
+  <p>Nachbargenres sind <b>Science-Fiction und Horror</b>. Fantasy gibt es in Literatur und Film, aber auch in Musik, Kunst sowie Gesellschafts-, Computer- und Rollenspielen.</p>
+
+  <div class="grid">
+    <div class="card"><h4>Welt</h4><p>fiktiv, aber nach historischem Vorbild, meist <b>europäisches Mittelalter</b> (auch Eisenzeit, Renaissance); technisch rückständig bis archaisch</p></div>
+    <div class="card"><h4>Politik</h4><p><b>Feudalismus</b> (Personenverbandsstaat); moderne Gleichheit ist kaum Thema, daher die Nähe zum Historienroman</p></div>
+    <div class="card"><h4>Religion</h4><p>magisch (nach Piaget): Zauberer oder Priester greifen in die Naturgesetze ein; Politik und Religion bilden eine Einheit</p></div>
+    <div class="card"><h4>Kulturen</h4><p>an irdische Völker angelehnt; idealisierte Gemeinschaften hinter starken Anführern; Konflikte vereinfacht</p></div>
+    <div class="card"><h4>Völker</h4><p>Menschen und Tolkiens <b>Zwerge, Elben, Orks</b>; dazu Goblins, Untote, Zentauren, Halblinge, erfundene Wesen</p></div>
+    <div class="card"><h4>Motive</h4><p>Schwertkämpfe, Monster, Reisen, Schlachten, Hofintrigen, Kampf gegen das eindeutig Böse</p></div>
+    <div class="card"><h4>Erzählstruktur</h4><p><b>Quest</b>; epischer Handlungsbogen; Elemente von Bildungs-, Entwicklungs- und Internatsroman</p></div>
+    <div class="card"><h4>Held</h4><p>hat Begleiter; ist extrem mächtig oder wird sprunghaft vom „Taugenichts“ zum Helden</p></div>
+    <div class="card"><h4>Klischees</h4><p>durch Spiele vereinheitlicht: <i>Dungeons and Dragons</i>, <i>Warhammer</i>, <i>Magic</i>, <i>Das Schwarze Auge</i></p></div>
+  </div>
+
+  <h4 style="margin-top:18px">Die vier Völker kurz</h4>
+  <div class="grid g4">
+    <div class="card"><h4>Zwerge</h4><p>klein, leben unter der Erde, Vollbart, kämpfen mit Axt und Hammer, Schmiede und Zecher</p></div>
+    <div class="card"><h4>Elben</h4><p>unsterblich oder langlebig, Waldvolk oder Hochkultur, den Menschen überlegen</p></div>
+    <div class="card"><h4>Orks</h4><p>hässlich, aggressiv, auf Krieg und Plünderung aus</p></div>
+    <div class="card"><h4>Goblins</h4><p>kleine, gewitzte Kobolde, feige, aber zahlreich</p></div>
+  </div>
+  <div class="tip"><b>„Rasse“ in der Fantasy:</b> Das Wort kommt direkt aus dem Englischen (<i>race</i>), und die Völker können oft gemeinsame Nachkommen zeugen, z. B. Halbelben. Kritisiert werden rassistische Tendenzen: Orks sind meist „von Geburt“ böse. Neuere Werke schwächen das ab.</div>
+
+  <h3><span class="tag">A2</span>Geschichte</h3>
+  <p>Ein eigenes Genre wurde Fantasy erst im 20. Jahrhundert mit Tolkien. Ihre Wurzeln liegen aber in den alten Heldenepen.</p>
+  <div class="chain"><span>Epen</span><i>→</i><span>Romantik</span><i>→</i><span>Phantastik</span><i>→</i><span>Tolkien</span><i>→</i><span>Harry Potter</span></div>
+  <ol class="tl">
+    <li><span class="when">Antike und Mittelalter · Wurzeln</span><span class="what">Sagen und Heldenepen</span><span class="names">Homers <i>Ilias</i>, <i>Nibelungenlied</i>, Sagenkreis um König Artus</span></li>
+    <li><span class="when">1516 · frühes Beispiel</span><span class="what">gedruckt in Ferrara, 40 Gesänge in Versform</span><span class="names">Ludovico Ariosto: <i>Orlando furioso</i></span></li>
+    <li><span class="when">2. Hälfte 18. Jahrhundert</span><span class="what">Begeisterung für vorzeitliche Epik</span><span class="names">Gesänge des erfundenen Barden <i>Ossian</i></span></li>
+    <li><span class="when">Frühromantik</span><span class="what">Kunstmärchen, Volksmärchensammlungen, mittelalterliche Settings, Mischung der Gattungen (romantische Universalpoesie)</span><span class="names">Novalis: <i>Heinrich von Ofterdingen</i> · Ludwig Tieck: <i>Die Elfen</i> · Fouqué: <i>Undine</i></span></li>
+    <li><span class="when">Spätromantik und 19. Jahrhundert · Phantastik</span><span class="what">Übernatürliches in Romanen und Erzählungen; frühe Science-Fiction und Horror als Vorarbeit</span><span class="names">E. T. A. Hoffmann, Poe, Walter Scott, Wagner (<i>Der Ring des Nibelungen</i>); Verne, Wells, Shelley (<i>Frankenstein</i>), Stoker (<i>Dracula</i>)</span></li>
+    <li class="big"><span class="when">20. Jahrhundert · eigenes Genre</span><span class="what"><b>Begründer J. R. R. Tolkien</b> (<i>Der Herr der Ringe</i>), Boom Ende der 1960er; ab den 1970ern Rollenspiele; später Urban und Humoristische Fantasy</span><span class="names">weitere „Ahnherren“: C. S. Lewis (<i>Narnia</i>), Robert E. Howard (<i>Conan</i>)</span></li>
+    <li class="big"><span class="when">21. Jahrhundert · neuer Boom</span><span class="what">ausgelöst durch <i>Harry Potter</i> und die <i>Herr der Ringe</i>-Filme; Dark Fantasy wird populär; High Fantasy wird vielschichtiger</span><span class="names"><i>Narnia</i>, <i>Percy Jackson</i>, <i>Eragon</i>; George R. R. Martin</span></li>
+  </ol>
+
+  <h3><span class="tag">A3</span>Kritik und Gegenargumente</h3>
+  <p>Zu fast jedem Vorwurf nennt dein Handout auch eine Gegenposition. Das passt perfekt zu „Erkläre“- oder „Nimm Stellung“-Fragen.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Vorwurf</th><th>Was kritisiert wird</th><th>Gegenargument</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Trivialliteratur</td><td>stammt aus Pulp-Magazinen, gilt als Popkultur statt Hochkultur</td><td>die Grenze zur „ernsten“ Literatur verschwimmt; die Literaturwissenschaft befasst sich verstärkt mit Fantasy</td></tr>
+      <tr><td class="k">Eskapismus<br><span class="small">Flucht aus der Wirklichkeit</span></td><td>die vereinfachte Mittelalterwelt blendet heutige Probleme aus</td><td>schon frühe Fantasy behandelte gesellschaftliche Fragen (T. H. White); heute geht es um Krieg, Nationalismus, Extremismus; Tolkien sieht Flucht positiv</td></tr>
+      <tr><td class="k">Vermarktung als Serie</td><td>immer gleiche Elemente bremsen die Weiterentwicklung; Belangloses verkauft sich, Anspruchsvolles hat es schwer</td><td><span class="small">im Handout gibt es kein Gegenargument</span></td></tr>
+      <tr><td class="k">Rassismus, Sexismus, Konservatismus</td><td>Obrigkeitsdenken, alte Geschlechterrollen, „böse“ Völker; Ursache ist die Pulp-Vergangenheit</td><td>die pauschale Kritik ist durch viele Gegenbeispiele widerlegbar; moderne Fantasy behandelt das sehr komplex</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4 style="margin-top:18px">Tolkiens Sicht: <i>On Fairy Stories</i></h4>
+  <p>Für Tolkien gehört Eskapismus fest zur Fantasy. Eine Fantasygeschichte hat vier Funktionen:</p>
+  <div class="grid g4 fn">
+    <div class="card"><b>Fantasy</b><p>die Phantasie wecken, die „Eintrittskarte“ in die fantastische Welt</p></div>
+    <div class="card"><b>Recovery</b><p>Wiederherstellung: einen klaren Blick und eine neue Perspektive gewinnen</p></div>
+    <div class="card"><b>Escape</b><p>Flucht: Sehnsüchte erfüllen, die die reale Welt nicht erfüllt</p></div>
+    <div class="card"><b>Consolation</b><p>Trost</p></div>
+  </div>
+  <div class="vs">
+    <div class="card"><h4>Flucht des Deserteurs</h4><p>ein Feigling, der einfach wegläuft</p></div>
+    <div class="mid">≠</div>
+    <div class="card good"><h4>Flucht des Gefangenen</h4><p>aus gutem Grund, eher Widerstand als Weglaufen. Das ist die Flucht, die Fantasy bietet.</p></div>
+  </div>
+  <p class="small">Zur Jahreszahl: Im Handout steht 1937. Gehalten hat Tolkien den Vortrag 1939, gedruckt wurde er 1947. In der MÜ zählt vermutlich das Handout.</p>
+  <div class="tip"><b>Abgrenzung:</b> Fantasy übernimmt viele Motive aus Science-Fiction und Horror, deshalb ist eine klare Grenze schwierig. Mischformen sind z. B. <i>Star Wars</i> und der Cthulhu-Mythos.</div>
+
+  <h3><span class="tag">A4</span>Subgenres</h3>
+  <p>Dein Handout nennt 13 Subgenres, und ein Werk kann zu mehreren gehören. Zum Merken sind sie hier in vier Gruppen sortiert; die Gruppen stehen nicht im Handout.</p>
+  <div class="warn"><b>Achtung:</b> Low Fantasy = Sword and Sorcery (laut Handout). Im Internet wird der Begriff oft anders erklärt.</div>
+
+  <div class="group"><div class="gh">1 · Spielt in einer erfundenen Welt</div><div class="tbl"><table>
+    <thead><tr><th>Subgenre</th><th>Kennzeichen</th><th>Beispiel</th></tr></thead><tbody>
+    <tr><td class="k">High Fantasy</td><td>mittelalterliche Welt, Magie, episch, mehrbändig, Quest</td><td><i>Der Herr der Ringe</i>, <i>Eragon</i></td></tr>
+    <tr><td class="k">Low Fantasy<br><span class="small">= Sword and Sorcery, Heroische Fantasy</span></td><td>einsamer, unerschrockener Held; Abenteuer- und Pulp-Literatur</td><td><i>Conan</i></td></tr>
+  </tbody></table></div></div>
+
+  <div class="group"><div class="gh">2 · Spielt in unserer Welt oder führt von dort weg</div><div class="tbl"><table>
+    <thead><tr><th>Subgenre</th><th>Kennzeichen</th><th>Beispiel</th></tr></thead><tbody>
+    <tr><td class="k">Contemporary / Urban Fantasy</td><td>reale Welt verschmilzt mit Magie</td><td><i>Harry Potter</i>, <i>Percy Jackson</i></td></tr>
+    <tr><td class="k">↳ Portal-Untergruppe</td><td>durch ein Portal in die Fantasywelt; die Welten bleiben getrennt</td><td><i>Narnia</i>, <i>Die unendliche Geschichte</i></td></tr>
+    <tr><td class="k">Zeitreisegeschichten</td><td>Zeitreise durch Gegenstand oder Gabe (mit Technik wäre es Sci-Fi)</td><td><i>Feuer und Stein</i></td></tr>
+    <tr><td class="k">Pseudohistorische Fantasy</td><td>echte historische Epoche plus Magie, gut recherchiert</td><td><i>Avalon</i>-Reihe</td></tr>
+  </tbody></table></div></div>
+
+  <div class="group"><div class="gh">3 · Mischt Fantasy mit anderen Genres</div><div class="tbl"><table>
+    <thead><tr><th>Subgenre</th><th>Kennzeichen</th><th>Beispiel</th></tr></thead><tbody>
+    <tr><td class="k">Science Fantasy</td><td>Fantasy und Science-Fiction, z. B. Steampunk</td><td><i>His Dark Materials</i></td></tr>
+    <tr><td class="k">Dark Fantasy</td><td>Richtung Horror, düster, oft Leidenschaft und Erotik</td><td><i>Bis(s)</i>, <i>Hexer-Zyklus</i></td></tr>
+  </tbody></table></div></div>
+
+  <div class="group"><div class="gh">4 · Besondere Form, Ton oder Zielgruppe</div><div class="tbl"><table>
+    <thead><tr><th>Subgenre</th><th>Kennzeichen</th><th>Beispiel</th></tr></thead><tbody>
+    <tr><td class="k">Kunstmärchen, Märchenromane</td><td>märchenhaft, poetisch</td><td><i>Der Zauberer von Oz</i></td></tr>
+    <tr><td class="k">Humoristische Fantasy</td><td>Parodie und Ironie</td><td><i>Scheibenwelt</i>, <i>Zamonien</i></td></tr>
+    <tr><td class="k">Animal Fantasy</td><td>Tiere als Helden</td><td><i>Warrior Cats</i></td></tr>
+    <tr><td class="k">Social Fantasy</td><td>gesellschaftskritisch, politische Utopien</td><td><i>Erdsee</i></td></tr>
+    <tr><td class="k">All Age Fantasy</td><td>für Leser jeden Alters</td><td><i>Artemis Fowl</i></td></tr>
+    <tr><td class="k">Pseudodokumentation</td><td>erfundene Sachbücher</td><td><i>Phantastische Tierwesen</i></td></tr>
+  </tbody></table></div></div>
+
+  <h3><span class="tag">A5</span>Fantasy außerhalb der Literatur</h3>
+  <p>Bücher, Kino und Spiele beeinflussen sich gegenseitig. Hier reicht meist ein Beispiel pro Bereich.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Bereich</th><th>Das Wichtigste</th><th>Beispiele</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Film</td><td>lange selten; die einzige frühe Romanverfilmung war <i>Die unendliche Geschichte</i> (1984); Durchbruch ab 2001</td><td><i>Der Herr der Ringe</i> (Peter Jackson), <i>Harry Potter</i>; <i>Willow</i> (1988) wiederholte den <i>Star Wars</i>-Erfolg nicht</td></tr>
+      <tr><td class="k">Serien</td><td>viele neue Fantasyserien nach <i>Game of Thrones</i> (2011–2019)</td><td><i>The Witcher</i>, <i>His Dark Materials</i> (beide 2019)</td></tr>
+      <tr><td class="k">Brett- und Rollenspiele</td><td>Welle durch <i>Dungeons and Dragons</i> (1980er und 1990er); aus Spielen wurden Romane</td><td><i>Magic: The Gathering</i>, <i>Drachenlanze</i></td></tr>
+      <tr><td class="k">Videospiele</td><td>die Quest wurde zur Erzählstruktur und wanderte zurück in die Literatur</td><td><i>Zelda</i>, <i>Final Fantasy</i>, <i>World of Warcraft</i>, <i>Gothic</i></td></tr>
+      <tr><td class="k">Musik</td><td>Filk; Heavy Metal (Power und Epic Metal), oft mit Fantasy-Covern</td><td>Blind Guardian, Nightwish</td></tr>
+      <tr><td class="k">Malerei</td><td>Vorläufer Hieronymus Bosch; im 18. Jahrhundert Füssli und Blake</td><td>Frank Frazetta, Alan Lee, John Howe</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================== TEIL B: MEINUNGSREDE ===================== -->
+<section class="blk" id="rede">
+  <h2>Teil B · Meinungsrede</h2>
+
+  <h3><span class="tag">B1</span>Definition, Funktionen, Merkmale</h3>
+  <div class="def"><b>Definition:</b> Die Meinungsrede ist die Druckfassung einer Rede, die ein bestimmtes Publikum (<b>situativer Kontext</b>) von der <b>eigenen Position</b> zu einem aktuellen Thema oder Problem überzeugen will.</div>
+
+  <h4 style="margin-top:16px">Fünf Funktionen des Schreibens · Merksatz: „<u>A</u>lle <u>D</u>rachen <u>E</u>ssen <u>N</u>ur <u>R</u>itter“</h4>
+  <div class="letters">
+    <div><b>A</b><span>Argumentation</span><small>begründen und überzeugen</small></div>
+    <div><b>D</b><span>Deskription</span><small>beschreiben</small></div>
+    <div><b>E</b><span>Explikation</span><small>erklären</small></div>
+    <div><b>N</b><span>Narration</span><small>erzählen</small></div>
+    <div><b>R</b><span>Rekapitulation</span><small>den Ausgangstext wiedergeben</small></div>
+  </div>
+
+  <h4 style="margin-top:16px">Neun Merkmale</h4>
+  <ol class="mk">
+    <li>situativen Kontext beachten: wer spricht, vor wem, wo, aus welchem Anlass</li>
+    <li>Publikum direkt ansprechen und überzeugen</li>
+    <li>Anlassfall darlegen, mit Bezug zur Textbeilage</li>
+    <li>klare eigene Position, auch als Gegenposition, Verstärkung oder Zwischenposition</li>
+    <li>schlüssige Argumente, konkrete Beispiele, überprüfbare Daten und Fakten</li>
+    <li>eigene Geschichten und Erfahrungen</li>
+    <li>rhetorische Stilmittel</li>
+    <li>einfacher Satzbau</li>
+    <li>Ich-Form erlaubt</li>
+  </ol>
+  <p><b>Länge:</b> 405–495 oder 540–660 Wörter, je nach Angabe.</p>
+
+  <h3><span class="tag">B2</span>Aufbau</h3>
+  <p class="lead">Einleitung holt ab, Hauptteil überzeugt, Schluss ruft auf. Tipps sind kursiv.</p>
+  <div class="flow">
+    <div class="part p1">
+      <div class="side"><div class="name"><span class="num">1</span>Einleitung</div><div class="goal">Ziel: Publikum abholen</div></div>
+      <div class="body">
+        <b>Begrüßung des Publikums</b>
+        <b>Origineller Einstieg, zum Beispiel:</b>
+        <ul><li>aktueller Anlass · überraschende Mitteilung · Zitat</li><li>Fallbeispiel · eigene Betroffenheit · provozierende Frage</li><li>Teaser · deine Rolle in Bezug zum Thema</li></ul>
+        <p class="t">Tipp: Thema und deine Position gleich hier nennen</p>
+      </div>
+    </div>
+    <div class="arrow" aria-hidden="true">↓</div>
+    <div class="part p2">
+      <div class="side"><div class="name"><span class="num">2</span>Hauptteil</div><div class="goal">Ziel: überzeugen</div></div>
+      <div class="body">
+        <b>Operatoren der Aufgabe der Reihe nach abarbeiten</b>
+        <b>Meist zuerst: Ausgangstext wiedergeben</b>
+        <ul><li>4–5 Sätze · Präsens · eigene Worte · keine direkte Rede</li></ul>
+        <b>Dann Argumente in schlüssiger Reihenfolge:</b>
+        <ul><li>a) linear mit Steigerung: schwächstes zuerst, stärkstes zuletzt</li><li>b) These → Antithese → Synthese</li><li>c) Problemstellung → Lösungsversuch</li></ul>
+        <p class="t">Tipp: Argument = Behauptung + Begründung + Beispiel oder Fakt</p>
+      </div>
+    </div>
+    <div class="arrow" aria-hidden="true">↓</div>
+    <div class="part p3">
+      <div class="side"><div class="name"><span class="num">3</span>Schluss</div><div class="goal">Ziel: zum Handeln bewegen</div></div>
+      <div class="body">
+        <b>Je nach Operator:</b>
+        <ul><li>Appell · Ausblick · Verbesserungsvorschläge · Stellungnahme</li><li>selten: Zusammenfassung</li></ul>
+        <p class="t">Tipp: mit Dank enden und die Anrede beachten (eure oder Ihre)</p>
+      </div>
+    </div>
+    <div class="gapline"></div>
+    <div class="part p0">
+      <div class="side"><div class="name">Immer dabei</div><div class="goal">in allen drei Teilen</div></div>
+      <div class="body">
+        <ul><li>Publikum direkt ansprechen · klare Position · eigene Erfahrungen</li><li>rhetorische Mittel · einfacher Satzbau · Ich-Form erlaubt</li><li>Länge: 405–495 oder 540–660 Wörter</li></ul>
+      </div>
+    </div>
+  </div>
+  <p>Was genau in Hauptteil und Schluss gehört, bestimmen die Operatoren der Aufgabe.</p>
+
+  <h3><span class="tag">B3</span>Beispielrede mit markierten Teilen</h3>
+  <p>So sieht der Aufbau in einer echten Rede aus. Das Beispiel ist gekürzt, deine Rede braucht 405–495 oder 540–660 Wörter.<br><b>Thema:</b> „Ist Fantasy nur Flucht aus der Wirklichkeit?“ · <b>Ausgangstext:</b> der Lexikonartikel „Fantasy“ aus deinem Handout</p>
+  <div class="speech">
+    <div class="seg p1"><span class="lab">1 Einleitung · Begrüßung und Einstieg mit rhetorischer Frage</span><p>Liebe Mitschülerinnen und Mitschüler! Hand aufs Herz: Wer von euch ist noch nie mit Harry nach Hogwarts geflüchtet?</p></div>
+    <div class="seg p1"><span class="lab">1 Einleitung · Anlass und Position</span><p>Fantasy gilt bei vielen als Literatur für Träumer, die vor der Realität davonlaufen. Ich sehe das anders: Fantasy hilft uns, die Wirklichkeit klarer zu sehen.</p></div>
+    <div class="seg p2"><span class="lab">2 Hauptteil · Wiedergabe des Ausgangstextes (Präsens, keine direkte Rede)</span><p>Der Lexikonartikel „Fantasy“ beschreibt das Genre als Teil der Phantastik mit Wurzeln in Mythen und Sagen. Er nennt typische Merkmale wie mittelalterliche Welten, Magie und die Quest. Außerdem fasst er die Kritik zusammen: Fantasy gelte als trivial und als Flucht aus der Wirklichkeit. Zugleich zeigt er, dass viele Werke ernste Themen behandeln.</p></div>
+    <div class="seg p2"><span class="lab">2 Hauptteil · Argument 1, das schwächste</span><p>Erstens weckt Fantasy unsere Phantasie. Wer liest, baut ganze Welten im Kopf, und das trainiert Kreativität.</p></div>
+    <div class="seg p2"><span class="lab">2 Hauptteil · Argument 2</span><p>Zweitens greift Fantasy echte Probleme auf: Krieg, Nationalismus, Extremismus. <i>Game of Thrones</i> zeigt, wie Machtgier ganze Länder zerstört.</p></div>
+    <div class="seg p2"><span class="lab">2 Hauptteil · Argument 3, das stärkste</span><p>Drittens, und das ist mein wichtigstes Argument: Flucht ist nicht immer feige. Tolkien unterscheidet die Flucht des Deserteurs von der Flucht des Gefangenen. Wer nach einem harten Schultag in eine andere Welt eintaucht, kehrt mit neuer Kraft zurück.</p></div>
+    <div class="seg p3"><span class="lab">3 Schluss · Appell und Dank</span><p>Fantasy ist also keine Flucht von Feiglingen. Sie weckt unsere Phantasie, sie schenkt uns Trost, sie schärft unseren Blick. Deshalb: Greift zum nächsten Fantasyroman! Danke für eure Aufmerksamkeit.</p></div>
+  </div>
+  <h4 style="margin-top:16px">Was du daran siehst</h4>
+  <ul>
+    <li>Argumente linear mit Steigerung: erstens, zweitens, drittens, vom schwächsten zum stärksten</li>
+    <li>Wiedergabe im Präsens; was der Text behauptet, steht in indirekter Rede („Fantasy gelte als …“)</li>
+    <li>Stilmittel: rhetorische Frage (Einstieg) · Antithese (Deserteur und Gefangener) · Anapher und Parallelismus (sie …, sie …, sie …) · Ausruf (Greift …!)</li>
+    <li>Anrede durchgehend „ihr“, deshalb am Ende „eure“</li>
+  </ul>
+</section>
+
+<!-- ===================== TEIL C: STILMITTEL ===================== -->
+<section class="blk" id="stil">
+  <h2>Teil C · Rhetorische Figuren</h2>
+  <p class="lead">Antworte immer nach dem Muster <b>Name → Erklärung → Beispiel → Wirkung</b>, z. B.: „Anapher: Wiederholung am Satzanfang, wie in ‚Wir wollen …, wir wollen …‘; sie wirkt eindringlich.“</p>
+
+  <h3><span class="tag">C1</span>Wirkung schnell lernen</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Wirkung</th><th>Figuren</th></tr></thead>
+    <tbody>
+      <tr><td class="k">eindringlich</td><td>Anapher, Ellipse, Inversion, Synonymie; dazu Ausruf (+ auffordernd), Litotes (+ auflockernd), Klimax (+ spannend), Parallelismus (+ anschaulich), Parataxe (+ übersichtlich, klar, volkstümlich)</td></tr>
+      <tr><td class="k">anschaulich</td><td>Metapher, Vergleich, Neologismus, Synonym, Pleonasmus (eigentlich sprachlich falsch), Euphemismus (aber auch verfälschend)</td></tr>
+      <tr><td class="k">anschaulich + unterhaltend</td><td>Hyperbel, Oxymoron, Periphrase, Chiasmus</td></tr>
+      <tr><td class="k">unterhaltend</td><td>Wortspiel</td></tr>
+      <tr><td class="k">kommunikativ</td><td>Parenthese, Ironie (+ überraschend)</td></tr>
+      <tr><td class="k">Einzelfälle</td><td>Emphase = betonend, hervorhebend · Hypotaxe = detailliert, informativ</td></tr>
+    </tbody>
+  </table></div>
+
+  <input type="search" id="figsearch" class="no-print" placeholder="Stilmittel suchen, z. B. Anapher oder eindringlich" aria-label="Stilmittel suchen">
+
+  <h3><span class="tag">C2</span>Wortfiguren (Handout)</h3>
+  <div class="tbl"><table class="fig">
+    <thead><tr><th>Figur</th><th>Erklärung</th><th>Beispiel</th><th>Wirkung</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Ausruf</td><td>Gemütsbewegung, Ausrufezeichen</td><td>„Zum Teufel damit!“</td><td>eindringlich, auffordernd</td></tr>
+      <tr><td class="k">Emphase</td><td>Betonung eines allgemeinen Wortes</td><td>„Er ist auch nur ein Mensch!“</td><td>betonend, hervorhebend</td></tr>
+      <tr><td class="k">Euphemismus</td><td>Beschönigung</td><td>„Seniorenresidenz“ statt Altersheim</td><td>anschaulich, aber verfälschend</td></tr>
+      <tr><td class="k">Hyperbel</td><td>Übertreibung</td><td>„Du redest wie ein Wasserfall!“</td><td>anschaulich, unterhaltend</td></tr>
+      <tr><td class="k">Ironie</td><td>Gegenteil des Gemeinten</td><td>„Das ist aber eine schöne Bescherung!“</td><td>kommunikativ, überraschend</td></tr>
+      <tr><td class="k">Litotes</td><td>Verneinung des Gegenteils</td><td>„Das ist nicht schlecht.“</td><td>eindringlich, auflockernd</td></tr>
+      <tr><td class="k">Metapher</td><td>übertragene Bedeutung, Vergleich ohne „wie“</td><td>„Es regnet Bindfäden.“</td><td>anschaulich</td></tr>
+      <tr><td class="k">Neologismus</td><td>Wortneuschöpfung</td><td>„Handy“</td><td>anschaulich</td></tr>
+      <tr><td class="k">Oxymoron</td><td>Widerspruch in sich</td><td>„weiser Narr“</td><td>anschaulich, unterhaltend</td></tr>
+      <tr><td class="k">Periphrase</td><td>Umschreibung</td><td>„Zweitfrisur“ = Perücke</td><td>anschaulich, unterhaltend</td></tr>
+      <tr><td class="k">Pleonasmus</td><td>doppelt gemoppelt</td><td>„runder Kreis“</td><td>anschaulich (eigentlich falsch)</td></tr>
+      <tr><td class="k">Synonym</td><td>Wort mit gleicher Bedeutung</td><td>Samstag = Sonnabend</td><td>anschaulich</td></tr>
+      <tr><td class="k">Synonymie</td><td>Reihe sinnverwandter Wörter</td><td>„entrüstet, empört, erschüttert“</td><td>eindringlich</td></tr>
+      <tr><td class="k">Wortspiel</td><td>doppeldeutige oder ähnlich klingende Wörter</td><td>„2 fast 4 you“</td><td>unterhaltend</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3><span class="tag">C3</span>Satzfiguren (Handout)</h3>
+  <div class="tbl"><table class="fig">
+    <thead><tr><th>Figur</th><th>Erklärung</th><th>Beispiel</th><th>Wirkung</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Anapher</td><td>gleiche Wörter am Satzanfang</td><td>„Ich kann es nicht mehr … Ich kann höchstens noch …“</td><td>eindringlich</td></tr>
+      <tr><td class="k">Chiasmus</td><td>überkreuzte Anordnung</td><td>„Sie wissen nicht, was sie wollen, und wollen nicht, was sie wissen.“</td><td>anschaulich, unterhaltend</td></tr>
+      <tr><td class="k">Ellipse</td><td>Auslassung, Telegrammstil</td><td>„Je schneller, desto besser.“</td><td>eindringlich</td></tr>
+      <tr><td class="k">Hypotaxe</td><td>verschachtelte Nebensätze</td><td>„Weil sie ihn besuchen wollte, fuhr sie, als …, nach Bonn.“</td><td>detailliert, informativ</td></tr>
+      <tr><td class="k">Inversion</td><td>umgestellter Satzbau</td><td>„Endlich ist der Sommer da.“</td><td>eindringlich</td></tr>
+      <tr><td class="k">Klimax</td><td>Steigerung</td><td>„Ich kam, sah und siegte!“</td><td>spannend, eindringlich</td></tr>
+      <tr><td class="k">Parallelismus</td><td>gleicher Satzbau hintereinander</td><td>„Frauen werden alt, Männer werden interessant.“</td><td>anschaulich, eindringlich</td></tr>
+      <tr><td class="k">Parataxe</td><td>kurze, nebengeordnete Sätze</td><td>„Ich kam, ich sah und ich siegte.“</td><td>eindringlich, klar, volkstümlich</td></tr>
+      <tr><td class="k">Parenthese</td><td>Einschub mit Gedankenstrich oder Klammer</td><td>„Meine Nachbarn sind – im Gegensatz zu den alten – nett.“</td><td>kommunikativ</td></tr>
+      <tr><td class="k">Vergleich</td><td>Verknüpfung mit „wie“ oder „als“</td><td>„weiß wie Schnee“</td><td>anschaulich</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3><span class="tag">C4</span>Zusätzlich auf euren Folien</h3>
+  <p class="small">Auf den Folien steht keine Wirkung, deshalb hier nur Erklärung und Beispiel.</p>
+  <div class="tbl"><table class="extra">
+    <thead><tr><th>Figur</th><th>Erklärung</th><th>Beispiel</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Personifikation</td><td>Vermenschlichung eines Dinges oder Begriffs</td><td>der Tod oder die Liebe als handelnde Figur</td></tr>
+      <tr><td class="k">Antithese</td><td>Gegensatz</td><td>„gut und böse“</td></tr>
+      <tr><td class="k">Epipher</td><td>gleiches Wort am Satzende</td><td>„Ich sehe nichts, ich höre nichts, ich fühle nichts.“</td></tr>
+      <tr><td class="k">Metonymie</td><td>Ersatzwort aus einem naheliegenden Bereich</td><td>„das Weiße Haus lehnte ab“</td></tr>
+      <tr><td class="k">Paradoxon</td><td>scheinbarer Widerspruch (auf den Folien bei Oxymoron)</td><td>„bittersüß“</td></tr>
+      <tr><td class="k">Katachrese</td><td>Bildbruch, Stilblüte</td><td>„Der Apfel fällt nicht weit vom Pferd.“</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tip"><b>Für Reden außerdem wichtig: die rhetorische Frage.</b> Auf sie wird keine Antwort erwartet. Sie bezieht das Publikum ein und regt zum Nachdenken an.</div>
+
+  <h3><span class="tag">C5</span>Verwechslungsgefahr</h3>
+  <div class="pairs">
+    <div class="card"><div><b>Metapher</b><span>ohne „wie“</span></div><div class="x">↔</div><div><b>Vergleich</b><span>mit „wie“ oder „als“</span></div></div>
+    <div class="card"><div><b>Anapher</b><span>Wiederholung am Satzanfang</span></div><div class="x">↔</div><div><b>Epipher</b><span>Wiederholung am Satzende</span></div></div>
+    <div class="card"><div><b>Synonym</b><span>ein Wort mit gleicher Bedeutung</span></div><div class="x">↔</div><div><b>Synonymie</b><span>Aufzählung sinnverwandter Wörter</span></div></div>
+    <div class="card"><div><b>Parataxe</b><span>kurze, nebengeordnete Sätze</span></div><div class="x">↔</div><div><b>Hypotaxe</b><span>verschachtelte Nebensätze</span></div></div>
+    <div class="card"><div><b>Oxymoron</b><span>Widerspruch: „weiser Narr“</span></div><div class="x">↔</div><div><b>Pleonasmus</b><span>doppelt gemoppelt: „runder Kreis“</span></div></div>
+    <div class="card"><div><b>Hyperbel</b><span>übertreibt</span></div><div class="x">↔</div><div><b>Litotes</b><span>untertreibt durch Verneinung</span></div></div>
+  </div>
+</section>
+
+<!-- ===================== TEIL D: SELBSTTEST ===================== -->
+<section class="blk qa" id="test">
+  <h2>Teil D · Selbsttest</h2>
+  <p class="lead">Antworte zuerst selbst, dann klick auf die Frage. Was du nicht weißt, schlägst du in Teil A bis C nach.</p>
+  <div class="toolbar no-print"><button id="allopen" type="button">Alle Lösungen zeigen</button></div>
+
+  <h3><span class="tag">D1</span>Fragen zu Fantasy</h3>
+  <div id="d1">
+    <details><summary>Definiere Fantasy.</summary><div class="ans">Genre der Phantastik mit Wurzeln in Mythen und Sagen; übernatürliche, magische Elemente; spielt meist in einer fiktiven Welt, in der das Fiktionale als real gilt</div></details>
+    <details><summary>Woher kommt das Wort?</summary><div class="ans">englisch <i>fantasy</i> = „Phantasie“</div></details>
+    <details><summary>Nenne die Nachbargenres.</summary><div class="ans">Science-Fiction und Horror</div></details>
+    <details><summary>Woran orientiert sich die Fantasywelt?</summary><div class="ans">an historischen Epochen, meist am europäischen Mittelalter</div></details>
+    <details><summary>Welche politische Ordnung herrscht meist?</summary><div class="ans">Feudalismus</div></details>
+    <details><summary>Welche Rolle spielt Religion?</summary><div class="ans">sie wirkt magisch: Zauberer und Priester greifen in die Naturgesetze ein; Politik und Religion sind eine Einheit</div></details>
+    <details><summary>Welche Völker prägte Tolkien?</summary><div class="ans">Zwerge, Elben, Orks</div></details>
+    <details><summary>Was ist die klassische Erzählstruktur?</summary><div class="ans">die Quest, also eine Suche oder Aufgabe</div></details>
+    <details><summary>Wie ist der typische Held?</summary><div class="ans">hat Begleiter; ist übermächtig oder wird vom „Taugenichts“ zum Helden</div></details>
+    <details><summary>Wer gilt als Begründer?</summary><div class="ans">J. R. R. Tolkien, <i>Der Herr der Ringe</i></div></details>
+    <details><summary>Was hat die Romantik mit Fantasy zu tun?</summary><div class="ans">Kunstmärchen, Übersinnliches, Mittelalter, Mischung der Gattungen (Novalis, Tieck, Fouqué)</div></details>
+    <details><summary>Was löste den Boom im 21. Jahrhundert aus?</summary><div class="ans"><i>Harry Potter</i> und die <i>Herr der Ringe</i>-Filme</div></details>
+    <details><summary>Erkläre den Eskapismus-Vorwurf und ein Gegenargument.</summary><div class="ans">Fantasy blende heutige Probleme aus; dagegen: Sie greift Krieg, Nationalismus und Extremismus auf</div></details>
+    <details><summary>Nenne Tolkiens vier Funktionen.</summary><div class="ans">Fantasy, Recovery, Escape, Consolation</div></details>
+    <details><summary>Deserteur oder Gefangener?</summary><div class="ans">der Deserteur flieht aus Feigheit, der Gefangene aus gutem Grund; Fantasy = Flucht des Gefangenen</div></details>
+    <details><summary>Warum gilt Fantasy als Trivialliteratur?</summary><div class="ans">wegen ihrer Herkunft aus Pulp-Magazinen</div></details>
+    <details><summary>Unterschied High und Low Fantasy?</summary><div class="ans">High: epische Quest, Magie, mehrbändig; Low (= Sword and Sorcery): einsamer Held, Abenteuer</div></details>
+    <details><summary>Unterschied Urban und Portal-Fantasy?</summary><div class="ans">Urban: die Welten verschmelzen; Portal: die Welten bleiben getrennt</div></details>
+    <details><summary>Wann ist eine Zeitreise Science-Fiction?</summary><div class="ans">wenn sie mit Technik passiert</div></details>
+    <details><summary>Subgenres von <i>Harry Potter</i>?</summary><div class="ans">Urban Fantasy und All Age Fantasy</div></details>
+    <details><summary>Subgenres von <i>Die unendliche Geschichte</i>?</summary><div class="ans">Portal-Untergruppe und Kunstmärchen</div></details>
+    <details><summary>Subgenres von <i>Erdsee</i>?</summary><div class="ans">High Fantasy und Social Fantasy</div></details>
+  </div>
+
+  <h3><span class="tag">D2</span>Fragen zur Meinungsrede</h3>
+  <div id="d2">
+    <details><summary>Definiere die Meinungsrede.</summary><div class="ans">Druckfassung einer Rede, die ein bestimmtes Publikum von der eigenen Position zu einem aktuellen Thema überzeugen will</div></details>
+    <details><summary>Nenne die fünf Schreibfunktionen.</summary><div class="ans">Argumentation, Deskription, Explikation, Narration, Rekapitulation</div></details>
+    <details><summary>Was ist der situative Kontext?</summary><div class="ans">die Redesituation: wer spricht, vor wem, wo, aus welchem Anlass</div></details>
+    <details><summary>Welche Positionen sind möglich?</summary><div class="ans">eigene klare Position, Gegenposition, Verstärkung einer Position, Zwischenposition</div></details>
+    <details><summary>Was gehört in die Einleitung?</summary><div class="ans">Begrüßung und origineller Einstieg</div></details>
+    <details><summary>Nenne vier mögliche Einstiege.</summary><div class="ans">z. B. aktueller Anlass, Zitat, Fallbeispiel, provozierende Frage; auch überraschende Mitteilung, Betroffenheit, Teaser, eigene Rolle</div></details>
+    <details><summary>Wie gibst du den Ausgangstext wieder?</summary><div class="ans">4–5 Sätze, Präsens, eigene Worte, keine direkte Rede</div></details>
+    <details><summary>Wie kannst du Argumente ordnen?</summary><div class="ans">linear mit Steigerung · These – Antithese – Synthese · Problemstellung – Lösungsversuch</div></details>
+    <details><summary>Was kann im Schluss stehen?</summary><div class="ans">Appell, Ausblick, Verbesserungsvorschläge, Stellungnahme, selten Zusammenfassung</div></details>
+    <details><summary>Wie lang ist eine Meinungsrede?</summary><div class="ans">405–495 oder 540–660 Wörter</div></details>
+    <details><summary>Welcher Satzbau, welche Form?</summary><div class="ans">einfacher Satzbau, Ich-Form erlaubt</div></details>
+  </div>
+
+  <h3><span class="tag">D3</span>Stilmittel bestimmen</h3>
+  <p class="small">Bestimm die Figur und nenn ihre Wirkung. Passen zwei Figuren, ist es noch besser, beide zu nennen.</p>
+  <div id="d3">
+    <details><summary>„Wir wollen Bewegung, wir wollen frische Luft, wir wollen Zeit draußen!“</summary><div class="ans">Anapher – eindringlich</div></details>
+    <details><summary>„Das Smartphone ist die Fußfessel unserer Generation.“</summary><div class="ans">Metapher – anschaulich</div></details>
+    <details><summary>„Ich habe dir das schon tausendmal gesagt!“</summary><div class="ans">Hyperbel – anschaulich, unterhaltend</div></details>
+    <details><summary>Nach einem 0:5: „Na, das war ja ein Spitzenspiel.“</summary><div class="ans">Ironie – kommunikativ, überraschend</div></details>
+    <details><summary>„Der Drache war groß wie ein Haus.“</summary><div class="ans">Vergleich – anschaulich</div></details>
+    <details><summary>„Erst ein Spaziergang, dann ein Lauf, dann ein Marathon!“</summary><div class="ans">Klimax – spannend, eindringlich</div></details>
+    <details><summary>„Das ist kein schlechter Vorschlag.“</summary><div class="ans">Litotes – eindringlich, auflockernd</div></details>
+    <details><summary>„Opa ist friedlich eingeschlafen.“ (gemeint: gestorben)</summary><div class="ans">Euphemismus – anschaulich, aber verfälschend</div></details>
+    <details><summary>„Fantasy – das gebe ich offen zu – ist meine Lieblingsliteratur.“</summary><div class="ans">Parenthese – kommunikativ</div></details>
+    <details><summary>„Nie wieder werde ich aufs Laufband steigen.“</summary><div class="ans">Inversion – eindringlich</div></details>
+    <details><summary>„Das laute Schweigen der Klasse.“</summary><div class="ans">Oxymoron – anschaulich, unterhaltend</div></details>
+    <details><summary>„Ein weißer Schimmel.“</summary><div class="ans">Pleonasmus – anschaulich (eigentlich falsch)</div></details>
+    <details><summary>„Wir lesen, um zu leben, und leben, um zu lesen.“</summary><div class="ans">Chiasmus – anschaulich, unterhaltend</div></details>
+    <details><summary>„Handy weg, Bücher raus!“</summary><div class="ans">Ellipse – eindringlich</div></details>
+    <details><summary>„Die Elben singen, die Zwerge schmieden, die Orks zerstören.“</summary><div class="ans">Parallelismus – anschaulich, eindringlich</div></details>
+    <details><summary>„Ich bin wütend, zornig, aufgebracht.“</summary><div class="ans">Synonymie – eindringlich</div></details>
+    <details><summary>„Das runde Leder rollt wieder.“ (gemeint: der Fußball)</summary><div class="ans">Periphrase – anschaulich, unterhaltend</div></details>
+    <details><summary>„Smombie“ (Smartphone + Zombie)</summary><div class="ans">Neologismus – anschaulich</div></details>
+    <details><summary>„Der Wald ruft nach uns.“</summary><div class="ans">Personifikation (Folien)</div></details>
+    <details><summary>„Im Gym trainierst du allein, am Laufband läufst du allein, am Ende bleibst du allein.“</summary><div class="ans">Epipher (Folien)</div></details>
+    <details><summary>„Drinnen Stillstand, draußen Freiheit.“</summary><div class="ans">Antithese (Folien), zugleich Ellipse</div></details>
+    <details><summary>„Wer von euch war heute schon an der frischen Luft?“</summary><div class="ans">rhetorische Frage – bezieht das Publikum ein</div></details>
+  </div>
+
+  <h3><span class="tag">D4</span>Richtig oder falsch?</h3>
+  <p class="small">Klick auf deine Antwort. Die Lösung erscheint sofort, unten siehst du deinen Punktestand.</p>
+  <div id="d4">
+    <div class="rf" data-a="f"><p class="s">Fantasy ist ein Subgenre der Science-Fiction.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: der Phantastik; Sci-Fi ist ein Nachbargenre</p></div>
+    <div class="rf" data-a="r"><p class="s">Fantasywelten orientieren sich meist am europäischen Mittelalter.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig</p></div>
+    <div class="rf" data-a="f"><p class="s">In Fantasywelten herrscht meist Demokratie.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: meist Feudalismus</p></div>
+    <div class="rf" data-a="f"><p class="s">Als Begründer der Fantasy gilt C. S. Lewis.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: J. R. R. Tolkien; Lewis ist ein „Ahnherr“</p></div>
+    <div class="rf" data-a="r"><p class="s">Die klassische Erzählstruktur ist die Quest.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig</p></div>
+    <div class="rf" data-a="f"><p class="s">Zeitreisen mit technischen Geräten gehören zur Fantasy.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: das ist Science-Fiction</p></div>
+    <div class="rf" data-a="f"><p class="s">In der Portal-Fantasy verschmelzen reale und magische Welt.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: sie bleiben getrennt; verschmelzen = Urban Fantasy</p></div>
+    <div class="rf" data-a="r"><p class="s">Low Fantasy ist laut Handout dasselbe wie Sword and Sorcery.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig</p></div>
+    <div class="rf" data-a="f"><p class="s">Fantasy wird meist der Hochkultur zugeordnet.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: der Popkultur</p></div>
+    <div class="rf" data-a="f"><p class="s">Tolkien lehnt Eskapismus ab.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: für ihn gehört Flucht fest dazu</p></div>
+    <div class="rf" data-a="r"><p class="s">Die Romantik hat Elemente der Fantasy vorweggenommen.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig</p></div>
+    <div class="rf" data-a="r"><p class="s"><i>Game of Thrones</i> löste eine Welle neuer Fantasyserien aus.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig</p></div>
+    <div class="rf" data-a="f"><p class="s">Die Literaturwissenschaft ignoriert Fantasy bis heute.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: sie befasst sich verstärkt damit</p></div>
+    <div class="rf" data-a="f"><p class="s">In einer Meinungsrede ist die Ich-Form verboten.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: sie ist erlaubt</p></div>
+    <div class="rf" data-a="r"><p class="s">Eine Zwischenposition ist erlaubt.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig</p></div>
+    <div class="rf" data-a="f"><p class="s">Den Ausgangstext gibst du im Präteritum wieder.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: im Präsens</p></div>
+    <div class="rf" data-a="f"><p class="s">Bei der Wiedergabe darfst du direkte Rede verwenden.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: nur eigene Worte</p></div>
+    <div class="rf" data-a="f"><p class="s">Die Rede braucht einen möglichst komplizierten Satzbau.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: einfacher Satzbau</p></div>
+    <div class="rf" data-a="f"><p class="s">Der Schluss ist meistens eine Zusammenfassung.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: eher Appell, Ausblick, Vorschläge, Stellungnahme</p></div>
+    <div class="rf" data-a="f"><p class="s">Eigene Erfahrungen haben in der Rede nichts verloren.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: sie gehören zu den Merkmalen</p></div>
+    <div class="rf" data-a="f"><p class="s">Eine Metapher ist ein Vergleich mit „wie“.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: das ist der Vergleich</p></div>
+    <div class="rf" data-a="r"><p class="s">Ein Pleonasmus ist eigentlich sprachlich falsch.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Richtig (laut Handout)</p></div>
+    <div class="rf" data-a="f"><p class="s">Eine Anapher ist eine Wiederholung am Satzende.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: am Anfang; am Ende = Epipher</p></div>
+    <div class="rf" data-a="f"><p class="s">Die Hypotaxe wirkt klar und volkstümlich.</p><div class="btns"><button type="button" data-v="r">richtig</button><button type="button" data-v="f">falsch</button></div><p class="ex">Falsch: das ist die Parataxe</p></div>
+  </div>
+  <div class="toolbar no-print"><span class="score" id="rfscore"></span><button id="rfreset" type="button">Neu starten</button></div>
+</section>
+
+<!-- ===================== KARTEIKARTEN ===================== -->
+<section class="blk no-print" id="karten">
+  <h2>Karteikarten</h2>
+  <p class="lead">Stapel wählen, Karte anklicken zum Umdrehen. Tastatur: Leertaste = umdrehen, Pfeile = weiter oder zurück.</p>
+  <div class="toolbar">
+    <button type="button" data-deck="fantasy">Fantasy</button>
+    <button type="button" data-deck="rede">Meinungsrede</button>
+    <button type="button" data-deck="figuren">Stilmittel: Name → Wirkung</button>
+    <button type="button" data-deck="saetze">Stilmittel: Satz → Figur</button>
+  </div>
+  <div class="flash" id="fc" role="button" tabindex="0" aria-live="polite"><div><div class="front" id="fc-front"></div><div class="back" id="fc-back"></div></div></div>
+  <div class="ctrl">
+    <button type="button" id="fc-prev">← Zurück</button>
+    <button type="button" id="fc-flip">Umdrehen</button>
+    <button type="button" id="fc-next">Weiter →</button>
+    <button type="button" id="fc-mix">Mischen</button>
+  </div>
+  <div class="count" id="fc-count"></div>
+</section>
+
+</main>
+
+<footer>Erstellt aus deinen Unterlagen: Handout Fantasyliteratur, Blatt Meinungsrede, Handout und Folien zu rhetorischen Figuren · Stand 17.11.2026</footer>
+
+<script>
+(function(){
+  // Hell / Dunkel
+  var root = document.documentElement;
+  try { var saved = localStorage.getItem('mue-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  document.getElementById('theme').addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    var dark = cur === 'dark' || (!cur && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('mue-theme', next); } catch (e) {}
+  });
+
+  // Aktiven Abschnitt in der Leiste markieren
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.bar a'));
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          links.forEach(function(l){ l.classList.toggle('active', l.getAttribute('href') === '#' + en.target.id); });
+        }
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    document.querySelectorAll('main section[id]').forEach(function(s){ obs.observe(s); });
+  }
+
+  // Stilmittel suchen
+  var fs = document.getElementById('figsearch');
+  fs.addEventListener('input', function(){
+    var v = fs.value.trim().toLowerCase();
+    document.querySelectorAll('#stil tbody tr').forEach(function(r){
+      r.style.display = (!v || r.textContent.toLowerCase().indexOf(v) !== -1) ? '' : 'none';
+    });
+  });
+
+  // Alle Lösungen zeigen / verbergen
+  var allBtn = document.getElementById('allopen');
+  allBtn.addEventListener('click', function(){
+    var ds = Array.prototype.slice.call(document.querySelectorAll('#test details'));
+    var open = !ds.every(function(d){ return d.open; });
+    ds.forEach(function(d){ d.open = open; });
+    allBtn.textContent = open ? 'Alle Lösungen verbergen' : 'Alle Lösungen zeigen';
+  });
+
+  // Richtig oder falsch
+  var rfs = Array.prototype.slice.call(document.querySelectorAll('.rf'));
+  var score = document.getElementById('rfscore');
+  function upd(){
+    var done = rfs.filter(function(x){ return x.dataset.done; });
+    var ok = done.filter(function(x){ return x.dataset.done === 'ok'; }).length;
+    score.textContent = 'Punkte: ' + ok + ' von ' + done.length + ' richtig · ' + (rfs.length - done.length) + ' offen';
+  }
+  rfs.forEach(function(x){
+    x.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){
+        if (x.dataset.done) return;
+        var right = b.dataset.v === x.dataset.a;
+        x.dataset.done = right ? 'ok' : 'no';
+        b.classList.add(right ? 'ok' : 'no');
+        if (!right) x.querySelector('button[data-v="' + x.dataset.a + '"]').classList.add('ok');
+        x.classList.add('shown');
+        upd();
+      });
+    });
+  });
+  document.getElementById('rfreset').addEventListener('click', function(){
+    rfs.forEach(function(x){
+      delete x.dataset.done;
+      x.classList.remove('shown');
+      x.querySelectorAll('button').forEach(function(b){ b.classList.remove('ok', 'no'); });
+    });
+    upd();
+  });
+  upd();
+
+  // Karteikarten aus den Inhalten der Seite
+  function txt(el){ return el.textContent.replace(/\s+/g, ' ').trim(); }
+  function fromDetails(sel){
+    return Array.prototype.slice.call(document.querySelectorAll(sel + ' details')).map(function(d){
+      return { q: txt(d.querySelector('summary')), a: d.querySelector('.ans').innerHTML };
+    });
+  }
+  var decks = {
+    fantasy: fromDetails('#d1'),
+    rede: fromDetails('#d2'),
+    figuren: Array.prototype.slice.call(document.querySelectorAll('table.fig tbody tr')).map(function(r){
+      var c = r.querySelectorAll('td');
+      return { q: txt(c[0]), a: '<b>' + txt(c[1]) + '</b><br><i>' + txt(c[2]) + '</i><br>Wirkung: ' + txt(c[3]) };
+    }),
+    saetze: fromDetails('#d3')
+  };
+  var deck = 'fantasy', order = [], i = 0;
+  var fc = document.getElementById('fc'), ff = document.getElementById('fc-front'),
+      fb = document.getElementById('fc-back'), fn = document.getElementById('fc-count');
+  function show(){
+    var c = decks[deck][order[i]];
+    fc.classList.remove('open');
+    ff.textContent = c.q;
+    fb.innerHTML = c.a;
+    fn.textContent = (i + 1) + ' / ' + order.length;
+  }
+  function load(name, mix){
+    deck = name;
+    order = decks[name].map(function(_, k){ return k; });
+    if (mix) {
+      for (var k = order.length - 1; k > 0; k--) {
+        var j = Math.floor(Math.random() * (k + 1));
+        var t = order[k]; order[k] = order[j]; order[j] = t;
+      }
+    }
+    i = 0;
+    document.querySelectorAll('[data-deck]').forEach(function(b){ b.classList.toggle('on', b.dataset.deck === name); });
+    show();
+  }
+  function flip(){ fc.classList.toggle('open'); }
+  fc.addEventListener('click', flip);
+  document.getElementById('fc-flip').addEventListener('click', flip);
+  document.getElementById('fc-next').addEventListener('click', function(){ i = (i + 1) % order.length; show(); });
+  document.getElementById('fc-prev').addEventListener('click', function(){ i = (i - 1 + order.length) % order.length; show(); });
+  document.getElementById('fc-mix').addEventListener('click', function(){ load(deck, true); });
+  document.querySelectorAll('[data-deck]').forEach(function(b){
+    b.addEventListener('click', function(){ load(b.dataset.deck, false); });
+  });
+  document.addEventListener('keydown', function(e){
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    var r = document.getElementById('karten').getBoundingClientRect();
+    if (r.bottom < 0 || r.top > window.innerHeight) return;
+    if (e.key === 'ArrowRight') { document.getElementById('fc-next').click(); }
+    else if (e.key === 'ArrowLeft') { document.getElementById('fc-prev').click(); }
+    else if (e.key === ' ' && tag !== 'BUTTON') { e.preventDefault(); flip(); }
+  });
+  load('fantasy', false);
+
+  // Beim Drucken alle Lösungen aufklappen
+  window.addEventListener('beforeprint', function(){
+    document.querySelectorAll('details').forEach(function(d){ d.open = true; });
+  });
+})();
+</script>
+</body>
+</html>
