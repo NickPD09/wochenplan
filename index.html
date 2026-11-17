@@ -868,11 +868,15 @@ const NB_TYPES={SA:"Schularbeit",T:"Test","MÜ":"MÜ",Ref:"Referat"};
 const NB_OTHER="__other";
 const nbEl=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
 const nbAvg=xs=>xs.reduce((a,b)=>a+b,0)/xs.length;
+// Fachnote: SA+Test zählen 60 %, MÜ+Referat 40 %; fehlt eine Gruppe, zählt nur die andere
+const NB_BIG=["SA","T"],NB_SMALL=["MÜ","Ref"];
+const nbGroup=(gs,ks)=>gs.filter(g=>ks.includes(g.type)).map(g=>g.grade);
+const nbWeighted=gs=>{const b=nbGroup(gs,NB_BIG),s=nbGroup(gs,NB_SMALL);return b.length&&s.length?.6*nbAvg(b)+.4*nbAvg(s):nbAvg(b.length?b:s)};
 const nbFmt=x=>x.toLocaleString("de-AT",{minimumFractionDigits:1,maximumFractionDigits:2});
 const nbShort=d=>d?d.slice(8,10)+"."+d.slice(5,7)+".":"";
 const nbLong=d=>d?new Date(d+"T12:00").toLocaleDateString("de-AT",{day:"numeric",month:"long",year:"numeric"}):"";
 const nbValid=g=>g&&typeof g.subject==="string"&&g.subject&&NB_TYPES[g.type]&&[1,2,3,4,5].includes(g.grade);
-console.assert(nbAvg([1,2,2]).toFixed(2)==="1.67"&&nbFmt(1.5)==="1,5"&&nbShort("2026-11-03")==="03.11.","Notenbuch avg/fmt/short");
+console.assert(nbWeighted([{type:"SA",grade:1},{type:"T",grade:3},{type:"MÜ",grade:4}]).toFixed(2)==="2.80"&&nbWeighted([{type:"MÜ",grade:2},{type:"Ref",grade:3}])===2.5&&nbAvg([1,2,2]).toFixed(2)==="1.67"&&nbFmt(1.5)==="1,5"&&nbShort("2026-11-03")==="03.11.","Notenbuch avg/fmt/short");
 let nbOpenId=null,nbSelected="AM",nbSelectKey="";
 const nbGrades=()=>(st._book||[]).filter(nbValid);
 function nbStatus(msg,isError){$("nbStatus").textContent=msg;$("nbStatus").classList.toggle("error",!!isError)}
@@ -888,7 +892,7 @@ function renderBook(focusId){
   const grades=nbGrades(),list=nbList();nbFill(list);
   const withG=list.filter(c=>grades.some(g=>g.subject===c)),sm=$("nbSummary");
   if(!grades.length)sm.textContent="Noch keine Noten eingetragen. Wähle links Fach, Art und Note.";
-  else{const overall=nbAvg(withG.map(c=>nbAvg(grades.filter(g=>g.subject===c).map(g=>g.grade))));
+  else{const overall=nbAvg(withG.map(c=>nbWeighted(grades.filter(g=>g.subject===c))));
     sm.replaceChildren(grades.length+" "+(grades.length===1?"Note":"Noten")+" in "+withG.length+" "+(withG.length===1?"Fach":"Fächern")+" · Schnitt über alle Fächer ",nbEl("strong",null,"Ø "+nbFmt(overall)))}
   $("nbSubjects").replaceChildren(...list.map(c=>nbCard(c,grades.filter(g=>g.subject===c).sort((a,b)=>(a.date||"").localeCompare(b.date||"")))));
   if(focusId)document.querySelector('.nb-chip[data-id="'+CSS.escape(focusId)+'"]')?.focus();
@@ -896,7 +900,7 @@ function renderBook(focusId){
 function nbCard(code,gs){
   const c=nbEl("article","nb-card"+(gs.length?"":" nb-empty")),head=nbEl("div","nb-card-head"),title=nbEl("div","nb-card-title");
   title.append(nbEl("h3","nb-code",code),nbEl("p","nb-name",SUBJECTS[code]||"Eigenes Fach"));head.append(title);
-  if(gs.length){const a=nbAvg(gs.map(g=>g.grade)),box=nbEl("div","nb-avg g"+Math.round(a));box.append(nbEl("span","nb-avg-label","Ø"),nbEl("span","nb-avg-num",nbFmt(a)));head.append(box)}
+  if(gs.length){const a=nbWeighted(gs),box=nbEl("div","nb-avg g"+Math.round(a));box.append(nbEl("span","nb-avg-label","Ø"),nbEl("span","nb-avg-num",nbFmt(a)));head.append(box)}
   c.append(head);
   if(!gs.length)c.append(nbEl("p","nb-none","Noch keine Noten"));
   else{
@@ -906,7 +910,8 @@ function nbCard(code,gs){
       b.append(nbEl("span","nb-chip-type",g.type),nbEl("span","nb-chip-grade",g.grade));
       b.onclick=()=>{nbOpenId=nbOpenId===g.id?null:g.id;renderBook(g.id)};chips.append(b)}
     c.append(chips);
-    const parts=Object.keys(NB_TYPES).map(k=>{const xs=gs.filter(g=>g.type===k).map(g=>g.grade);return xs.length?k+" Ø "+nbFmt(nbAvg(xs)):null}).filter(Boolean);
+    const b=nbGroup(gs,NB_BIG),sm=nbGroup(gs,NB_SMALL);
+    const parts=[b.length?"SA+Test Ø "+nbFmt(nbAvg(b))+" (60 %)":null,sm.length?"MÜ+Ref Ø "+nbFmt(nbAvg(sm))+" (40 %)":null].filter(Boolean);
     c.append(nbEl("p","nb-by-type",parts.join(" · ")));
     const open=gs.find(g=>g.id===nbOpenId);if(open)c.append(nbDetail(open));
   }
