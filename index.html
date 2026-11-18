@@ -942,12 +942,14 @@ const nbAvg=xs=>xs.reduce((a,b)=>a+b,0)/xs.length;
 // Fachnote: SA+Test zählen 60 %, MÜ+Referat 40 %; fehlt eine Gruppe, zählt nur die andere
 const NB_BIG=["SA","T"],NB_SMALL=["MÜ","Ref"];
 const nbGroup=(gs,ks)=>gs.filter(g=>ks.includes(g.type)).map(g=>g.grade);
-const nbWeighted=gs=>{const b=nbGroup(gs,NB_BIG),s=nbGroup(gs,NB_SMALL);return b.length&&s.length?.6*nbAvg(b)+.4*nbAvg(s):nbAvg(b.length?b:s)};
+// Deutsch: Mitarbeit (MÜ+Ref) gerundet auf ganze Note, dann 50 % : 50 % mit SA+Test
+const nbW=gs=>gs[0]&&gs[0].subject==="D"?[.5,.5,true]:[.6,.4,false];
+const nbWeighted=gs=>{const b=nbGroup(gs,NB_BIG),s=nbGroup(gs,NB_SMALL),[wb,ws,rd]=nbW(gs),m=s.length?(rd?Math.round(nbAvg(s)):nbAvg(s)):0;return b.length&&s.length?wb*nbAvg(b)+ws*m:b.length?nbAvg(b):m};
 const nbFmt=x=>x.toLocaleString("de-AT",{minimumFractionDigits:1,maximumFractionDigits:2});
 const nbShort=d=>d?d.slice(8,10)+"."+d.slice(5,7)+".":"";
 const nbLong=d=>d?new Date(d+"T12:00").toLocaleDateString("de-AT",{day:"numeric",month:"long",year:"numeric"}):"";
 const nbValid=g=>g&&typeof g.subject==="string"&&g.subject&&NB_TYPES[g.type]&&[1,2,3,4,5].includes(g.grade);
-console.assert(nbWeighted([{type:"SA",grade:1},{type:"T",grade:3},{type:"MÜ",grade:4}]).toFixed(2)==="2.80"&&nbWeighted([{type:"MÜ",grade:2},{type:"Ref",grade:3}])===2.5&&nbAvg([1,2,2]).toFixed(2)==="1.67"&&nbFmt(1.5)==="1,5"&&nbShort("2026-11-03")==="03.11.","Notenbuch avg/fmt/short");
+console.assert(nbWeighted([{subject:"D",type:"SA",grade:2},{subject:"D",type:"MÜ",grade:2},{subject:"D",type:"MÜ",grade:3}])===2.5&&nbWeighted([{subject:"D",type:"SA",grade:1},{subject:"D",type:"MÜ",grade:2},{subject:"D",type:"MÜ",grade:2},{subject:"D",type:"MÜ",grade:3}])===1.5&&nbWeighted([{type:"SA",grade:1},{type:"T",grade:3},{type:"MÜ",grade:4}]).toFixed(2)==="2.80"&&nbWeighted([{type:"MÜ",grade:2},{type:"Ref",grade:3}])===2.5&&nbAvg([1,2,2]).toFixed(2)==="1.67"&&nbFmt(1.5)==="1,5"&&nbShort("2026-11-03")==="03.11.","Notenbuch avg/fmt/short");
 let nbOpenId=null,nbSelected="AM",nbSelectKey="";
 const nbGrades=()=>(st._book||[]).filter(nbValid);
 function nbStatus(msg,isError){$("nbStatus").textContent=msg;$("nbStatus").classList.toggle("error",!!isError)}
@@ -982,7 +984,7 @@ function nbCard(code,gs){
       b.onclick=()=>{nbOpenId=nbOpenId===g.id?null:g.id;renderBook(g.id)};chips.append(b)}
     c.append(chips);
     const b=nbGroup(gs,NB_BIG),sm=nbGroup(gs,NB_SMALL);
-    const parts=[b.length?"SA+Test Ø "+nbFmt(nbAvg(b))+" (60 %)":null,sm.length?"MÜ+Ref Ø "+nbFmt(nbAvg(sm))+" (40 %)":null].filter(Boolean);
+    const [wb,ws,rd]=nbW(gs),parts=[b.length?"SA+Test Ø "+nbFmt(nbAvg(b))+" ("+wb*100+" %)":null,sm.length?(rd?"Mitarbeit Ø "+nbFmt(nbAvg(sm))+" → "+Math.round(nbAvg(sm)):"MÜ+Ref Ø "+nbFmt(nbAvg(sm)))+" ("+ws*100+" %)":null].filter(Boolean);
     c.append(nbEl("p","nb-by-type",parts.join(" · ")));
     const open=gs.find(g=>g.id===nbOpenId);if(open)c.append(nbDetail(open));
   }
