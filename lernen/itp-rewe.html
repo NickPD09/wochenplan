@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rechnungswesen & USt</title>
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--ink:#16181d;--muted:#5d6370;--line:#e1e4ea;
+  --accent:#1f5fae;--soft:#e8f0fa;--plus:#1d7a46;--plus-soft:#e4f4ea;--minus:#b4321f;--minus-soft:#fbe9e5;
+  --zero:#6b6f78;--zero-soft:#eeeff2;--hl:#fff3c4;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121418;--card:#1b1e24;--ink:#e9ebef;--muted:#a3a9b5;--line:#2e333c;
+  --accent:#86b6ee;--soft:#1d2a3a;--plus:#6fd09a;--plus-soft:#1a3125;--minus:#f19583;--minus-soft:#3a201b;
+  --zero:#a3a9b5;--zero-soft:#272a31;--hl:#3b3416}}
+:root[data-theme="dark"]{
+  --bg:#121418;--card:#1b1e24;--ink:#e9ebef;--muted:#a3a9b5;--line:#2e333c;
+  --accent:#86b6ee;--soft:#1d2a3a;--plus:#6fd09a;--plus-soft:#1a3125;--minus:#f19583;--minus-soft:#3a201b;
+  --zero:#a3a9b5;--zero-soft:#272a31;--hl:#3b3416}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+header{padding:26px 0 10px}
+h1{font-size:1.8rem;line-height:1.2;margin:0 0 6px}
+header p{margin:0;color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding:9px 16px}
+nav a{flex:none;font-size:.85rem;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0}
+h2{margin:0 0 6px;font-size:1.4rem;color:var(--accent)}
+h3{margin:20px 0 6px;font-size:1.08rem}
+p{margin:8px 0}
+ul,ol{margin:6px 0;padding-left:22px}
+li{margin:3px 0}
+.lead{color:var(--muted);margin-top:0}
+.box{border-radius:10px;padding:11px 14px;margin:10px 0;background:var(--soft);border-left:4px solid var(--accent)}
+.tip{border-radius:10px;padding:11px 14px;margin:10px 0;background:var(--hl)}
+.warn{border-radius:10px;padding:11px 14px;margin:10px 0;background:var(--minus-soft);border-left:4px solid var(--minus)}
+.f{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95em;background:var(--soft);padding:1px 6px;border-radius:5px;white-space:nowrap}
+pre.calc{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92rem;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-x:auto;margin:8px 0;line-height:1.5}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:7px 9px;border-bottom:1px solid var(--line)}
+th{background:var(--soft);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin:10px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.card b.t{display:block;color:var(--accent);margin-bottom:3px}
+.card p{margin:0;font-size:.93rem}
+.plus{color:var(--plus);font-weight:700}.minus{color:var(--minus);font-weight:700}.zero{color:var(--zero);font-weight:700}
+tr.p td{background:var(--plus-soft)}tr.m td{background:var(--minus-soft)}tr.z td{background:var(--zero-soft)}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:4px 0 6px 38px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:3px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--card);font-weight:700;font-size:.85rem;display:grid;place-items:center}
+details{border:1px solid var(--line);border-radius:10px;padding:9px 13px;margin:8px 0}
+summary{cursor:pointer;font-weight:600}
+details .sol{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.flow{display:grid;gap:6px;margin:10px 0}
+.flow .q{border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.flow .q b{color:var(--accent)}
+.rechner{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end}
+.rechner label{font-size:.85rem;color:var(--muted);display:grid;gap:3px}
+.rechner input,.rechner select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.out{font-variant-numeric:tabular-nums;margin-top:8px}
+.out b{color:var(--accent)}
+.theme{margin-left:auto;flex:none;font:inherit;font-size:.82rem;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer}
+footer{color:var(--muted);font-size:.82rem;text-align:center;padding:6px 16px 40px}
+@media (max-width:560px){h1{font-size:1.45rem}section{padding:15px 14px}}
+@media print{nav{display:none}details{border:0;padding:0}details .sol{display:block}section{break-inside:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Rechnungswesen &amp; Umsatzsteuer – von Null erklärt</h1>
+  <p>ITP MÜ (Erber) · zuerst die Grundbegriffe, dann Schritt für Schritt, am Ende Übungen mit Lösung</p>
+</div></header>
+
+<nav><div class="wrap">
+  <a href="#basis">0 Grundbegriffe</a><a href="#bf">1 Buchführung</a><a href="#form">2 Formvorschriften</a><a href="#frist">3 Aufbewahrung</a><a href="#teile">4 Teilgebiete</a><a href="#steuerbar">5 Steuerbar?</a><a href="#rechnen">6 USt rechnen</a><a href="#system">7 VSt &amp; Zahllast</a><a href="#viele">8 Viele Fälle</a><a href="#soll">9 Soll/Ist</a><a href="#klein">10 Kleinunternehmer</a><a href="#ueben">Übungen</a><a href="#spick">Spickzettel</a>
+  <button class="theme" id="theme" type="button">Hell / Dunkel</button>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 0 -->
+<section id="basis">
+  <h2>0 · Grundbegriffe – das brauchst du für alles</h2>
+  <p class="lead">Wenn du diese Wörter verstehst, ist der Rest nur noch Anwenden.</p>
+  <div class="grid">
+    <div class="card"><b class="t">Unternehmer</b><p>Jemand, der <b>selbstständig</b> und <b>dauerhaft</b> etwas verkauft oder eine Leistung anbietet, um Geld einzunehmen. Ein Angestellter ist kein Unternehmer. Wer privat sein altes Handy verkauft, auch nicht.</p></div>
+    <div class="card"><b class="t">Umsatz</b><p>Alles Geld, das ein Unternehmen in einem Jahr <b>einnimmt</b> (Verkäufe). Achtung: Umsatz ≠ Gewinn. Gewinn = Umsatz − Ausgaben.</p></div>
+    <div class="card"><b class="t">Netto</b><p>Preis <b>ohne</b> Umsatzsteuer. „exkl. USt“ = „zzgl. USt“ = netto.</p></div>
+    <div class="card"><b class="t">Brutto</b><p>Preis <b>mit</b> Umsatzsteuer. „inkl. USt“ = brutto. Das zahlt man an der Kassa.</p></div>
+    <div class="card"><b class="t">Umsatzsteuer (USt)</b><p>Steuer auf fast jeden Verkauf, meist 20 %. Im Alltag sagt man auch „Mehrwertsteuer“ – das ist dasselbe.</p></div>
+    <div class="card"><b class="t">Finanzamt (FA)</b><p>Die Behörde, an die Steuern bezahlt werden.</p></div>
+    <div class="card"><b class="t">Beleg</b><p>Jedes Papier (oder PDF), das einen Geschäftsfall beweist: Rechnung, Kassabon, Kontoauszug, Quittung.</p></div>
+    <div class="card"><b class="t">Bar / auf Ziel</b><p><b>Bar</b> = sofort bezahlt. <b>Auf Ziel</b> = Rechnung jetzt, bezahlt wird später (z. B. in 30 Tagen).</p></div>
+  </div>
+
+  <h3>Rechtsformen – wer ist was?</h3>
+  <p>Die Rechtsform ist die „Art“ des Unternehmens. Sie entscheidet, welche Buchführung Pflicht ist.</p>
+  <div class="tbl"><table>
+    <tr><th>Gruppe</th><th>Rechtsformen</th><th>Erkennungsmerkmal</th></tr>
+    <tr><td><b>Einzelunternehmen</b></td><td>e.U. oder ohne Zusatz („Tischlerei Huber“)</td><td>1 Person gehört alles, haftet mit Privatvermögen</td></tr>
+    <tr><td><b>Personengesellschaften</b></td><td>OG, KG</td><td>mehrere Personen, mind. eine haftet persönlich</td></tr>
+    <tr><td><b>Kapitalgesellschaften</b></td><td>GmbH, AG, FlexKapG (+ GmbH &amp; Co KG, Genossenschaft)</td><td>die Firma ist eine eigene „Person“, haftet nur mit Firmengeld</td></tr>
+    <tr><td><b>Freiberufler</b></td><td>Arzt, Anwalt, Architekt, Notar …</td><td>„freie Berufe“ mit eigenen Regeln</td></tr>
+  </table></div>
+  <div class="tip"><b>Trick:</b> Steht <b>GmbH</b> oder <b>AG</b> im Namen → Kapitalgesellschaft → strengste Regeln.</div>
+</section>
+
+<!-- 1 -->
+<section id="bf">
+  <h2>1 · Welche Buchführung muss ein Unternehmen machen?</h2>
+  <p class="lead">„Buchführung“ = alle Einnahmen und Ausgaben aufschreiben, damit man Gewinn und Steuern berechnen kann. Es gibt 3 Arten – von einfach bis aufwendig:</p>
+  <div class="grid">
+    <div class="card"><b class="t">① Pauschalierung</b><p>Am einfachsten. Ausgaben werden <b>nicht einzeln</b> aufgeschrieben, sondern pauschal geschätzt (z. B. ein fixer Prozentsatz vom Umsatz).</p></div>
+    <div class="card"><b class="t">② Einnahmen-Ausgaben-Rechnung (E-A-R)</b><p>Mittel. Wie ein <b>Haushaltsbuch</b>: Geld rein, Geld raus. Gewinn = Einnahmen − Ausgaben. Zählt nur, wann Geld fließt.</p></div>
+    <div class="card"><b class="t">③ Doppelte Buchführung</b><p>Am aufwendigsten. Jeder Fall wird <b>zweimal</b> gebucht (Soll und Haben). Am Jahresende gibt es eine <b>Bilanz</b> (was gehört der Firma, was schuldet sie).</p></div>
+  </div>
+
+  <h3>So entscheidest du es – Schritt für Schritt</h3>
+  <div class="flow">
+    <div class="q"><b>Frage 1:</b> Ist es eine Kapitalgesellschaft (GmbH, AG, FlexKapG, GmbH &amp; Co KG, Genossenschaft)?<br>→ <b>Ja: immer doppelte Buchführung.</b> Fertig, Umsatz egal!</div>
+    <div class="q"><b>Frage 2:</b> Ist es ein Freiberufler (Arzt, Anwalt …)?<br>→ <b>Ja: E-A-Rechnung</b> reicht, egal wie viel Umsatz (doppelt freiwillig).</div>
+    <div class="q"><b>Frage 3:</b> Einzelunternehmen oder OG/KG? → jetzt entscheidet der <b>Umsatz</b>:</div>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Umsatz pro Jahr</th><th>Buchführung</th></tr>
+    <tr><td class="n">≤ 220.000 €</td><td>Pauschalierung <b>oder</b> E-A-Rechnung (doppelt freiwillig)</td></tr>
+    <tr><td class="n">≤ 700.000 €</td><td><b>E-A-Rechnung Pflicht</b> (doppelt freiwillig)</td></tr>
+    <tr><td class="n">&gt; 700.000 € in 2 Jahren hintereinander</td><td>doppelte BF – aber erst nach <b>1 Pufferjahr</b></td></tr>
+    <tr><td class="n">&gt; 1.000.000 € in 1 Jahr</td><td>doppelte BF <b>sofort im Folgejahr</b></td></tr>
+  </table></div>
+  <div class="box"><b>Pufferjahr verstehen:</b> Boutique hat 2024 und 2025 je 850.000 €. → 2× hintereinander über 700.000. → 2026 ist das Pufferjahr (noch E-A-R). → <b>ab 2027 doppelt</b>.<br>
+  Hätte sie 2025 1,2 Mio. € gehabt → über 1 Mio. in 1 Jahr → <b>ab 2026 doppelt</b> (kein Puffer).</div>
+
+  <h3>Beispiele</h3>
+  <div class="tbl"><table>
+    <tr><th>Fall</th><th>Lösung</th><th>Warum</th></tr>
+    <tr><td>Einzelunternehmer, 450.000 €</td><td>E-A-R (Pflicht)</td><td>über 220.000, unter 700.000</td></tr>
+    <tr><td>Elektriker (Einzel), 50.000 €</td><td>Pauschalierung oder E-A-R</td><td>unter 220.000</td></tr>
+    <tr><td>MIKSA GmbH, 100.000 €</td><td>doppelt</td><td>GmbH → immer</td></tr>
+    <tr><td>Verkaufsstand als GmbH, 15.000 €</td><td>doppelt</td><td>GmbH → immer, auch wenn winzig!</td></tr>
+    <tr><td>Ärztin, 900.000 €</td><td>E-A-R</td><td>Freiberufler → Umsatz egal</td></tr>
+  </table></div>
+  <div class="warn"><b>Häufigster Fehler:</b> „GmbH hat wenig Umsatz, also Pauschalierung.“ → <b>Falsch!</b> Die Umsatzgrenzen gelten nur für Einzelunternehmen und OG/KG.</div>
+</section>
+
+<!-- 2 -->
+<section id="form">
+  <h2>2 · Formvorschriften (§ 131 BAO)</h2>
+  <p class="lead">BAO = Bundesabgabenordnung, das Gesetz mit den Grundregeln für Steuern. § 131 sagt, <b>wie</b> man Bücher führen muss – damit das Finanzamt alles nachprüfen kann und niemand schummelt.</p>
+  <div class="tbl"><table>
+    <tr><th>Regel</th><th>Was heißt das?</th><th>Verstoß-Beispiel</th></tr>
+    <tr><td><b>Lebende Sprache</b></td><td>eine Sprache, die heute gesprochen wird (bei uns Deutsch)</td><td>Buchhaltung auf Latein</td></tr>
+    <tr><td><b>Vollständig, richtig, chronologisch, zeitgerecht</b></td><td>alles eintragen, keine Fehler, in zeitlicher Reihenfolge, spätestens <b>1 Monat + 15 Tage</b> nach Monatsende</td><td>nur 1× im Halbjahr eintragen</td></tr>
+    <tr><td><b>Kontenführung</b></td><td>für jede Art von Geschäftsfall ein eigenes Konto/Buch (z. B. Kassa, Bank, Miete)</td><td>alles durcheinander auf einem Zettel</td></tr>
+    <tr><td><b>Fortlaufende Nummerierung</b></td><td>Belege bekommen Nummern 1, 2, 3 … ohne Lücke</td><td>Belege ohne Nummer</td></tr>
+    <tr><td><b>Keine Buchung ohne Beleg</b></td><td>jede Eintragung braucht einen Beweis</td><td>Buchung ohne Rechnung</td></tr>
+    <tr><td><b>Art &amp; Weise</b></td><td>nicht radierbar, keine leeren Zeilen, Fehler so ausbessern, dass das Original lesbar bleibt</td><td>Bleistift, Tipp-Ex, Leerzeilen</td></tr>
+    <tr><td><b>Datenträger</b></td><td>am Computer erlaubt, wenn 7 Jahre lesbar</td><td>–</td></tr>
+  </table></div>
+  <p><b>Strafen:</b> Geldstrafe oder Haft; Steuervorteile können gestrichen werden.</p>
+  <div class="tip"><b>Warum keine Leerzeilen?</b> In eine leere Zeile könnte man später heimlich etwas hineinschreiben. Darum auch kein Bleistift und kein Tipp-Ex.</div>
+</section>
+
+<!-- 3 -->
+<section id="frist">
+  <h2>3 · Aufbewahrungsfrist (§ 132 BAO)</h2>
+  <div class="box">Belege und Bücher <b>7 Jahre</b> aufbewahren. Die Frist beginnt erst am <b>Ende des Jahres</b>, in dem der Beleg entstanden ist – egal ob der Beleg vom Jänner oder Dezember ist.</div>
+  <pre class="calc">aufbewahren bis:        31.12.(Belegjahr + 7)
+vernichten frühestens:  1.1.(Belegjahr + 8)</pre>
+  <pre class="calc">Beleg 2018:     2018 + 7 = 2025 → bis 31.12.2025 → vernichten ab 1.1.2026
+Kassabuch 2024: 2024 + 7 = 2031 → bis 31.12.2031 → vernichten ab 1.1.2032</pre>
+  <p><b>Ausnahme:</b> Personalakten 30 Jahre.</p>
+</section>
+
+<!-- 4 -->
+<section id="teile">
+  <h2>4 · Aufgaben &amp; Teilgebiete des Rechnungswesens</h2>
+  <p><b>Rechnungswesen</b> = alles, was mit Zahlen im Unternehmen zu tun hat. 4 Aufgaben: <b>Dokumentation</b> (aufschreiben) · <b>Information</b> (Zahlen liefern) · <b>Disposition</b> (Entscheidungen vorbereiten) · <b>Kontrolle</b> (prüfen).</p>
+  <div class="tbl"><table>
+    <tr><th>Teilgebiet</th><th>Typische Frage</th><th>Pflicht?</th></tr>
+    <tr><td><b>A · Finanzbuchhaltung</b></td><td>Wie viel Gewinn? Wie viel Bargeld ist in der Kassa?</td><td>verpflichtend</td></tr>
+    <tr><td><b>B · Kostenrechnung</b></td><td>Was kostet mich ein Produkt? Zu welchem Preis verkaufe ich?</td><td>freiwillig</td></tr>
+    <tr><td><b>C · Statistik / Planung</b></td><td>Um wie viel % ist der Umsatz gesunken? Kann ich mir die Investition leisten?</td><td>freiwillig</td></tr>
+  </table></div>
+  <div class="tip"><b>Merke:</b> Nur die Finanzbuchhaltung ist Pflicht – das Finanzamt braucht sie für die Steuern. Den Rest macht die Firma für sich selbst.</div>
+</section>
+
+<!-- 5 -->
+<section id="steuerbar">
+  <h2>5 · Muss auf einen Umsatz USt bezahlt werden?</h2>
+  <p class="lead">Man prüft in 2 Stufen: Erst <b>steuerbar?</b>, dann <b>steuerfrei oder steuerpflichtig?</b></p>
+
+  <h3>Stufe 1: Steuerbar = ALLE 4 Kriterien erfüllt</h3>
+  <div class="grid">
+    <div class="card"><b class="t">✔ Unternehmer</b><p>Verkauft ein Unternehmer? Privatverkauf (Flohmarkt, willhaben) → nein.</p></div>
+    <div class="card"><b class="t">✔ im Inland</b><p>Findet es in Österreich statt?</p></div>
+    <div class="card"><b class="t">✔ gegen Entgelt</b><p>Gibt es eine Gegenleistung (Geld)? Spende/Geschenk → nein.</p></div>
+    <div class="card"><b class="t">✔ im Rahmen des Unternehmens</b><p>Gehört es zum Geschäft? Ein Tischler verkauft einen Tisch → ja.</p></div>
+  </div>
+  <p>Fehlt <b>auch nur eines</b> → <b>nicht steuerbar</b> → keine USt. (Sonderfälle, die trotzdem steuerbar sind: Eigenverbrauch, Einkauf aus der EU, Import.)</p>
+
+  <h3>Stufe 2: Steuerbar – aber vielleicht steuerfrei</h3>
+  <p>Manche steuerbaren Umsätze befreit das Gesetz trotzdem von der USt.</p>
+  <div class="tbl"><table>
+    <tr><th>Ergebnis</th><th>Bedeutung</th><th>Beispiele</th></tr>
+    <tr class="z"><td><b>nicht steuerbar</b></td><td>mind. 1 Kriterium fehlt → keine USt</td><td>Spende (kein Entgelt) · Privatverkauf (kein Unternehmer) · Gehälter</td></tr>
+    <tr class="z"><td><b>steuerbar, aber steuerfrei</b></td><td>alle 4 erfüllt, aber Gesetz befreit → keine USt</td><td>Arzt · Versicherung · Kredite · Briefmarken (Post) · Export · Lieferung an Firma in der EU · Grundstücke</td></tr>
+    <tr class="p"><td><b>steuerbar + steuerpflichtig</b></td><td>USt fällt an</td><td>EDV GmbH verkauft Laptop</td></tr>
+  </table></div>
+  <div class="tip"><b>Unterschied „nicht steuerbar“ vs. „steuerfrei“:</b> Das Ergebnis ist gleich (keine USt), aber der Grund ist anders. „Nicht steuerbar“ = fällt gar nicht unter das Gesetz. „Steuerfrei“ = fällt drunter, ist aber ausdrücklich befreit. In der MÜ immer die <b>Begründung</b> dazuschreiben!</div>
+
+  <h3>Steuersätze</h3>
+  <div class="tbl"><table>
+    <tr><th>20 % (Normalsatz)</th><th>13 %</th><th>10 %</th></tr>
+    <tr><td>fast alles: Laptop, Möbel, Kleidung, Büromaterial, Handwerker …</td><td>Blumen, Pflanzen, Kino, lebende Tiere</td><td>Lebensmittel, Bücher, Medikamente, Hotel, Taxi/Personenbeförderung</td></tr>
+  </table></div>
+</section>
+
+<!-- 6 -->
+<section id="rechnen">
+  <h2>6 · USt ausrechnen</h2>
+  <p class="lead">Nur 2 Richtungen: Von netto nach brutto (USt <b>dazu</b>) oder von brutto nach netto (USt <b>raus</b>).</p>
+
+  <h3>Die Idee mit Prozent</h3>
+  <pre class="calc">netto  = 100 %
+USt    =  20 %
+brutto = 120 %   → brutto ist das 1,2-Fache von netto</pre>
+
+  <div class="grid">
+    <div class="card"><b class="t">netto → brutto</b><p><span class="f">brutto = netto × 1,2</span><br><span class="f">USt = netto × 0,2</span></p></div>
+    <div class="card"><b class="t">brutto → netto</b><p><span class="f">netto = brutto ÷ 1,2</span><br><span class="f">USt = brutto ÷ 6</span></p></div>
+  </div>
+  <div class="warn"><b>Falle:</b> brutto × 0,8 ist <b>falsch</b>! 120 × 0,8 = 96, aber richtig ist 120 ÷ 1,2 = 100. Die 20 % beziehen sich auf netto, nicht auf brutto.</div>
+  <div class="box"><b>Woher kommt ÷ 6?</b> brutto = 120 %, USt = 20 % → 120 ÷ 20 = 6. Also ist die USt ein Sechstel vom Bruttopreis.<br>
+  Bei 10 %: 110 ÷ 10 = 11 → USt = brutto ÷ 11. &nbsp;Bei 13 %: USt = brutto − brutto ÷ 1,13.</div>
+
+  <div class="tbl"><table>
+    <tr><th>Satz</th><th>netto → brutto</th><th>brutto → netto</th><th>USt aus brutto</th></tr>
+    <tr><td>20 %</td><td>× 1,2</td><td>÷ 1,2</td><td>÷ 6</td></tr>
+    <tr><td>13 %</td><td>× 1,13</td><td>÷ 1,13</td><td>brutto − netto</td></tr>
+    <tr><td>10 %</td><td>× 1,1</td><td>÷ 1,1</td><td>÷ 11</td></tr>
+  </table></div>
+
+  <h3>Woran erkenne ich, ob netto oder brutto gegeben ist?</h3>
+  <ul>
+    <li><b>netto:</b> „exkl. USt“, „zzgl. 20 % USt“, „+ USt“, „ohne USt“</li>
+    <li><b>brutto:</b> „inkl. USt“, „inkl. 20 %“, Kassabon, Barverkauf an Privatkunden</li>
+  </ul>
+
+  <h3>Beispiele</h3>
+  <pre class="calc">a) 67 € netto, 20 %:         67 × 1,2   =  80,40 € brutto
+b) 530 € brutto, 20 %:       530 ÷ 1,2  = 441,67 € netto   USt = 530 ÷ 6 = 88,33 €
+c) Würstel 50 € exkl. 10 %:  50 × 1,1   =  55,00 € zu zahlen (USt 5 €)
+d) Möbel 4.800 € inkl. 20 %: 4800 ÷ 1,2 = 4.000 € netto    USt = 800 €
+e) Blumen 113 € brutto, 13 %: 113 ÷ 1,13 = 100 € netto     USt = 13 €</pre>
+  <div class="tip"><b>„Kosten“ für eine Firma = netto!</b> Die Firma bekommt die USt vom Finanzamt zurück (→ Vorsteuer, Kapitel 7). Die Möbel um 4.800 € inkl. USt kosten die GmbH also nur 4.000 €. Zahlen muss sie aber zuerst 4.800 €.</div>
+
+  <h3>Mini-Rechner zum Selber-Testen</h3>
+  <div class="rechner">
+    <label>Betrag in €<input id="rb" type="number" inputmode="decimal" value="120" step="0.01"></label>
+    <label>Betrag ist<select id="rt"><option value="b">brutto</option><option value="n">netto</option></select></label>
+    <label>Steuersatz<select id="rs"><option value="20">20 %</option><option value="13">13 %</option><option value="10">10 %</option></select></label>
+  </div>
+  <div class="out" id="ro"></div>
+</section>
+
+<!-- 7 -->
+<section id="system">
+  <h2>7 · Vorsteuer und Zahllast – wer zahlt die USt wirklich?</h2>
+  <div class="box">
+    ① Die USt zahlt am Ende nur der <b>Letztverbraucher</b> (Privatkunde).<br>
+    ② Unternehmen <b>sammeln</b> die USt nur ein und geben sie ans Finanzamt weiter (= <b>Durchlaufsteuer</b>).<br>
+    ③ Die USt, die eine Firma beim Einkauf zahlt, bekommt sie als <b>Vorsteuer</b> zurück. → Für Firmen kostet die USt nichts.
+  </div>
+
+  <h3>Die 3 Wörter</h3>
+  <div class="tbl"><table>
+    <tr><th>Begriff</th><th>Wann?</th><th>Für die Firma</th></tr>
+    <tr class="p"><td><b>Umsatzsteuer (USt)</b></td><td>auf Rechnungen, die <b>ich schreibe</b> (ich verkaufe)</td><td><span class="plus">+</span> schulde ich dem Finanzamt</td></tr>
+    <tr class="m"><td><b>Vorsteuer (VSt)</b></td><td>auf Rechnungen, die <b>ich bekomme</b> (ich kaufe ein)</td><td><span class="minus">−</span> bekomme ich zurück</td></tr>
+    <tr><td><b>Zahllast</b></td><td>am Monatsende</td><td><span class="f">Zahllast = USt − VSt</span> → das zahle ich wirklich</td></tr>
+  </table></div>
+  <div class="tip">Es ist <b>dieselbe Steuer</b>. Ob sie „USt“ oder „VSt“ heißt, hängt nur davon ab, ob <b>du</b> verkaufst oder einkaufst.</div>
+
+  <h3>Beispiel: Lieferant → Müller → Kunde</h3>
+  <ol class="steps">
+    <li><b>Müller kauft ein</b> (100 € netto):<pre class="calc">USt = 100 × 0,2 = 20 €   brutto = 120 €
+→ Müller zahlt 120 €. Die 20 € sind für Müller VORSTEUER.</pre></li>
+    <li><b>Müller verkauft</b> (150 € netto):<pre class="calc">USt = 150 × 0,2 = 30 €   brutto = 180 €
+→ Kunde zahlt 180 €. Die 30 € sind für Müller UMSATZSTEUER.</pre></li>
+    <li><b>Zahllast</b>:<pre class="calc">Zahllast = USt − VSt = 30 − 20 = 10 € → Müller zahlt 10 € ans FA</pre></li>
+    <li><b>Probe</b>:<pre class="calc">FA bekommt:   20 (vom Lieferanten) + 10 (von Müller) = 30 € = 20 % vom Endpreis ✔
+Müllers Geld: −120 + 180 − 10 = +50 €
+Müllers Gewinn: 150 − 100 = 50 € → die USt hat ihn nichts gekostet ✔</pre></li>
+  </ol>
+  <p>Der <b>Kunde</b> zahlt die 30 € USt und bekommt sie <b>nicht</b> zurück – er ist Letztverbraucher.</p>
+
+  <h3>Beispiel mit Bruttopreisen (10 %, Bücher)</h3>
+  <pre class="calc">Einkauf 220 € brutto:  VSt = 220 ÷ 11 = 20 €
+Verkauf 330 € brutto:  USt = 330 ÷ 11 = 30 €
+Zahllast = 30 − 20 = 10 €</pre>
+
+  <h3>Wenn die Vorsteuer größer ist: Überschuss</h3>
+  <pre class="calc">Einkauf 5.000 € netto → VSt = 1.000 €
+Verkauf 2.000 € netto → USt =   400 €
+Zahllast = 400 − 1.000 = −600 € → negativ = ÜBERSCHUSS → FA zahlt 600 € zurück</pre>
+
+  <h3>Wann gibt es KEINE Vorsteuer zurück?</h3>
+  <ul>
+    <li>Käufer ist kein Unternehmer (Privatperson)</li>
+    <li>keine ordentliche Rechnung (§ 11 UStG)</li>
+    <li><b>Pkw/Kombi</b> → nie Vorsteuer (Ausnahme: <b>E-Autos</b>)</li>
+  </ul>
+</section>
+
+<!-- 8 -->
+<section id="viele">
+  <h2>8 · Zahllast bei vielen Geschäftsfällen (die große MÜ-Aufgabe)</h2>
+  <p class="lead">Du bekommst eine Liste von Geschäftsfällen eines Monats. Bei jedem Fall fragst du: <b>+ USt, − VSt oder 0?</b></p>
+  <div class="tbl"><table>
+    <tr><th>Geschäftsfall</th><th>Wirkung</th><th>Warum</th></tr>
+    <tr class="p"><td>Wir <b>verkaufen</b> (bar oder auf Ziel)</td><td><span class="plus">+ USt</span></td><td>wir haben USt kassiert → ans FA</td></tr>
+    <tr class="p"><td><b>Eigenverbrauch</b> (Chef nimmt Ware privat)</td><td><span class="plus">+ USt</span></td><td>wie ein Verkauf an sich selbst</td></tr>
+    <tr class="m"><td>Wir <b>kaufen</b> mit Rechnung (Miete, Material, Telefon, Möbel …)</td><td><span class="minus">− VSt</span></td><td>USt bezahlt → zurückholen</td></tr>
+    <tr class="z"><td>Kunde <b>bezahlt</b> eine alte Zielrechnung (Sollbesteuerung)</td><td><span class="zero">0</span></td><td>USt wurde schon beim Verkauf gezählt</td></tr>
+    <tr class="z"><td>Spende, Gehälter, Versicherung, Pkw-Kauf</td><td><span class="zero">0</span></td><td>keine USt / keine VSt</td></tr>
+  </table></div>
+
+  <h3>Vorgehen</h3>
+  <ol class="steps">
+    <li>Jeden Fall einordnen: <span class="plus">+</span>, <span class="minus">−</span> oder <span class="zero">0</span></li>
+    <li>Den <b>Steuerbetrag</b> herausfinden: steht er da → ablesen. Steht netto da → × 0,2. Steht brutto da → ÷ 6.</li>
+    <li>Alle USt addieren, alle VSt addieren</li>
+    <li><span class="f">Zahllast = Summe USt − Summe VSt</span></li>
+    <li>Fälligkeit: Monat + 2 → am <b>15.</b></li>
+  </ol>
+
+  <h3>Beispiel: Software Architects GmbH, April</h3>
+  <div class="tbl"><table>
+    <tr><th>Fall</th><th>Einordnung</th><th class="n">USt +</th><th class="n">VSt −</th></tr>
+    <tr class="m"><td>01.04 Miete</td><td>Einkauf</td><td class="n"></td><td class="n">260,00</td></tr>
+    <tr class="p"><td>03.04 Honorarnote an Biblik</td><td>Verkauf</td><td class="n">400,00</td><td class="n"></td></tr>
+    <tr class="m"><td>07.04 Kauf Schreibtisch</td><td>Einkauf</td><td class="n"></td><td class="n">160,00</td></tr>
+    <tr class="p"><td>12.04 Beratung an Smöch</td><td>Verkauf</td><td class="n">240,00</td><td class="n"></td></tr>
+    <tr class="z"><td>14.04 Spende an HTL</td><td>nicht steuerbar</td><td class="n">0</td><td class="n"></td></tr>
+    <tr class="m"><td>18.04 Telefonrechnung</td><td>Einkauf</td><td class="n"></td><td class="n">191,40</td></tr>
+    <tr class="z"><td>22.04 Feuerversicherung</td><td>steuerfrei</td><td class="n">0</td><td class="n"></td></tr>
+    <tr class="p"><td>23.04 Verkauf Software</td><td>Verkauf</td><td class="n">650,00</td><td class="n"></td></tr>
+    <tr class="m"><td>26.04 Druckerpapier</td><td>Einkauf</td><td class="n"></td><td class="n">47,60</td></tr>
+    <tr class="z"><td>28.04 Gehälter</td><td>keine USt</td><td class="n">0</td><td class="n"></td></tr>
+    <tr><td colspan="2"><b>Summe</b></td><td class="n"><b>1.290,00</b></td><td class="n"><b>659,00</b></td></tr>
+  </table></div>
+  <pre class="calc">Zahllast = 1.290,00 − 659,00 = 631,00 €
+Fällig: April + 2 = Juni → 15. Juni</pre>
+</section>
+
+<!-- 9 -->
+<section id="soll">
+  <h2>9 · Soll- und Istbesteuerung &amp; Fälligkeit</h2>
+  <p class="lead">Frage: In welchem Monat zählt die USt eines Verkaufs – wenn die Rechnung geschrieben wird oder wenn das Geld kommt?</p>
+  <div class="tbl"><table>
+    <tr><th></th><th>Sollbesteuerung</th><th>Istbesteuerung</th></tr>
+    <tr><td><b>USt zählt, wenn …</b></td><td>die <b>Rechnung/Lieferung</b> passiert („vereinbartes Entgelt“)</td><td>das <b>Geld eingeht</b> („vereinnahmtes Entgelt“)</td></tr>
+    <tr><td><b>Wer?</b></td><td>Buchführungspflichtige, z. B. jede GmbH</td><td>Freiberufler, Nicht-Buchführungspflichtige mit Umsatz &lt; 110.000 €</td></tr>
+    <tr><td><b>Vorteil</b></td><td>–</td><td>man muss die USt nicht „vorstrecken“</td></tr>
+  </table></div>
+  <div class="box"><b>Beispiel (Sollbesteuerung):</b> GmbH verkauft am 20. Oktober auf Ziel um 1.000 € + 200 € USt. Kunde zahlt am 10. November.<br>
+  → Die 200 € USt zählen im <b>Oktober</b> (Rechnung). Im November ist die Zahlung <b>0</b> – sonst würde die USt doppelt gezählt.<br>
+  <b>Bei Istbesteuerung</b> wäre es umgekehrt: Oktober 0, November + 200 €.</div>
+
+  <h3>Fälligkeit</h3>
+  <div class="box"><b>Zahllast ist fällig am 15. des zweitfolgenden Monats.</b> Gemeldet wird mit der <b>UVA</b> (Umsatzsteuervoranmeldung, Formular U30).</div>
+  <pre class="calc">Monat + 2 → am 15.
+März     → 15. Mai
+April    → 15. Juni
+Juli     → 15. September
+November → 15. Jänner (nächstes Jahr!)</pre>
+</section>
+
+<!-- 10 -->
+<section id="klein">
+  <h2>10 · Kleinunternehmer</h2>
+  <div class="box">Wer im Jahr höchstens <b>55.000 €</b> Umsatz hat, ist Kleinunternehmer (1× darf man bis +10 % = 60.500 € drüber sein).</div>
+  <div class="grid">
+    <div class="card"><b class="t">✗ keine USt</b><p>auf der Rechnung ausweisen und nicht zahlen</p></div>
+    <div class="card"><b class="t">✗ keine Vorsteuer</b><p>bekommt beim Einkauf nichts zurück</p></div>
+    <div class="card"><b class="t">✗ keine UVA</b><p>muss nicht monatlich melden</p></div>
+  </div>
+  <p>Vorteil: weniger Arbeit, Privatkunden zahlen weniger. Nachteil: kein Vorsteuerabzug.</p>
+  <p class="tip">Laut deinem Lernzettel rechnest du für die Grenze mit <b>netto</b> (USt herausrechnen). Rechne in der MÜ so, wie es im Unterricht erklärt wurde.</p>
+</section>
+
+<!-- Übungen -->
+<section id="ueben">
+  <h2>Übungen mit Lösung</h2>
+  <p class="lead">Erst selbst rechnen, dann aufklappen.</p>
+
+  <details><summary>1 · Ein Handy kostet 360 € inkl. 20 % USt. Netto? USt?</summary><div class="sol"><pre class="calc">netto = 360 ÷ 1,2 = 300 €
+USt   = 360 ÷ 6   =  60 €</pre></div></details>
+
+  <details><summary>2 · Ein Hotelzimmer kostet 90 € netto (10 %). Was zahlt der Gast?</summary><div class="sol"><pre class="calc">90 × 1,1 = 99 €   (USt 9 €)</pre></div></details>
+
+  <details><summary>3 · Blumenstrauß 56,50 € brutto. Netto und USt?</summary><div class="sol"><pre class="calc">Blumen = 13 %
+netto = 56,50 ÷ 1,13 = 50,00 €
+USt   = 56,50 − 50,00 = 6,50 €</pre></div></details>
+
+  <details><summary>4 · Steuerbar? a) Tischler verkauft Tisch · b) Schüler verkauft privat sein Fahrrad · c) Zahnarzt behandelt Patienten · d) Firma spendet 500 € ans Rote Kreuz</summary><div class="sol">
+    a) steuerbar + steuerpflichtig (alle 4 erfüllt)<br>
+    b) nicht steuerbar (kein Unternehmer)<br>
+    c) steuerbar, aber steuerfrei (ärztliche Leistung)<br>
+    d) nicht steuerbar (kein Entgelt)</div></details>
+
+  <details><summary>5 · Belege aus 2021 – wann frühestens vernichten?</summary><div class="sol"><pre class="calc">2021 + 7 = 2028 → aufbewahren bis 31.12.2028
+vernichten frühestens 1.1.2029</pre></div></details>
+
+  <details><summary>6 · Welche Buchführung? a) Bäcker (Einzel) 180.000 € · b) Huber OG 600.000 € · c) Startup GmbH 8.000 € · d) Anwalt 1,5 Mio. €</summary><div class="sol">
+    a) Pauschalierung oder E-A-R (≤ 220.000)<br>
+    b) E-A-R Pflicht (≤ 700.000)<br>
+    c) doppelt (GmbH → immer)<br>
+    d) E-A-R (Freiberufler → Umsatz egal)</div></details>
+
+  <details><summary>7 · Würstel 50 € exkl. 10 % und Büromöbel 4.800 € inkl. 20 %: Was kostet es die GmbH, was muss sie zahlen?</summary><div class="sol"><pre class="calc">Würstel: Kosten = 50 € netto     zu zahlen = 50 × 1,1 = 55 €
+Möbel:   Kosten = 4800 ÷ 1,2 = 4.000 € netto   zu zahlen = 4.800 €</pre>
+    „Kosten“ = netto, weil die GmbH die USt als Vorsteuer zurückbekommt.</div></details>
+
+  <details><summary>8 · Große Aufgabe: Schi &amp; Snowboard GmbH (Sollversteuerer), November. Zahllast und Fälligkeit?</summary><div class="sol">
+    <div class="tbl"><table>
+      <tr><th>Fall</th><th>Rechnung</th><th>Wirkung</th><th class="n">Betrag</th></tr>
+      <tr class="p"><td>a) Barverkäufe 174.000 inkl. 20 %</td><td>174.000 ÷ 6</td><td>+ USt</td><td class="n">29.000,00</td></tr>
+      <tr class="p"><td>b) Zielverkäufe 33.000 + 6.600 USt</td><td>ablesen</td><td>+ USt</td><td class="n">6.600,00</td></tr>
+      <tr class="m"><td>c) Büromaterial bar 4,40 inkl. 20 %</td><td>4,40 ÷ 6 ≈ 0,73</td><td>− VSt</td><td class="n">−0,73</td></tr>
+      <tr class="z"><td>d) Kunden überweisen 52.980 für alte Zielverkäufe</td><td>Soll → schon gezählt</td><td>0</td><td class="n">0,00</td></tr>
+      <tr class="p"><td>e) Eigenverbrauch 6.000 + 20 %</td><td>6.000 × 0,2</td><td>+ USt</td><td class="n">1.200,00</td></tr>
+    </table></div>
+    <pre class="calc">Zahllast = 29.000 + 6.600 + 1.200 − 0,73 = 36.799,27 €
+Fällig: November + 2 = Jänner → 15. Jänner</pre>
+    <b>Die zwei Fallen:</b> d) Zahlungseingang ist bei Soll <b>0</b>. e) Eigenverbrauch ist <b>+</b>, nicht −.</div></details>
+
+  <details><summary>9 · Elektro Mayer GmbH, Mai: Verkauf 2.400 € netto · Einkauf Kabel 720 € brutto · Miete 1.200 € + 240 € USt · Gehälter 3.000 € · Kauf Pkw (Benziner) 30.000 € + 6.000 € USt</summary><div class="sol"><pre class="calc">Verkauf: 2.400 × 0,2      = + 480,00 USt
+Kabel:   720 ÷ 6          = − 120,00 VSt
+Miete:   ablesen          = − 240,00 VSt
+Gehälter                  =     0
+Pkw (kein E-Auto)         =     0   (kein VSt-Abzug!)
+
+Zahllast = 480 − 120 − 240 = 120,00 €
+Fällig: Mai + 2 = Juli → 15. Juli</pre></div></details>
+
+  <details><summary>10 · Café Huber GmbH, März: Einkauf Kaffeemaschine 6.000 € netto · Verkäufe 1.800 € netto (20 %). Was passiert?</summary><div class="sol"><pre class="calc">VSt = 6.000 × 0,2 = 1.200 €
+USt = 1.800 × 0,2 =   360 €
+Zahllast = 360 − 1.200 = −840 € → Überschuss, FA zahlt 840 € zurück</pre></div></details>
+</section>
+
+<!-- Spickzettel -->
+<section id="spick">
+  <h2>Spickzettel – das Wichtigste auf einen Blick</h2>
+  <pre class="calc">brutto = netto × 1,2       netto = brutto ÷ 1,2       USt = brutto ÷ 6
+10 %: × 1,1 / ÷ 1,1 / ÷ 11      13 %: × 1,13 / ÷ 1,13
+
+Zahllast = USt − VSt   (&gt; 0 zahlen, &lt; 0 Überschuss)
+Fällig: Monat + 2 → am 15.
+Aufbewahrung: bis 31.12.(Jahr + 7)</pre>
+  <div class="tbl"><table>
+    <tr class="p"><td>Verkauf · Eigenverbrauch</td><td><span class="plus">+ USt</span></td></tr>
+    <tr class="m"><td>Einkauf mit Rechnung</td><td><span class="minus">− VSt</span></td></tr>
+    <tr class="z"><td>Zahlungseingang (Soll) · Spende · Gehalt · Versicherung · Pkw</td><td><span class="zero">0</span></td></tr>
+  </table></div>
+  <ul>
+    <li><b>GmbH/AG</b> → immer doppelte Buchführung</li>
+    <li><b>Einzel/OG/KG:</b> ≤ 220.000 Pauschal oder E-A-R · ≤ 700.000 E-A-R · darüber doppelt</li>
+    <li><b>Freiberufler</b> → E-A-R, Umsatz egal</li>
+    <li><b>Steuerbar</b> = Unternehmer + Inland + Entgelt + im Rahmen des Unternehmens</li>
+    <li><b>Steuerfrei:</b> Arzt, Versicherung, Kredit, Briefmarken, Export, Lieferung an EU-Firma</li>
+    <li><b>Taxi = 10 %</b> · Blumen/Kino/Tiere = 13 %</li>
+    <li><b>Kleinunternehmer:</b> ≤ 55.000 € → keine USt, keine VSt, keine UVA</li>
+  </ul>
+</section>
+
+</main>
+<footer>Basierend auf deinem Lernzettel und den MÜ-Lösungen · ITP 4AHIT</footer>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var s=localStorage.getItem('rewe-theme');if(s)root.setAttribute('data-theme',s)}catch(e){}
+  document.getElementById('theme').onclick=function(){
+    var c=root.getAttribute('data-theme'),dark=c==='dark'||(!c&&matchMedia('(prefers-color-scheme: dark)').matches),n=dark?'light':'dark';
+    root.setAttribute('data-theme',n);try{localStorage.setItem('rewe-theme',n)}catch(e){}
+  };
+  var fmt=function(x){return x.toLocaleString('de-AT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'};
+  function calc(v,t,p){var f=1+p/100,n=t==='b'?v/f:v,b=t==='b'?v:v*f;return{n:n,u:b-n,b:b}}
+  console.assert(Math.abs(calc(120,'b',20).u-20)<1e-9&&Math.abs(calc(100,'n',10).b-110)<1e-9,'Rechner kaputt');
+  function upd(){
+    var v=parseFloat(document.getElementById('rb').value.replace(',','.')),t=document.getElementById('rt').value,p=+document.getElementById('rs').value,o=document.getElementById('ro');
+    if(!isFinite(v)){o.textContent='Bitte eine Zahl eingeben.';return}
+    var r=calc(v,t,p);
+    o.innerHTML='netto <b>'+fmt(r.n)+'</b> · USt '+p+' % <b>'+fmt(r.u)+'</b> · brutto <b>'+fmt(r.b)+'</b>'+
+      '<br><span style="color:var(--muted);font-size:.9rem">Rechenweg: '+(t==='b'?fmt(v)+' ÷ '+(1+p/100).toString().replace('.',',')+' = '+fmt(r.n):fmt(v)+' × '+(1+p/100).toString().replace('.',',')+' = '+fmt(r.b))+'</span>';
+  }
+  ['rb','rt','rs'].forEach(function(id){document.getElementById(id).addEventListener('input',upd)});
+  upd();
+})();
+</script>
+</body>
+</html>
