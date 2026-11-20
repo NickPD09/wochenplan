@@ -386,6 +386,7 @@ button.reset.arm{color:var(--warn);border-color:var(--warn)}
         <div class="nb-seg">
           <input type="radio" name="nbkind" id="nbKindSA" value="SA"><label for="nbKindSA">Schularbeit</label>
           <input type="radio" name="nbkind" id="nbKindT" value="T"><label for="nbKindT">Test</label>
+          <input type="radio" name="nbkind" id="nbKindPLF" value="PLF"><label for="nbKindPLF">PLF</label>
           <input type="radio" name="nbkind" id="nbKindMU" value="MÜ"><label for="nbKindMU">MÜ</label>
           <input type="radio" name="nbkind" id="nbKindRef" value="Ref"><label for="nbKindRef">Referat</label>
         </div>
@@ -866,12 +867,12 @@ function chartHTML(){
 }
 // Notenbuch (Port des Notenbuch-HTML): Noten pro Fach in st._book, nur unter dem eigenen Namen gespeichert
 const SUBJECTS={AM:"Angewandte Mathematik",BSP:"Bewegung und Sport",D:"Deutsch",E:"Englisch",GGP:"Geografie, Geschichte, Politische Bildung",INSY:"Informationssysteme",ITP:"Informationstechnische Projekte",ITSI:"IT-Sicherheit",NW:"Naturwissenschaften",NWTK:"Netzwerktechnik",RK:"Religion",SEW:"Softwareentwicklung",WIR:"Wirtschaft und Recht"};
-const NB_TYPES={SA:"Schularbeit",T:"Test","MÜ":"MÜ",Ref:"Referat"};
+const NB_TYPES={SA:"Schularbeit",T:"Test",PLF:"PLF","MÜ":"MÜ",Ref:"Referat"};
 const NB_OTHER="__other";
 const nbEl=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
 const nbAvg=xs=>xs.reduce((a,b)=>a+b,0)/xs.length;
-// Fachnote: SA+Test zählen 60 %, MÜ+Referat 40 %; fehlt eine Gruppe, zählt nur die andere
-const NB_BIG=["SA","T"],NB_SMALL=["MÜ","Ref"];
+// Fachnote: SA+Test+PLF zählen 60 %, MÜ+Referat 40 %; fehlt eine Gruppe, zählt nur die andere
+const NB_BIG=["SA","T","PLF"],NB_SMALL=["MÜ","Ref"];
 const nbGroup=(gs,ks)=>gs.filter(g=>ks.includes(g.type)).map(g=>g.grade);
 // Deutsch: Mitarbeit (MÜ+Ref) gerundet auf ganze Note, dann 50 % : 50 % mit SA+Test
 const nbW=gs=>gs[0]&&gs[0].subject==="D"?[.5,.5,true]:[.6,.4,false];
@@ -915,7 +916,7 @@ function nbCard(code,gs){
       b.onclick=()=>{nbOpenId=nbOpenId===g.id?null:g.id;renderBook(g.id)};chips.append(b)}
     c.append(chips);
     const b=nbGroup(gs,NB_BIG),sm=nbGroup(gs,NB_SMALL);
-    const [wb,ws,rd]=nbW(gs),parts=[b.length?"SA+Test Ø "+nbFmt(nbAvg(b))+" ("+wb*100+" %)":null,sm.length?(rd?"Mitarbeit Ø "+nbFmt(nbAvg(sm))+" → "+Math.round(nbAvg(sm)):"MÜ+Ref Ø "+nbFmt(nbAvg(sm)))+" ("+ws*100+" %)":null].filter(Boolean);
+    const [wb,ws,rd]=nbW(gs),parts=[b.length?"SA/Test/PLF Ø "+nbFmt(nbAvg(b))+" ("+wb*100+" %)":null,sm.length?(rd?"Mitarbeit Ø "+nbFmt(nbAvg(sm))+" → "+Math.round(nbAvg(sm)):"MÜ+Ref Ø "+nbFmt(nbAvg(sm)))+" ("+ws*100+" %)":null].filter(Boolean);
     c.append(nbEl("p","nb-by-type",parts.join(" · ")));
     const open=gs.find(g=>g.id===nbOpenId);if(open)c.append(nbDetail(open));
   }
@@ -938,7 +939,7 @@ $("nbForm").addEventListener("submit",e=>{
   const subject=$("nbSubject").value===NB_OTHER?$("nbCustom").value.trim().toUpperCase():$("nbSubject").value;
   const type=f.elements.nbkind.value,grade=Number(f.elements.nbgrade.value);
   if(!subject)return nbStatus("Gib ein Fachkürzel ein.",true);
-  if(!NB_TYPES[type])return nbStatus("Wähle Schularbeit, Test, MÜ oder Referat.",true);
+  if(!NB_TYPES[type])return nbStatus("Wähle Schularbeit, Test, PLF, MÜ oder Referat.",true);
   if(!(grade>=1&&grade<=5))return nbStatus("Wähle eine Note von 1 bis 5.",true);
   st._book=[...(st._book||[]),{id:"b"+Date.now(),subject,type,grade,date:$("nbDate").value||iso(today),note:$("nbNote").value.trim().slice(0,80),created:Date.now()}];
   save();nbSelected=subject;$("nbCustom").value="";$("nbNote").value="";
