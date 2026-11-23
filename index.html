@@ -655,7 +655,15 @@ const MATERIAL={
   itsi:{html:"lernen/itsi.html",files:["dateien/itsi/Kryptografie_Uebungen.xlsx"]},
 };
 // Schulfreie Tage (Herbstferien + Allerseelen)
-const FERIEN=new Set(["2026-10-26","2026-10-27","2026-10-28","2026-10-29","2026-10-30","2026-11-02"]);
+// Schulfreie Tage NÖ 2026/27 (Ferien 🌴, Feiertage 🎉)
+const FREI={};
+const frei=(a,b,n)=>{for(const d=new Date(a+"T12:00");d<=new Date(b+"T12:00");d.setDate(d.getDate()+1))FREI[d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")]=n};
+frei("2026-10-26","2026-10-26","🎉 Nationalfeiertag");frei("2026-10-27","2026-10-31","🌴 Herbstferien");frei("2026-11-02","2026-11-02","🌴 Allerseelen (frei)");
+frei("2026-12-08","2026-12-08","🎉 Mariä Empfängnis");frei("2026-12-24","2027-01-06","🌴 Weihnachtsferien");frei("2027-02-01","2027-02-06","🌴 Semesterferien");
+frei("2027-03-20","2027-03-29","🌴 Osterferien");frei("2027-05-06","2027-05-06","🎉 Christi Himmelfahrt");frei("2027-05-15","2027-05-17","🌴 Pfingstferien");
+frei("2027-05-27","2027-05-27","🎉 Fronleichnam");frei("2027-07-03","2027-09-05","🌴 Sommerferien");
+console.assert(FREI["2026-12-31"]==="🌴 Weihnachtsferien"&&FREI["2027-01-06"]&&!FREI["2027-01-07"]&&FREI["2026-12-08"]==="🎉 Mariä Empfängnis","FREI kaputt");
+const FERIEN={has:k=>k in FREI};
 const DAYS=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
 // Klassen-Einträge (DATA) sind fix für alle; _custom = eigene Einträge, nur unter dem eigenen Namen gespeichert
 // Geteilte Klassen-Einträge (von allen angelegt) aus Tabelle shared_items; Inhalt wird hier streng geprüft
@@ -782,7 +790,7 @@ function render(){
     const d=new Date(k+"T00:00"),n=days(k);
     const due=IT.filter(c=>c.due===k).map(c=>'<li class="due" style="--c:var('+c.c+')">'+esc(c.t)+"</li>").join("");
     const plan=TD(k).map(t=>'<li class="do'+(t.done?" tddone":"")+'">'+(t.done?"☑ ":"☐ ")+esc(t.t)+"</li>").join("");
-    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+(FERIEN.has(k)?'<li class="do fer">🌴<span class="ferl"> Ferien</span></li>':"")+due+plan+"</ul></div>";
+    return'<div class="day'+(n===0?" today":n<0?" past":"")+(sel===k?" sel":"")+'" data-d="'+k+'" role="button" tabindex="0" aria-pressed="'+(sel===k)+'"><div class="d"><b>'+wd[d.getDay()]+'</b><small>'+(n===0?"heute":dm(d))+"</small></div><ul>"+(FERIEN.has(k)?'<li class="do fer">'+FREI[k].slice(0,2)+'<span class="ferl">'+FREI[k].slice(2)+'</span></li>':"")+due+plan+"</ul></div>";
   }).join("");
 
   // Tagesansicht
