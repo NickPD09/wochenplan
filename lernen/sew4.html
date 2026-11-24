@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEW4 Lernseite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* VOICE: nüchtern, präzise, wie ein Fahrplan: Lernen soll sich nach Ordnung anfühlen
+   IDEA: Schweizer Fahrplan / Abfahrtstafel: Kapitel als Stationen, Fragen als Abfahrten
+   PICTURE: das Quiz selbst ist das Bild: große Fragekarte, Ampel-Leiste für Fortschritt
+   COLOUR and TYPE: Weiß, Schwarz, Signalrot #e4002b, ein Grau; Archivo breit + JetBrains Mono für Code
+   LAYOUT: dicke schwarze Oberkante, links feste Kapitelspalte, rechts Inhalt, max 1240px */
+:root{color-scheme:light dark;
+ --bg:light-dark(#ffffff,#0e0e0e);--ink:light-dark(#111,#f1f1f1);--mute:light-dark(#6b6b6b,#9a9a9a);
+ --line:light-dark(#d9d9d9,#2c2c2c);--soft:light-dark(#f4f4f4,#181818);--red:#e4002b;
+ --ok:light-dark(#0a7a3b,#3ccf7a);--okbg:light-dark(#e8f6ee,#10281a);--badbg:light-dark(#fde8ec,#2a1015);
+ --code:light-dark(#f6f6f6,#151515)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Archivo",system-ui,sans-serif;font-stretch:100%;overflow-x:clip}
+a{color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-top:10px solid var(--ink);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;padding:12px max(4vw,16px);display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.brand{font-weight:800;font-stretch:112%;font-size:22px;letter-spacing:-.01em;line-height:1.1}
+.brand span{color:var(--red)}
+nav.views{display:flex;gap:6px;margin-left:auto}
+nav.views a{text-decoration:none;font-weight:700;padding:10px 16px;border:2px solid var(--ink);min-height:44px;display:flex;align-items:center}
+nav.views a[aria-current=true]{background:var(--ink);color:var(--bg)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px)}
+/* ---------- Lernstoff */
+.learn{display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px;padding-top:28px}
+.toc{position:sticky;top:110px;align-self:start;display:flex;flex-direction:column;border-top:4px solid var(--ink)}
+.toc a{text-decoration:none;padding:9px 0 9px 34px;border-bottom:1px solid var(--line);font-size:15px;position:relative;counter-increment:k}
+.toc a::before{content:counter(k);position:absolute;left:0;top:6px;font-weight:800;font-stretch:112%;font-size:20px;color:var(--red)}
+.toc a.on{font-weight:700}
+.toc{counter-reset:k}
+.search{margin:0 0 18px;display:flex;gap:8px}
+.search input{flex:1;font:16px "Archivo",system-ui,sans-serif;padding:10px 12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);min-height:44px}
+.chap{border-top:4px solid var(--ink);padding-top:6px;margin-bottom:44px}
+.chap h1{font-size:clamp(28px,4vw,44px);line-height:1.05;font-stretch:112%;font-weight:800;margin:8px 0 18px;text-wrap:balance}
+.chap h2{font-size:21px;font-weight:800;margin:28px 0 8px;padding-top:10px;border-top:1px solid var(--line)}
+.chap h3{font-size:17px;margin:18px 0 6px}
+.chap p,.chap li{max-width:76ch}
+.chap ul,.chap ol{padding-left:22px}
+code{font:14px/1.5 "JetBrains Mono",ui-monospace,monospace;overflow-wrap:anywhere}
+:not(pre)>code{background:var(--soft);padding:1px 5px}
+pre{background:var(--code);border-left:4px solid var(--red);padding:12px 14px;overflow-x:auto;margin:10px 0 16px}
+pre code{font-size:13.5px;overflow-wrap:normal;white-space:pre}
+div.sourceCode{margin:0}
+pre>code.sourceCode>span{display:inline}
+.sourceCode .kw,.sourceCode .cf{color:light-dark(#0b3fa8,#7aa7ff);font-weight:600}
+.sourceCode .dt{color:light-dark(#0f6f6f,#4fd1c5)}
+.sourceCode .st,.sourceCode .ch,.sourceCode .ss{color:light-dark(#a3240e,#ff9a7a)}
+.sourceCode .co{color:var(--mute);font-style:italic}
+.sourceCode .dv,.sourceCode .fl{color:light-dark(#6b2fb0,#c9a2ff)}
+.sourceCode .fu,.sourceCode .at{color:light-dark(#7a5200,#e8c26a)}
+.tblw{overflow-x:auto;margin:10px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{border-bottom:3px solid var(--ink);font-weight:800}
+blockquote{margin:12px 0;padding:10px 16px;background:var(--soft);border-left:4px solid var(--ink)}
+blockquote p{margin:4px 0}
+mark{background:var(--red);color:#fff}
+.hide{display:none!important}
+/* ---------- Selbsttest */
+.test{padding:28px 0 60px}
+.thead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:end;border-top:4px solid var(--ink);padding-top:10px}
+.thead h1{font-size:clamp(30px,4.6vw,52px);line-height:1.05;font-stretch:112%;font-weight:800;margin:6px 0 4px}
+.thead p{margin:0;color:var(--mute);max-width:60ch}
+.stats{display:grid;gap:6px}
+.st{display:grid;grid-template-columns:120px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:14px}
+.st .tr{height:12px;background:var(--soft);position:relative}
+.st .tr i{position:absolute;inset:0 auto 0 0;background:var(--ink)}
+.st .tr b{position:absolute;inset:0 auto 0 0;background:var(--red)}
+.st .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.legend{font-size:13px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;background:var(--ink);margin:0 4px 0 8px}
+.legend b{display:inline-block;width:10px;height:10px;background:var(--red);margin:0 4px 0 8px}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 10px}
+.ctrl button,.chip{font:700 15px "Archivo",system-ui,sans-serif;padding:9px 14px;min-height:44px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.ctrl button[aria-pressed=true],.chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.chip{font-weight:600;font-size:14px;border-width:1px}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.card{border:2px solid var(--ink);padding:clamp(18px,3vw,34px);position:relative;background:var(--bg)}
+.meta{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--mute);margin-bottom:10px;flex-wrap:wrap}
+.meta .num{font-weight:800;font-stretch:112%;color:var(--ink);font-size:18px}
+.track{display:flex;gap:3px;margin-bottom:18px;flex-wrap:wrap}
+.track span{flex:1 0 8px;height:8px;background:var(--soft);max-width:40px}
+.track span.ok{background:var(--ink)}.track span.no{background:var(--red)}.track span.cur{outline:2px solid var(--ink)}
+.q{font-size:clamp(19px,2.4vw,24px);line-height:1.35;font-weight:600;margin:0 0 18px;text-wrap:pretty}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font:16px/1.4 "Archivo",system-ui,sans-serif;padding:12px 14px 12px 50px;min-height:48px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;position:relative}
+.opt::before{content:attr(data-k);position:absolute;left:14px;top:10px;font-weight:800;font-stretch:112%;width:24px;height:24px;border:2px solid var(--ink);display:grid;place-items:center;font-size:13px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--red)}
+.ex{margin-top:16px;padding:12px 16px;border-left:4px solid var(--ink);background:var(--soft)}
+.ex strong{display:block;margin-bottom:2px}
+.ex.okk{border-color:var(--ok)}.ex.bad{border-color:var(--red)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;align-items:center}
+.btn{font:700 16px "Archivo",system-ui,sans-serif;padding:11px 20px;min-height:46px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.btn.ghost{background:var(--bg);color:var(--ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+textarea{width:100%;min-height:120px;font:15px/1.5 "JetBrains Mono",monospace;padding:10px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);resize:vertical}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.cols h4{margin:0 0 4px;font-size:14px;color:var(--mute)}
+.cols pre{margin:0;border-left-color:var(--ink)}
+.done{text-align:left}
+.done .big{font-size:clamp(56px,10vw,110px);font-weight:800;font-stretch:125%;line-height:1;color:var(--red)}
+.foot{color:var(--mute);font-size:13px;padding:24px 0 40px;border-top:1px solid var(--line);margin-top:40px}
+@media(max-width:900px){.learn{grid-template-columns:minmax(0,1fr)}.toc{position:static;flex-direction:row;flex-wrap:wrap;border-top:0;gap:6px}.toc a{border:1px solid var(--line);padding:8px 10px 8px 30px}.toc a::before{left:8px;top:6px;font-size:16px}}
+@media(max-width:700px){.thead,.cols{grid-template-columns:minmax(0,1fr)}.st{grid-template-columns:96px minmax(0,1fr) 56px}}
+@media(max-width:600px){table{font-size:13px}.brand{font-size:19px}nav.views{margin-left:0;width:100%}nav.views a{flex:1;justify-content:center}}
+@media(prefers-reduced-motion:no-preference){.card.in{animation:slide .22s ease-out}@keyframes slide{from{transform:translateX(14px);opacity:0}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">SEW4 <span>·</span> Test &amp; PLF</div>
+    <nav class="views">
+      <a href="#lernen" id="nav-lernen">Lernstoff</a>
+      <a href="#selbsttest" id="nav-selbsttest">Selbsttest</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div id="v-lernen" class="wrap">
+    <div class="learn">
+      <aside class="toc" id="toc"><a href="#k1" data-go="k1">JavaFX (inkl. kurz Swing)</a><a href="#k2" data-go="k2">Programming with C#</a><a href="#k3" data-go="k3">OOP – Classes</a><a href="#k4" data-go="k4">OOP – Inheritance</a><a href="#k5" data-go="k5">More Types</a><a href="#k6" data-go="k6">Nullability</a><a href="#k7" data-go="k7">UML: Klassen- und
+Objektdiagramm</a><a href="#k8" data-go="k8">Typische Test-Fallen
+(Checkliste)</a></aside>
+      <div>
+        <div class="search">
+          <input id="find" type="search" placeholder="Im Lernstoff suchen, z. B. readonly, GridPane, as …" aria-label="Im Lernstoff suchen">
+        </div>
+        <p id="findinfo" class="legend hide"></p>
+        <article id="content"><section class="chap"><h1 id="k1">1 JavaFX (inkl. kurz Swing)</h1>
+<h2>1.1 GUI-Frameworks – Überblick</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Merkmal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>AWT</strong> (ab Java 1.1)</td>
+<td>wenige Komponenten, nutzt <strong>native</strong>
+OS-Komponenten</td>
+</tr>
+<tr class="even">
+<td><strong>Swing</strong> (ab 1.2)</td>
+<td>zeichnet alles <strong>selbst</strong>, baut auf AWT auf; AWT +
+Swing = <strong>JFC</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>SWT</strong> (IBM)</td>
+<td>nicht im JDK enthalten</td>
+</tr>
+<tr class="even">
+<td><strong>JavaFX</strong></td>
+<td>Java 7–10 im JDK, <strong>ab Java 11 ausgegliedert</strong>
+(OpenJFX), Versionsnr. = Java-Version</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Swing-Kurzfassung:</strong> <code>JFrame</code>
+(Hauptfenster), <code>JDialog</code> (modal möglich, kein
+Taskleisten-Eintrag), <code>JWindow</code> (ohne Rand, z. B. Splash) =
+Top-Level-Container mit <strong>Content Pane</strong>.
+<code>JPanel</code> = Lightweight-Container zum Gruppieren. Layouts:
+<code>FlowLayout</code> (Reihe), <code>BorderLayout</code>
+(N/S/E/W/Center), <code>GridLayout</code> (Tabelle). Listener:
+<code>ActionListener</code> (Klick/Enter/Menü),
+<code>ItemListener</code> (Checkbox/Radio/ComboBox),
+<code>KeyListener</code>, <code>MouseListener</code>,
+<code>MouseMotionListener</code>, <code>MouseWheelListener</code>. GUI
+läuft im <strong>EDT</strong> (Event Dispatching Thread) → lange
+Berechnungen blockieren die GUI. GUI-Updates mit
+<code>EventQueue.invokeLater(...)</code> /
+<code>SwingUtilities.invokeLater(...)</code>.</p>
+<h2>1.2 Aufbau einer JavaFX-App</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HelloApplication <span class="kw">extends</span> Application <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">start</span><span class="op">(</span>Stage stage<span class="op">)</span> <span class="op">{</span>           <span class="co">// abstrakte Methode von Application</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        Scene scene <span class="op">=</span> <span class="kw">new</span> <span class="fu">Scene</span><span class="op">(</span><span class="kw">new</span> <span class="bu">Label</span><span class="op">(</span><span class="st">&quot;Welcome&quot;</span><span class="op">),</span> <span class="dv">250</span><span class="op">,</span> <span class="dv">100</span><span class="op">);</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        stage<span class="op">.</span><span class="fu">setTitle</span><span class="op">(</span><span class="st">&quot;Hello&quot;</span><span class="op">);</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        stage<span class="op">.</span><span class="fu">setScene</span><span class="op">(</span>scene<span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        stage<span class="op">.</span><span class="fu">show</span><span class="op">();</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">// main oft in eigenem Launcher:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Application<span class="op">.</span><span class="fu">launch</span><span class="op">(</span>HelloApplication<span class="op">.</span><span class="fu">class</span><span class="op">,</span> args<span class="op">);</span>   <span class="co">// start() läuft im GUI-Thread</span></span></code></pre></div>
+<ul>
+<li><strong>Stage</strong> = Fenster, besitzt <strong>eine
+Scene</strong></li>
+<li><strong>Scene</strong> = Inhalt, enthält den <strong>Scene
+Graph</strong></li>
+<li><strong>Scene Graph</strong> = Baum aus <strong>Nodes</strong>:
+<em>Root Node</em> (Parent) → <em>Branch Nodes</em> (Parent, haben
+Kinder) → <em>Leaf Nodes</em> (kein Parent, keine Kinder)</li>
+<li><strong>Node</strong>-Arten: Shapes (<code>Circle</code>,
+<code>Rectangle</code>), Controls (<code>Button</code>,
+<code>TextField</code>, <code>CheckBox</code>), Panes
+(<code>FlowPane</code>, <code>GridPane</code>), Media</li>
+<li>Hierarchie: <code>Node</code> → <code>Parent</code> →
+<code>Region</code> → <code>Control</code> / <code>Pane</code>;
+<code>Shape</code>, <code>Canvas</code> sind <strong>Leaf</strong>
+(erben nicht von Parent)</li>
+</ul>
+<h2>1.3 Layout-Panes</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pane</th>
+<th>Anordnung</th>
+<th>wichtige Methoden</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>FlowPane</code></td>
+<td>Reihe, <strong>bricht um</strong> am Rand</td>
+<td><code>setOrientation(Orientation.VERTICAL)</code></td>
+</tr>
+<tr class="even">
+<td><code>BorderPane</code></td>
+<td>Top, Bottom, Left, Right, Center</td>
+<td><code>setTop()</code>, <code>setCenter()</code>, …</td>
+</tr>
+<tr class="odd">
+<td><code>GridPane</code></td>
+<td>Raster aus Zeilen/Spalten</td>
+<td><code>add(node, col, row, colSpan, rowSpan)</code> ← <strong>Spalte
+zuerst!</strong></td>
+</tr>
+<tr class="even">
+<td><code>HBox</code> / <code>VBox</code></td>
+<td>eine Zeile / eine Spalte, <strong>kein Umbruch</strong></td>
+<td><code>getChildren().addAll(...)</code></td>
+</tr>
+</tbody>
+</table>
+<h2>1.4 Events</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>btn<span class="op">.</span><span class="fu">setOnAction</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="fu">handleButtonClick</span><span class="op">(</span>e<span class="op">));</span>      <span class="co">// Event-Handler-Registrierung (Observer-Pattern)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>btn<span class="op">.</span><span class="fu">addEventHandler</span><span class="op">(</span><span class="bu">ActionEvent</span><span class="op">.</span><span class="fu">ACTION</span><span class="op">,</span> e <span class="op">-&gt;</span> <span class="op">{});</span> <span class="co">// Alternative</span></span></code></pre></div>
+<h2>1.5 FXML + Controller</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode xml"><code class="sourceCode xml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">VBox</span><span class="ot"> xmlns:fx=</span><span class="st">&quot;http://javafx.com/fxml&quot;</span><span class="ot"> fx:controller=</span><span class="st">&quot;com.example.Controller&quot;</span><span class="ot"> stylesheets=</span><span class="st">&quot;@style.css&quot;</span>&gt;</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">Label</span><span class="ot"> fx:id=</span><span class="st">&quot;label&quot;</span>/&gt;</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">Button</span><span class="ot"> text=</span><span class="st">&quot;Klick mich&quot;</span><span class="ot"> onAction=</span><span class="st">&quot;#handleClick&quot;</span>/&gt;</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">VBox</span>&gt;</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Controller <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@FXML</span> <span class="kw">private</span> <span class="bu">Label</span> label<span class="op">;</span>                 <span class="co">// Name == fx:id</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">@FXML</span> <span class="kw">private</span> <span class="dt">void</span> <span class="fu">handleClick</span><span class="op">()</span> <span class="op">{</span> label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Geklickt!&quot;</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">@FXML</span> <span class="kw">private</span> <span class="dt">void</span> <span class="fu">initialize</span><span class="op">()</span> <span class="op">{</span> <span class="co">/* Listener &amp; Bindings registrieren */</span> <span class="op">}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>FXML = <strong>wie es aussieht</strong>, Controller = <strong>was es
+macht</strong> (Trennung UI/Logik)</li>
+<li><code>fx:controller</code> verbindet FXML ↔︎ Controller,
+<code>fx:id</code> ↔︎ Attribut, <code>onAction="#methode"</code> ↔︎
+Handler</li>
+<li><code>initialize()</code> wird automatisch <strong>nach</strong> dem
+Injizieren der <code>@FXML</code>-Felder aufgerufen</li>
+<li>Laden:
+<code>new FXMLLoader(App.class.getResource("view.fxml")).load()</code></li>
+</ul>
+<h2>1.6 Properties, Listener,
+Bindings</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>label<span class="op">.</span><span class="fu">textProperty</span><span class="op">().</span><span class="fu">addListener</span><span class="op">((</span>obs<span class="op">,</span> oldVal<span class="op">,</span> newVal<span class="op">)</span> <span class="op">-&gt;</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;geändert!&quot;</span><span class="op">));</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>label1<span class="op">.</span><span class="fu">textProperty</span><span class="op">().</span><span class="fu">bind</span><span class="op">(</span>label2<span class="op">.</span><span class="fu">textProperty</span><span class="op">());</span>                 <span class="co">// unidirektional: label1 folgt label2</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>tf1<span class="op">.</span><span class="fu">textProperty</span><span class="op">().</span><span class="fu">bindBidirectional</span><span class="op">(</span>tf2<span class="op">.</span><span class="fu">textProperty</span><span class="op">());</span>           <span class="co">// bidirektional</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>rect<span class="op">.</span><span class="fu">fillProperty</span><span class="op">().</span><span class="fu">bind</span><span class="op">(</span>colorPicker<span class="op">.</span><span class="fu">valueProperty</span><span class="op">());</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>progressBar<span class="op">.</span><span class="fu">progressProperty</span><span class="op">().</span><span class="fu">bind</span><span class="op">(</span>slider<span class="op">.</span><span class="fu">valueProperty</span><span class="op">().</span><span class="fu">divide</span><span class="op">(</span><span class="dv">255</span><span class="op">));</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>hexField<span class="op">.</span><span class="fu">textProperty</span><span class="op">().</span><span class="fu">bind</span><span class="op">(</span><span class="bu">Bindings</span><span class="op">.</span><span class="fu">createStringBinding</span><span class="op">(</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">()</span> <span class="op">-&gt;</span> <span class="bu">String</span><span class="op">.</span><span class="fu">format</span><span class="op">(</span><span class="st">&quot;#</span><span class="sc">%02X%02X%02X</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">.</span><span class="fu">get</span><span class="op">(),</span> g<span class="op">.</span><span class="fu">get</span><span class="op">(),</span> b<span class="op">.</span><span class="fu">get</span><span class="op">()),</span> r<span class="op">,</span> g<span class="op">,</span> b<span class="op">));</span></span></code></pre></div>
+<ul>
+<li><code>xxxProperty()</code> liefert ein Property-Objekt (z. B.
+<code>StringProperty</code>) → Wert lesen <strong>+</strong> Listener
+<strong>+</strong> Binding</li>
+<li>Eigene Properties: <code>SimpleIntegerProperty</code>,
+<code>SimpleDoubleProperty</code>, <code>SimpleStringProperty</code>,
+<code>SimpleObjectProperty&lt;T&gt;</code></li>
+</ul>
+<blockquote>
+<p><strong>Achtung:</strong> Ein gebundenes Property (<code>bind</code>)
+darf man <strong>nicht mehr mit <code>set...()</code></strong> ändern →
+<code>RuntimeException: A bound value cannot be set</code>.</p>
+</blockquote>
+<h2>1.7 CSS</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variante</th>
+<th>Code</th>
+<th>FXML</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Datei einbinden</td>
+<td><code>scene.getStylesheets().add(App.class.getResource("style.css").toExternalForm());</code></td>
+<td><code>stylesheets="@style.css"</code></td>
+</tr>
+<tr class="even">
+<td>Style-Klasse (<code>.name</code>)</td>
+<td><code>btn.getStyleClass().add("my-button");</code></td>
+<td><code>styleClass="my-button"</code></td>
+</tr>
+<tr class="odd">
+<td>ID (<code>#name</code>)</td>
+<td><code>tf.setId("special");</code></td>
+<td><code>id="special"</code></td>
+</tr>
+<tr class="even">
+<td>Inline</td>
+<td><code>tf.setStyle("-fx-font-size: 20px;");</code></td>
+<td><code>style="-fx-font-size: 20px;"</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>JavaFX-CSS-Properties beginnen mit
+<strong><code>-fx-</code></strong>: <code>-fx-background-color</code>,
+<code>-fx-text-fill</code>, <code>-fx-border-color</code>,
+<code>-fx-border-width</code>, <code>-fx-background-radius</code>,
+<code>-fx-font-size</code>, <code>-fx-font-weight</code>,
+<code>-fx-opacity</code></li>
+<li>Default-Style-Klassen: Button → <code>button</code>, Label →
+<code>label</code>, TextField → <code>text-field</code>, CheckBox →
+<code>check-box</code>, ListView → <code>list-view</code> (muss man
+<strong>nicht</strong> selbst hinzufügen)</li>
+<li>Eine Node kann <strong>mehrere</strong> Style-Klassen haben.
+Entfernen: <code>getStyleClass().remove("correct")</code></li>
+</ul>
+<h2>1.8 Zeitliche Abläufe</h2>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Timeline: Aktionen zu bestimmten Zeitpunkten (KeyFrames)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>Timeline t <span class="op">=</span> <span class="kw">new</span> <span class="fu">Timeline</span><span class="op">(</span><span class="kw">new</span> <span class="fu">KeyFrame</span><span class="op">(</span><span class="bu">Duration</span><span class="op">.</span><span class="fu">seconds</span><span class="op">(</span><span class="dv">1</span><span class="op">),</span> e <span class="op">-&gt;</span> secondsLeft<span class="op">--));</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>t<span class="op">.</span><span class="fu">setCycleCount</span><span class="op">(</span>Timeline<span class="op">.</span><span class="fu">INDEFINITE</span><span class="op">);</span>   <span class="co">// oder z. B. 10 Wiederholungen</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>t<span class="op">.</span><span class="fu">play</span><span class="op">();</span>   <span class="co">// stop(), pause()</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Timeline als Property-Animation (Countdown-Balken)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>Timeline anim <span class="op">=</span> <span class="kw">new</span> <span class="fu">Timeline</span><span class="op">(</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="fu">KeyFrame</span><span class="op">(</span><span class="bu">Duration</span><span class="op">.</span><span class="fu">ZERO</span><span class="op">,</span>        <span class="kw">new</span> <span class="bu">KeyValue</span><span class="op">(</span>bar<span class="op">.</span><span class="fu">progressProperty</span><span class="op">(),</span> <span class="fl">1.0</span><span class="op">)),</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="fu">KeyFrame</span><span class="op">(</span><span class="bu">Duration</span><span class="op">.</span><span class="fu">seconds</span><span class="op">(</span><span class="dv">15</span><span class="op">),</span> <span class="kw">new</span> <span class="bu">KeyValue</span><span class="op">(</span>bar<span class="op">.</span><span class="fu">progressProperty</span><span class="op">(),</span> <span class="fl">0.0</span><span class="op">)));</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>anim<span class="op">.</span><span class="fu">setOnFinished</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="fu">timeUp</span><span class="op">());</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>anim<span class="op">.</span><span class="fu">play</span><span class="op">();</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">// AnimationTimer: handle() bei JEDEM Frame (Pulse), now in Nanosekunden (wie System.nanoTime())</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>AnimationTimer timer <span class="op">=</span> <span class="kw">new</span> <span class="fu">AnimationTimer</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">handle</span><span class="op">(</span><span class="dt">long</span> now<span class="op">)</span> <span class="op">{</span> <span class="co">/* Game-Loop, Canvas */</span> <span class="op">}</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>timer<span class="op">.</span><span class="fu">start</span><span class="op">();</span></span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Timeline</th>
+<th>AnimationTimer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Steuerung</td>
+<td><strong>zeitbasiert</strong> (KeyFrames)</td>
+<td><strong>framebasiert</strong> (jeder Pulse)</td>
+</tr>
+<tr class="even">
+<td>Einsatz</td>
+<td>Timer, Countdown, periodisch, Property-Animation</td>
+<td>Canvas, Game Loop, Physik, flüssige Animationen</td>
+</tr>
+</tbody>
+</table>
+</section><section class="chap"><h1 id="k2">2 Programming with C#</h1>
+<h2>2.1 C# vs. Java</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>C# / .NET</th>
+<th>Java</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CLR (Common Language Runtime)</td>
+<td>JVM</td>
+</tr>
+<tr class="even">
+<td>CIL (Common Intermediate Language)</td>
+<td>Bytecode</td>
+</tr>
+<tr class="odd">
+<td><code>namespace</code>, <code>using</code></td>
+<td><code>package</code>, <code>import</code></td>
+</tr>
+<tr class="even">
+<td>Datei- und Klassenname <strong>müssen nicht</strong> gleich
+sein</td>
+<td>müssen gleich sein</td>
+</tr>
+<tr class="odd">
+<td>Methoden <strong>PascalCase</strong>, private Felder
+<code>_camelCase</code>, Interfaces <code>IPascalCase</code></td>
+<td>camelCase, camelCase, PascalCase</td>
+</tr>
+<tr class="even">
+<td><code>static void Main()</code></td>
+<td><code>public static void main(String[] args)</code></td>
+</tr>
+<tr class="odd">
+<td>Properties <code>{ get; set; }</code></td>
+<td>Getter/Setter-Methoden</td>
+</tr>
+</tbody>
+</table>
+<p>Kürzestes Programm (<strong>Top-Level-Statements</strong>): nur
+<code>Console.WriteLine("Hello World!");</code></p>
+<h2>2.2 Datentypen</h2>
+<ul>
+<li><strong>Werttypen</strong> (<code>int</code>, <code>bool</code>,
+<code>double</code>, <code>char</code>, <code>decimal</code>,
+<strong>enum</strong>, <strong>struct</strong>): Daten direkt (Stack),
+<strong>Zuweisung kopiert den Wert</strong></li>
+<li><strong>Referenztypen</strong> (<code>class</code>,
+<code>interface</code>, <code>string</code>, Arrays,
+<code>object</code>): Referenz am Stack, Objekt am
+<strong>Heap</strong>, <strong>Zuweisung kopiert die Referenz</strong> →
+mehrere Variablen zeigen auf dasselbe Objekt</li>
+<li><code>string</code> ist ein Referenztyp, aber
+<strong>immutable</strong>. <code>char</code> = 1 Unicode-Zeichen,
+<strong>2 Byte</strong></li>
+<li><code>decimal</code> für Geld: Literal mit
+<strong><code>m</code></strong> (<code>9.50m</code>), <code>float</code>
+mit <code>f</code>, <code>long</code> mit <code>L</code></li>
+</ul>
+<h2>2.3 Konsole</h2>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Console<span class="op">.</span><span class="fu">Write</span><span class="op">(</span><span class="st">&quot;Alter: &quot;</span><span class="op">);</span>                  <span class="co">// ohne Zeilenumbruch</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">string</span><span class="op">?</span> line <span class="op">=</span> Console<span class="op">.</span><span class="fu">ReadLine</span><span class="op">();</span>         <span class="co">// liefert string? (kann null sein)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dt">int</span><span class="op">.</span><span class="fu">Parse</span><span class="op">(</span>line<span class="op">!);</span>                  <span class="co">// FormatException bei &quot;abc&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> b <span class="op">=</span> Convert<span class="op">.</span><span class="fu">ToInt32</span><span class="op">(</span><span class="st">&quot;42&quot;</span><span class="op">);</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(</span><span class="dt">int</span><span class="op">.</span><span class="fu">TryParse</span><span class="op">(</span>Console<span class="op">.</span><span class="fu">ReadLine</span><span class="op">(),</span> <span class="kw">out</span> <span class="dt">int</span> n<span class="op">))</span> <span class="op">{</span> <span class="co">/* gültig */</span> <span class="op">}</span>   <span class="co">// sicherste Variante</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span>$<span class="st">&quot;{name} ist {alter} Jahre, Preis: {preis:0.00} €, rechtsbündig: {x,5}&quot;</span><span class="op">);</span></span></code></pre></div>
+<h2>2.4 Arrays</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span><span class="op">[]</span> a1 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span><span class="dv">3</span><span class="op">];</span>              <span class="co">// {0,0,0}</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span><span class="op">[]</span> a2 <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[]</span> <span class="op">{</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span> <span class="op">};</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span><span class="op">[]</span> a3 <span class="op">=</span> <span class="op">{</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span> <span class="op">};</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> len <span class="op">=</span> a3<span class="op">.</span><span class="fu">Length</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span><span class="op">[][]</span> jag <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span><span class="dv">2</span><span class="op">][];</span>          <span class="co">// JAGGED: Array von Arrays, Zeilen verschieden lang</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>jag<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span><span class="dv">3</span><span class="op">];</span> jag<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> jag<span class="op">[</span><span class="dv">0</span><span class="op">][</span><span class="dv">1</span><span class="op">];</span>  <span class="dt">int</span> rows <span class="op">=</span> jag<span class="op">.</span><span class="fu">Length</span><span class="op">;</span>  <span class="co">/* 2 */</span>  <span class="dt">int</span> c0 <span class="op">=</span> jag<span class="op">[</span><span class="dv">0</span><span class="op">].</span><span class="fu">Length</span><span class="op">;</span> <span class="co">/* 3 */</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span><span class="op">[,]</span> rect <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">];</span>         <span class="co">// RECHTECKIG: kompakter, effizienter</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> y <span class="op">=</span> rect<span class="op">[</span><span class="dv">0</span><span class="op">,</span> <span class="dv">1</span><span class="op">];</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> all <span class="op">=</span> rect<span class="op">.</span><span class="fu">Length</span><span class="op">;</span>               <span class="co">// 6  (alle Elemente!)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> r <span class="op">=</span> rect<span class="op">.</span><span class="fu">GetLength</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span>           <span class="co">// 2  Zeilen</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> c <span class="op">=</span> rect<span class="op">.</span><span class="fu">GetLength</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span>           <span class="co">// 3  Spalten</span></span></code></pre></div>
+<ul>
+<li>Arrays sind <strong>Referenztypen</strong>.
+<code>new SomeClass[4]</code> → 4 × <code>null</code>;
+<code>new SomeStruct[4]</code> → 4 Structs mit Default-Werten</li>
+<li>Summe: <code>for</code>, <code>foreach</code>,
+<code>Array.ForEach(arr, v =&gt; sum += v)</code>, LINQ
+<code>arr.Sum()</code></li>
+<li><code>foreach</code> über <code>int[,]</code> läuft
+<strong>zeilenweise</strong> durch alle Elemente</li>
+</ul>
+<h2>2.5 Variablen, var, Safe Calls</h2>
+<ul>
+<li>Variable = lokale Variable, Parameter (value/ref/out/in), Feld
+(instance/static), Array-Element</li>
+<li><strong>Lokale Variablen müssen vor Verwendung zugewiesen
+sein</strong> (sonst Compilerfehler CS0165). Felder und Array-Elemente
+bekommen automatisch Default-Werte (<code>0</code>, <code>false</code>,
+<code>null</code>)</li>
+<li><code>var x = "Hello";</code> → Typ wird vom Compiler aus der
+Zuweisung bestimmt (<strong>statisch typisiert</strong>, nur bei lokalen
+Variablen, nur mit Initialisierung)</li>
+</ul>
+<h2>2.6 Parameter-Modifier</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Modifier</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>(keiner)</em></td>
+<td>Wert wird <strong>kopiert</strong> (bei Referenztypen: die
+Referenz)</td>
+</tr>
+<tr class="even">
+<td><code>ref</code></td>
+<td>als Referenz übergeben, <strong>muss vorher</strong> initialisiert
+sein, Aufruf: <code>M(ref x)</code></td>
+</tr>
+<tr class="odd">
+<td><code>in</code></td>
+<td>als Referenz, aber <strong>read-only</strong></td>
+</tr>
+<tr class="even">
+<td><code>out</code></td>
+<td>als Referenz, <strong>muss in der Methode</strong> zugewiesen
+werden, Aufruf: <code>M(out int x)</code> oder <code>out _</code></td>
+</tr>
+<tr class="odd">
+<td><code>params</code></td>
+<td><strong>letzter</strong> Parameter, beliebig viele Argumente →
+Array: <code>Sum(1,2,3)</code> ≡ <code>Sum(new[]{1,2,3})</code>, auch
+<code>Sum()</code></td>
+</tr>
+<tr class="even">
+<td>optional</td>
+<td>Default-Wert: <code>void M(int x = 23)</code> – optionale Parameter
+stehen <strong>hinten</strong></td>
+</tr>
+<tr class="odd">
+<td>named</td>
+<td><code>M(y: 2, x: 1)</code> – Reihenfolge egal; erlaubt, einzelne
+optionale Parameter zu überspringen</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="fu">Print</span><span class="op">(</span><span class="dt">bool</span> showHeader <span class="op">=</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">char</span> free <span class="op">=</span> <span class="ch">&#39;.&#39;</span><span class="op">,</span> <span class="dt">char</span> taken <span class="op">=</span> <span class="ch">&#39;X&#39;</span><span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Print</span><span class="op">(</span>taken<span class="op">:</span> <span class="ch">&#39;#&#39;</span><span class="op">);</span>              <span class="co">// nur den 3. ändern → OHNE named müsste man Print(true, &#39;.&#39;, &#39;#&#39;) schreiben</span></span></code></pre></div>
+<h2>2.7 Null-Operatoren
+(Kurzform, Details → Kap. 6)</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">string</span> s2 <span class="op">=</span> s1 <span class="op">??</span> <span class="st">&quot;nothing&quot;</span><span class="op">;</span>        <span class="co">// ??  : links null? -&gt; rechts nehmen</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">??=</span> someDefault<span class="op">;</span>                  <span class="co">// ??= : nur zuweisen, wenn x null ist</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">string</span><span class="op">?</span> s <span class="op">=</span> sb<span class="op">?.</span><span class="fu">ToString</span><span class="op">();</span>         <span class="co">// ?.  : null-conditional, kein Fehler wenn sb null</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>Flower flower <span class="op">=</span> <span class="kw">null</span><span class="op">!;</span>              <span class="co">// !   : null-forgiving, Compiler-Warnung unterdrücken</span></span></code></pre></div>
+<h2>2.8 Kontrollstrukturen &amp;
+Namespaces</h2>
+<ul>
+<li>Bedingungen: <code>if-else</code>, <code>switch</code>; Schleifen:
+<code>while</code>, <code>do-while</code>, <code>for</code>,
+<code>foreach</code>; Sprünge: <code>break</code>,
+<code>continue</code>, <code>goto</code>, <code>return</code>,
+<code>throw</code></li>
+<li>Ohne <code>namespace</code> → anonymer Default-Namespace. Namespaces
+enthalten Klassen, Structs, Interfaces, Delegates, Enums und können in
+mehreren Dateien „wieder geöffnet“ werden. File-scoped:
+<code>namespace Kino;</code></li>
+</ul>
+</section><section class="chap"><h1 id="k3">3 OOP – Classes</h1>
+<h2>3.1 Klasse &amp; Modifier</h2>
+<p><code>class</code> = häufigster <strong>Referenztyp</strong>.
+Klassen-Modifier: <code>public</code>, <code>internal</code> (Default,
+nur im Projekt), <code>abstract</code>, <code>sealed</code>,
+<code>static</code>, <code>unsafe</code>, <code>partial</code>. Member:
+Felder, Methoden, Properties, Indexer, Events, Konstruktoren, Finalizer,
+Operatoren, verschachtelte Typen.</p>
+<h2>3.2 Felder: readonly vs. const</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Octopus</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">readonly</span> <span class="dt">string</span> Name<span class="op">;</span>        <span class="co">// zur LAUFZEIT; nur bei Deklaration oder im Konstruktor setzbar</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">readonly</span> <span class="dt">int</span> Legs <span class="op">=</span> <span class="dv">8</span><span class="op">;</span>       <span class="co">// jedes Objekt hat eigene readonly-Felder</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">const</span> <span class="dt">int</span> MaxArms <span class="op">=</span> <span class="dv">8</span><span class="op">;</span>       <span class="co">// zur COMPILE-Zeit; implizit static; Wert MUSS bei Deklaration stehen</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Octopus</span><span class="op">(</span><span class="dt">string</span> name<span class="op">)</span> <span class="op">{</span> Name <span class="op">=</span> name<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="fu">Octopus</span><span class="op">(</span><span class="st">&quot;Jack&quot;</span><span class="op">).</span><span class="fu">Name</span> <span class="op">=</span> <span class="st">&quot;Alice&quot;</span><span class="op">;</span>     <span class="co">// Compilerfehler CS0191</span></span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><code>const</code></th>
+<th><code>readonly</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Wert bekannt</td>
+<td>Compile-Zeit</td>
+<td>Laufzeit</td>
+</tr>
+<tr class="even">
+<td>setzbar</td>
+<td>nur bei Deklaration</td>
+<td>Deklaration <strong>oder Konstruktor</strong></td>
+</tr>
+<tr class="odd">
+<td>pro Objekt?</td>
+<td>nein (implizit <code>static</code>), Zugriff
+<code>Klasse.Name</code></td>
+<td>ja</td>
+</tr>
+<tr class="even">
+<td>Typen</td>
+<td>eingebaute Typen (<code>int</code>, <code>double</code>,
+<code>decimal</code>, <code>string</code>, enum …)</td>
+<td>beliebig</td>
+</tr>
+</tbody>
+</table>
+<h2>3.3 Methoden</h2>
+<ul>
+<li><strong>Signatur</strong> = Name + Anzahl Typparameter + <strong>Typ
+und Übergabeart</strong> (ref/out/in/value) der Parameter.
+<strong>Nicht</strong> Teil der Signatur: Rückgabetyp, Parameternamen,
+<code>params</code>, Zugriffsmodifier. → Zwei Methoden, die sich
+<strong>nur im Rückgabetyp</strong> unterscheiden = Compilerfehler.</li>
+<li><strong>Overloading</strong> = gleicher Name, unterschiedliche
+Parametertypen/-anzahl</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="fu">Twice</span><span class="op">(</span><span class="dt">int</span> x<span class="op">)</span> <span class="op">=&gt;</span> x <span class="op">*</span> <span class="dv">2</span><span class="op">;</span>                          <span class="co">// expression-bodied</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="fu">Show</span><span class="op">(</span><span class="dt">int</span> x<span class="op">)</span> <span class="op">=&gt;</span> Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="fu">WriteCubes</span><span class="op">()</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span><span class="fu">Cube</span><span class="op">());</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="fu">Cube</span><span class="op">()</span> <span class="op">=&gt;</span> value <span class="op">*</span> value <span class="op">*</span> value<span class="op">;</span>            <span class="co">// lokale Methode: sieht lokale Variablen</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> <span class="fu">WriteCubes2</span><span class="op">()</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span><span class="fu">Cube</span><span class="op">(</span><span class="dv">3</span><span class="op">));</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">static</span> <span class="dt">int</span> <span class="fu">Cube</span><span class="op">(</span><span class="dt">int</span> v<span class="op">)</span> <span class="op">=&gt;</span> v <span class="op">*</span> v <span class="op">*</span> v<span class="op">;</span>            <span class="co">// STATIC lokale Methode: sieht KEINE lokalen Variablen/Parameter</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2>3.4 Konstruktoren</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Wine</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">decimal</span> Price<span class="op">;</span> <span class="kw">public</span> <span class="dt">int</span> Year<span class="op">;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Wine</span><span class="op">(</span><span class="dt">decimal</span> price<span class="op">)</span> <span class="op">{</span> Price <span class="op">=</span> price<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Wine</span><span class="op">(</span><span class="dt">decimal</span> price<span class="op">,</span> <span class="dt">int</span> year<span class="op">)</span> <span class="op">:</span> <span class="kw">this</span><span class="op">(</span>price<span class="op">)</span> <span class="op">{</span> Year <span class="op">=</span> year<span class="op">;</span> <span class="op">}</span>        <span class="co">// Chaining mit this(...)</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Wine</span><span class="op">(</span><span class="dt">decimal</span> price<span class="op">,</span> DateTime d<span class="op">)</span> <span class="op">:</span> <span class="kw">this</span><span class="op">(</span>price<span class="op">,</span> d<span class="op">.</span><span class="fu">Year</span><span class="op">)</span> <span class="op">{</span> <span class="op">}</span>          <span class="co">// Ausdruck als Argument</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> <span class="fu">Panda</span><span class="op">(</span><span class="dt">string</span> name<span class="op">,</span> <span class="dt">int</span> age<span class="op">)</span>                                     <span class="co">// Primary Constructor (C# 12)</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">string</span> Name <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> Age <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">=</span> age<span class="op">;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Panda2 <span class="op">{</span> <span class="kw">private</span> <span class="dt">string</span> _name<span class="op">;</span> <span class="kw">public</span> <span class="fu">Panda2</span><span class="op">(</span><span class="dt">string</span> n<span class="op">)</span> <span class="op">=&gt;</span> _name <span class="op">=</span> n<span class="op">;</span> <span class="op">}</span>   <span class="co">// expression-bodied</span></span></code></pre></div>
+<ul>
+<li><strong>Default-Konstruktor</strong> (parameterlos) wird
+<strong>nur</strong> generiert, wenn die Klasse <strong>gar
+keinen</strong> Konstruktor hat. Ein selbst geschriebener parameterloser
+ist <strong>kein</strong> Default-Konstruktor.</li>
+<li>Sobald man <code>Panda(string n)</code> schreibt, geht
+<code>new Panda()</code> <strong>nicht mehr</strong>.</li>
+<li><strong>private Konstruktor</strong> → kein <code>new</code> von
+außen (Singleton, Helper-Klasse nur mit static Methoden)</li>
+<li><strong>static Konstruktor</strong> <code>static Test() { }</code>:
+kein Modifier, keine Parameter, max. 1, läuft <strong>genau
+einmal</strong> automatisch vor dem 1. Objekt / 1. static-Zugriff,
+<strong>vor</strong> dem Instanz-Konstruktor</li>
+</ul>
+<h2>3.5 Deconstructor &amp; Object
+Initializer</h2>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">Deconstruct</span><span class="op">(</span><span class="kw">out</span> <span class="dt">float</span> width<span class="op">,</span> <span class="kw">out</span> <span class="dt">float</span> height<span class="op">)</span> <span class="op">{</span> width <span class="op">=</span> Width<span class="op">;</span> height <span class="op">=</span> Height<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span> <span class="op">(</span>w<span class="op">,</span> h<span class="op">)</span> <span class="op">=</span> rect<span class="op">;</span>                       <span class="co">// ruft Deconstruct auf</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>Bunny b1 <span class="op">=</span> <span class="kw">new</span> Bunny <span class="op">{</span> Name <span class="op">=</span> <span class="st">&quot;Bugs&quot;</span><span class="op">,</span> LikesCarrots <span class="op">=</span> <span class="kw">true</span> <span class="op">};</span>          <span class="co">// parameterloser ctor + Initializer</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>Bunny b2 <span class="op">=</span> <span class="kw">new</span> <span class="fu">Bunny</span><span class="op">(</span><span class="st">&quot;Bugs&quot;</span><span class="op">)</span> <span class="op">{</span> LikesCarrots <span class="op">=</span> <span class="kw">true</span> <span class="op">};</span>                  <span class="co">// ctor mit Parametern + Initializer</span></span></code></pre></div>
+<p>Object Initializer setzt <strong>public</strong> Felder/Properties
+<strong>nach</strong> dem Konstruktor.</p>
+<h2>3.6 Properties – alle Varianten</h2>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="dt">decimal</span> _price<span class="op">;</span>                                  <span class="co">// Backing Field</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">decimal</span> Price</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span> <span class="op">{</span> <span class="kw">return</span> _price<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="op">{</span> _price <span class="op">=</span> value <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">?</span> <span class="dv">0</span> <span class="op">:</span> value<span class="op">;</span> <span class="op">}</span>             <span class="co">// value = impliziter Parameter</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">decimal</span> Price2 <span class="op">{</span> get <span class="op">=&gt;</span> _price<span class="op">;</span> set <span class="op">=&gt;</span> _price <span class="op">=</span> value<span class="op">;</span> <span class="op">}</span>     <span class="co">// expression-bodied Accessoren</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">decimal</span> Worth <span class="op">=&gt;</span> _price <span class="op">*</span> _shares<span class="op">;</span>                            <span class="co">// read-only, berechnet (nur get)</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">decimal</span> Current <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span>                                 <span class="co">// Auto-Property (Compiler erzeugt Feld)</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">decimal</span> Start <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">=</span> <span class="dv">123</span><span class="op">;</span>                            <span class="co">// Property-Initializer</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> Maximum <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span> <span class="op">=</span> <span class="dv">999</span><span class="op">;</span>                                   <span class="co">// get-only: nur Initializer/Konstruktor</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">decimal</span> X <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">private</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span>                               <span class="co">// unterschiedliche Sichtbarkeit</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">int</span> Pitch <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> init<span class="op">;</span> <span class="op">}</span> <span class="op">=</span> <span class="dv">20</span><span class="op">;</span>                                <span class="co">// init-only: nur Konstruktor/Object Initializer</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> note <span class="op">=</span> <span class="kw">new</span> Note <span class="op">{</span> Pitch <span class="op">=</span> <span class="dv">50</span> <span class="op">};</span>   <span class="co">// OK</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>note<span class="op">.</span><span class="fu">Pitch</span> <span class="op">=</span> <span class="dv">200</span><span class="op">;</span>                     <span class="co">// Fehler CS8852 (init-only)</span></span></code></pre></div>
+<h2>3.7 Static Class, Finalizer,
+Partial</h2>
+<ul>
+<li><strong>static class</strong>: kein <code>new</code>, kann nicht
+vererbt werden, <strong>nur static Member</strong> (z. B.
+<code>Console</code>, <code>Math</code>). Alternative: normale Klasse +
+<strong>private Konstruktor</strong></li>
+<li><strong>Finalizer</strong> <code>~DemoA() { }</code>: läuft auf
+eigenem Finalizer-Thread, bevor der GC das Objekt entfernt. Besser:
+<code>IDisposable</code>/<code>Dispose()</code> (deterministisch)</li>
+<li><strong>partial</strong>: Klasse/Methode über mehrere Dateien
+aufteilen (jeder Teil mit <code>partial</code>). Partial-Methode
+<strong>ohne</strong> Zugriffsmodifier: muss <code>void</code> sein,
+kein <code>out</code>, implizit private, Implementierung
+<strong>optional</strong>. <strong>Mit</strong> Modifier:
+<strong>muss</strong> implementiert werden, keine Einschränkungen.</li>
+</ul>
+</section><section class="chap"><h1 id="k4">4 OOP – Inheritance</h1>
+<h2>4.1 Grundlagen &amp; Polymorphie</h2>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Asset <span class="op">{</span> <span class="kw">public</span> <span class="dt">string</span> Name <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Stock <span class="op">:</span> Asset <span class="op">{</span> <span class="kw">public</span> <span class="dt">long</span> SharesOwned <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span>     <span class="co">// nur EINE Basisklasse</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> House <span class="op">:</span> Asset <span class="op">{</span> <span class="kw">public</span> <span class="dt">decimal</span> Mortgage <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">static</span> <span class="dt">void</span> <span class="fu">Display</span><span class="op">(</span>Asset a<span class="op">)</span> <span class="op">=&gt;</span> Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span>a<span class="op">.</span><span class="fu">Name</span><span class="op">);</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">Display</span><span class="op">(</span><span class="kw">new</span> Stock <span class="op">{</span> Name <span class="op">=</span> <span class="st">&quot;MSFT&quot;</span> <span class="op">});</span>     <span class="co">// Polymorphie: Asset-Variable kann Stock/House referenzieren</span></span></code></pre></div>
+<h2>4.2 Casting</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Syntax</th>
+<th>erfolgreich?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Upcast</strong> (Sub → Super)</td>
+<td><code>Asset a = stock;</code> (implizit)</td>
+<td><strong>immer</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Downcast</strong> (Super → Sub)</td>
+<td><code>Stock s = (Stock)a;</code> (explizit)</td>
+<td>nur wenn Objekt passt, sonst
+<strong><code>InvalidCastException</code></strong></td>
+</tr>
+<tr class="odd">
+<td><strong>as</strong></td>
+<td><code>Stock? s = a as Stock;</code></td>
+<td>liefert <strong><code>null</code></strong> statt Exception</td>
+</tr>
+<tr class="even">
+<td><strong>is</strong></td>
+<td><code>if (a is Stock)</code> /
+<code>if (a is Stock s) …s.SharesOwned</code></td>
+<td>prüft; Pattern-Variable spart den Cast</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Casts ändern <strong>nur die Referenz</strong>, nicht das Objekt:
+<code>stock == asset</code> → <code>True</code></li>
+<li>Über eine <code>Asset</code>-Referenz sieht man nur
+<code>Asset</code>-Member: <code>asset.SharesOwned</code> →
+<strong>Compilerfehler</strong> CS1061</li>
+</ul>
+<h2>4.3 virtual / override /
+abstract / new / sealed</h2>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Asset</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">virtual</span> <span class="dt">decimal</span> Liability <span class="op">=&gt;</span> <span class="dv">0</span><span class="op">;</span>              <span class="co">// darf überschrieben werden</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> House <span class="op">:</span> Asset</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">decimal</span> Mortgage <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">override</span> <span class="dt">decimal</span> Liability <span class="op">=&gt;</span> Mortgage<span class="op">;</span>      <span class="co">// überschreibt</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>Asset a <span class="op">=</span> <span class="kw">new</span> House <span class="op">{</span> Mortgage <span class="op">=</span> <span class="dv">300000</span> <span class="op">};</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span>a<span class="op">.</span><span class="fu">Liability</span><span class="op">);</span>                          <span class="co">// 300000  ← Objekttyp entscheidet (dynamisch)</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> AbstractAsset <span class="op">{</span> <span class="kw">public</span> <span class="kw">abstract</span> <span class="dt">decimal</span> NetValue <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span>  <span class="co">// ohne Rumpf</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Plot <span class="op">:</span> Asset <span class="op">{</span> <span class="kw">public</span> <span class="kw">sealed</span> <span class="kw">override</span> <span class="dt">decimal</span> Liability <span class="op">=&gt;</span> <span class="dv">1</span><span class="op">;</span> <span class="op">}</span>     <span class="co">// darf nicht weiter überschrieben werden</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> B <span class="op">:</span> A <span class="op">{</span> <span class="kw">public</span> <span class="kw">new</span> <span class="dt">int</span> Counter <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> <span class="op">}</span>                                <span class="co">// HIDING (verdecken)</span></span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Schlüsselwort</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>virtual</code></td>
+<td>Basisklasse <strong>erlaubt</strong> Überschreiben</td>
+</tr>
+<tr class="even">
+<td><code>override</code></td>
+<td>Unterklasse <strong>überschreibt</strong>; Signatur, Rückgabetyp und
+Sichtbarkeit <strong>identisch</strong></td>
+</tr>
+<tr class="odd">
+<td><code>abstract</code></td>
+<td><strong>kein Rumpf</strong>, Unterklasse <strong>muss</strong>
+überschreiben; Klasse <strong>muss</strong> dann auch
+<code>abstract</code> sein. Abstrakte Klasse: kein <code>new</code>,
+darf aber 0 abstrakte Member haben</td>
+</tr>
+<tr class="even">
+<td><code>new</code></td>
+<td><strong>verdeckt</strong> einen geerbten Member (kein
+Polymorphismus!), unterdrückt Warnung CS0108</td>
+</tr>
+<tr class="odd">
+<td><code>sealed</code></td>
+<td>Member: nicht weiter überschreibbar · Klasse: nicht vererbbar</td>
+</tr>
+<tr class="even">
+<td><code>base</code></td>
+<td><code>base.Liability</code> (Basis-Version aufrufen) ·
+<code>: base(x)</code> (Basis-Konstruktor)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>override vs. new:</strong> Bei <code>override</code>
+entscheidet der <strong>Objekttyp</strong> (Laufzeit). Bei
+<code>new</code> entscheidet der <strong>Variablentyp</strong>
+(Compile-Zeit). Überschreibbar sind Methoden, Properties, Indexer,
+Events.</p>
+<h2>4.4 Konstruktoren &amp; Vererbung</h2>
+<ul>
+<li>Konstruktoren werden <strong>nicht vererbt</strong> → jede
+Unterklasse definiert ihre eigenen, ruft mit <code>: base(...)</code>
+die Basis auf</li>
+<li>Nach <code>:</code> steht <strong>genau ein</strong> Aufruf:
+<code>base(...)</code> <strong>oder</strong> <code>this(...)</code></li>
+<li>Ohne <code>: base(...)</code> wird der
+<strong>parameterlose</strong> Basis-Konstruktor aufgerufen. Gibt es den
+nicht → <strong>Compilerfehler</strong></li>
+</ul>
+<p><strong>Initialisierungs-Reihenfolge in C#</strong>
+(<code>new Cc(5)</code> mit <code>Cc : Bb : Aa</code>):</p>
+<ol type="1">
+<li><strong>Feld-Initialisierer von unten nach oben</strong> (Cc → Bb →
+Aa), dabei werden jeweils die <code>base(...)</code>-Argumente
+ausgewertet</li>
+<li><strong>Konstruktor-Rümpfe von oben nach unten</strong> (Aa → Bb →
+Cc)</li>
+</ol>
+<pre><code>Ausgabe:  Aa 7   Bb 6   Cc 5</code></pre>
+<blockquote>
+<p>In <strong>Java</strong> laufen Feld-Initialisierer
+<strong>nach</strong> dem Superkonstruktor, also direkt vor dem eigenen
+Konstruktor-Rumpf. <strong>Unterschied merken!</strong></p>
+</blockquote>
+</section><section class="chap"><h1 id="k5">5 More Types</h1>
+<h2>5.1 Enums</h2>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Color <span class="op">{</span> Red<span class="op">,</span> Blue<span class="op">,</span> Green <span class="op">}</span>                                   <span class="co">// 0, 1, 2</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> BorderSide <span class="op">:</span> <span class="dt">byte</span> <span class="op">{</span> Left <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> Right<span class="op">,</span> Top <span class="op">=</span> <span class="dv">10</span><span class="op">,</span> Bottom <span class="op">}</span>      <span class="co">// 1, 2, 10, 11  (zählt weiter)</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>Color c <span class="op">=</span> Color<span class="op">.</span><span class="fu">Blue</span><span class="op">;</span>                                             <span class="co">// immer qualifiziert</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> i <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span>BorderSide<span class="op">.</span><span class="fu">Left</span><span class="op">;</span>       BorderSide s <span class="op">=</span> <span class="op">(</span>BorderSide<span class="op">)</span><span class="dv">2</span><span class="op">;</span> <span class="co">// expliziter Cast in beide Richtungen</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>Flags<span class="op">]</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> BorderSides <span class="op">{</span> None <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> Left <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> Right <span class="op">=</span> <span class="dv">2</span><span class="op">,</span> Top <span class="op">=</span> <span class="dv">4</span><span class="op">,</span> Bottom <span class="op">=</span> <span class="dv">8</span> <span class="op">}</span>   <span class="co">// Zweierpotenzen!</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>BorderSides lr <span class="op">=</span> BorderSides<span class="op">.</span><span class="fu">Left</span> <span class="op">|</span> BorderSides<span class="op">.</span><span class="fu">Right</span><span class="op">;</span>   <span class="co">// kombinieren -&gt; ToString(): &quot;Left, Right&quot;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>lr <span class="op">|=</span> BorderSides<span class="op">.</span><span class="fu">Top</span><span class="op">;</span>                                    <span class="co">// hinzufügen</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>lr <span class="op">^=</span> BorderSides<span class="op">.</span><span class="fu">Right</span><span class="op">;</span>                                  <span class="co">// toggeln</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> hasLeft <span class="op">=</span> <span class="op">(</span>lr <span class="op">&amp;</span> BorderSides<span class="op">.</span><span class="fu">Left</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">;</span>              <span class="co">// prüfen  (oder lr.HasFlag(...))</span></span></code></pre></div>
+<p>Enum = <strong>Werttyp</strong>, Basis ist ein ganzzahliger Typ
+(Default <code>int</code>). Flags-Enums: Name im
+<strong>Plural</strong>.</p>
+<h2>5.2 Structs</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>struct</th>
+<th>class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Art</td>
+<td><strong>Werttyp</strong> (Kopie bei Zuweisung)</td>
+<td>Referenztyp</td>
+</tr>
+<tr class="even">
+<td>Vererbung</td>
+<td><strong>keine</strong> (kann aber Interfaces implementieren)</td>
+<td>ja (eine Basisklasse)</td>
+</tr>
+<tr class="odd">
+<td>nicht erlaubt</td>
+<td>Finalizer, <code>virtual</code>, <code>protected</code></td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Hat <strong>immer</strong> einen impliziten parameterlosen
+Konstruktor (alles auf Default). Seit <strong>C# 10</strong> eigener
+parameterloser Konstruktor + Feld-Initialisierer erlaubt</li>
+<li><code>new Point2()</code> ruft den eigenen parameterlosen
+Konstruktor auf, <strong><code>default</code></strong> dagegen
+<strong>nicht</strong> (alles 0)</li>
+<li><code>readonly struct</code> → alle Felder müssen
+<code>readonly</code> sein. <code>readonly</code> Methode darf keine
+Felder ändern (Fehler CS1604)</li>
+</ul>
+<h2>5.3 Interfaces</h2>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> IShape</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">const</span> <span class="dt">int</span> MaxSides <span class="op">=</span> <span class="dv">12</span><span class="op">;</span>                    <span class="co">// ab C# 8: Konstanten</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">static</span> <span class="dt">int</span> Count<span class="op">;</span>                           <span class="co">// ab C# 8: static Felder</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> Area <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="op">}</span>                        <span class="co">// abstrakt (implizit public)</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="fu">Describe</span><span class="op">()</span> <span class="op">=&gt;</span> $<span class="st">&quot;Area: {Area}&quot;</span><span class="op">;</span>       <span class="co">// ab C# 8: Default-Implementierung</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> IRedoable <span class="op">:</span> IUndoable <span class="op">{</span> <span class="dt">void</span> <span class="fu">Redo</span><span class="op">();</span> <span class="op">}</span>    <span class="co">// Interface erweitert Interface</span></span></code></pre></div>
+<ul>
+<li>Member sind implizit <strong>public abstract</strong>. <strong>Nicht
+erlaubt:</strong> Instanzfelder, Instanzkonstruktoren, Finalizer</li>
+<li>Klasse: <strong>eine</strong> Basisklasse, aber
+<strong>mehrere</strong> Interfaces. Struct: keine Basisklasse, mehrere
+Interfaces</li>
+<li>Implementierte Interface-Methoden <strong>ohne</strong>
+<code>override</code>! Sie sind standardmäßig <strong>sealed</strong> →
+zum Überschreiben in der Basisklasse <code>virtual</code> (oder
+<code>abstract</code>) machen</li>
+<li><strong>Default-Member</strong> sind <strong>nur über das
+Interface</strong> aufrufbar: <code>((ILogger)logger).Log("x")</code>,
+nicht über <code>logger.Log("x")</code></li>
+</ul>
+<p><strong>Explizite Implementierung</strong> (bei Namenskollision oder
+zum Verstecken):</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> I1 <span class="op">{</span> <span class="dt">void</span> <span class="fu">Help</span><span class="op">();</span> <span class="op">}</span>   <span class="kw">interface</span> I2 <span class="op">{</span> <span class="dt">int</span> <span class="fu">Help</span><span class="op">();</span> <span class="op">}</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Widget <span class="op">:</span> I1<span class="op">,</span> I2</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Help</span><span class="op">()</span> <span class="op">=&gt;</span> Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span><span class="st">&quot;I1.Help&quot;</span><span class="op">);</span>     <span class="co">// implizit</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> I2<span class="op">.</span><span class="fu">Help</span><span class="op">()</span> <span class="op">{</span> Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span><span class="st">&quot;I2.Help&quot;</span><span class="op">);</span> <span class="kw">return</span> <span class="dv">42</span><span class="op">;</span> <span class="op">}</span>   <span class="co">// explizit: KEIN public!</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>w<span class="op">.</span><span class="fu">Help</span><span class="op">();</span>          <span class="co">// I1.Help</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="op">((</span>I2<span class="op">)</span>w<span class="op">).</span><span class="fu">Help</span><span class="op">();</span>    <span class="co">// I2.Help   ← nur über Interface-Referenz erreichbar</span></span></code></pre></div>
+</section><section class="chap"><h1 id="k6">6 Nullability</h1>
+<ul>
+<li><strong>Werttypen</strong> können normal <strong>nicht</strong>
+<code>null</code> sein → <strong><code>int?</code></strong> (=
+<code>Nullable&lt;int&gt;</code>), Wert mit <code>.HasValue</code> /
+<code>.Value</code> oder <code>?? 0</code></li>
+<li><strong>Nullable Reference Types</strong>
+(<code>&lt;Nullable&gt;enable&lt;/Nullable&gt;</code> im .csproj,
+Standard bei neuen Projekten): <code>string s</code> = <strong>soll nie
+null sein</strong>, <code>string? s</code> = <strong>darf null
+sein</strong>. Der Compiler gibt <strong>Warnungen</strong> (keine
+Fehler!), z. B. CS8600 „Converting null literal …“, CS8602 „Dereference
+of a possibly null reference“, CS8618 „Non-nullable property must
+contain a non-null value when exiting constructor“</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">string</span><span class="op">?</span> name <span class="op">=</span> Console<span class="op">.</span><span class="fu">ReadLine</span><span class="op">();</span>             <span class="co">// ReadLine liefert string?</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> len1 <span class="op">=</span> name<span class="op">.</span><span class="fu">Length</span><span class="op">;</span>                        <span class="co">// Warnung CS8602</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> len2 <span class="op">=</span> name<span class="op">?.</span><span class="fu">Length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span>                  <span class="co">// sicher</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(</span>name <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> Console<span class="op">.</span><span class="fu">WriteLine</span><span class="op">(</span>name<span class="op">.</span><span class="fu">Length</span><span class="op">);</span>   <span class="co">// nach null-Check weiß der Compiler: nicht null</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>Person<span class="op">?</span> p <span class="op">=</span> <span class="fu">FindPerson</span><span class="op">(</span><span class="st">&quot;x&quot;</span><span class="op">);</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="dt">string</span> city <span class="op">=</span> p<span class="op">?.</span><span class="fu">Address</span><span class="op">?.</span><span class="fu">City</span> <span class="op">??</span> <span class="st">&quot;unbekannt&quot;</span><span class="op">;</span>       <span class="co">// Ketten: bricht beim ersten null ab</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">string</span> Name <span class="op">{</span> <span class="kw">get</span><span class="op">;</span> <span class="kw">set</span><span class="op">;</span> <span class="op">}</span> <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span>               <span class="co">// gegen CS8618: Default-Wert setzen</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>Flower f <span class="op">=</span> <span class="kw">null</span><span class="op">!;</span>                                    <span class="co">// ! = &quot;Ich weiß, was ich tue&quot; (nur Warnung weg)</span></span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Name (dt.)</th>
+<th>Wirkung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>a ?? b</code></td>
+<td>Null-Verbindungsoperator</td>
+<td><code>a</code>, außer <code>a</code> ist null → <code>b</code></td>
+</tr>
+<tr class="even">
+<td><code>a ??= b</code></td>
+<td>Null-Verbindungszuweisung</td>
+<td><code>if (a == null) a = b;</code></td>
+</tr>
+<tr class="odd">
+<td><code>a?.B</code></td>
+<td>Null-Bedingungsoperator (Elvis)</td>
+<td><code>a == null ? null : a.B</code></td>
+</tr>
+<tr class="even">
+<td><code>a!</code></td>
+<td>Null-forgiving</td>
+<td>unterdrückt nur die Warnung, zur Laufzeit trotzdem
+<code>NullReferenceException</code> möglich</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>p?.Name.Length</code> → ist <code>p</code> null, wird die
+<strong>ganze Kette</strong> übersprungen. Ergebnis eines
+<code>?.</code> bei <code>int</code> ist
+<strong><code>int?</code></strong>.</p>
+</blockquote>
+</section><section class="chap"><h1 id="k7">7 UML: Klassen- und
+Objektdiagramm</h1>
+<h2>7.1 Klassendiagramm</h2>
+<ul>
+<li><strong>Strukturdiagramm</strong>, statischer Blick: Name,
+Attribute, Methoden, Beziehungen. Teil von <strong>UML</strong> (Unified
+Modeling Language)</li>
+<li>3 Abschnitte: <strong>Name</strong> (ggf. <code>«interface»</code>,
+<code>«enumeration»</code>, <em>kursiv</em> = abstract) ·
+<strong>Attribute</strong> · <strong>Methoden</strong></li>
+<li>Sichtbarkeit: <strong><code>+</code> public, <code>-</code> private,
+<code>#</code> protected, <code>~</code> package</strong>; static =
+<strong>unterstrichen</strong></li>
+<li>Schreibweise: <code>- weeks: WeeklyMealPlan[52]</code>,
+<code>+ AddMenu(week: int, menu: Menu): void</code></li>
+</ul>
+<h2>7.2 Beziehungen</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Beziehung</th>
+<th>Symbol</th>
+<th>Bedeutung</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Generalisierung / Vererbung</td>
+<td>Linie mit <strong>leerem Dreieck</strong> zur Basisklasse</td>
+<td>„is a“</td>
+<td><code>class WatchDog : Dog</code></td>
+</tr>
+<tr class="even">
+<td>Realisierung</td>
+<td><strong>gestrichelt</strong> + leeres Dreieck zum Interface</td>
+<td>„behaves like“</td>
+<td><code>class Poodle : IDog</code></td>
+</tr>
+<tr class="odd">
+<td>Assoziation</td>
+<td>Linie (mit Pfeil = gerichtet/navigierbar)</td>
+<td>„has a“</td>
+<td>Referenz-Attribut</td>
+</tr>
+<tr class="even">
+<td>Aggregation</td>
+<td><strong>leere Raute</strong> beim Ganzen</td>
+<td>„part of“, Teile leben <strong>unabhängig</strong></td>
+<td>Referenz, von außen übergeben</td>
+</tr>
+<tr class="odd">
+<td>Komposition</td>
+<td><strong>gefüllte Raute</strong> beim Ganzen</td>
+<td>stärkste Form, Teile <strong>existenzabhängig</strong>, vom Ganzen
+erzeugt/zerstört</td>
+<td><code>private readonly Roof roof = new Roof();</code></td>
+</tr>
+<tr class="even">
+<td>Abhängigkeit</td>
+<td><strong>gestrichelter Pfeil</strong></td>
+<td>nur kurz benutzt: lokale Variable, Parameter, static-Aufruf</td>
+<td><code>B.Foo()</code> in einer Methode</td>
+</tr>
+</tbody>
+</table>
+<p>Stärke: Assoziation &lt; Aggregation &lt; Komposition. Im Code gibt
+es <strong>keinen syntaktischen Unterschied</strong> zwischen
+Aggregation und Komposition: der Unterschied liegt in Verantwortung und
+Lebenszyklus.</p>
+<p><strong>Multiplizitäten:</strong> <code>0</code> · <code>0..1</code>
+· <code>1</code> (= <code>1..1</code>) · <code>0..*</code> =
+<code>*</code> · <code>1..*</code> <strong>Navigierbarkeit:</strong>
+Pfeil zeigt zur Klasse, auf die eine Referenz gehalten wird
+(navigierende Klasse → Zielklasse). Ohne Pfeile =
+bidirektional/unspezifiziert, ✕ = nicht navigierbar.</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> House</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">readonly</span> Roof _roof <span class="op">=</span> <span class="kw">new</span> <span class="fu">Roof</span><span class="op">();</span>            <span class="co">// Komposition 1</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> Room<span class="op">[]</span> _rooms <span class="op">=</span> <span class="op">{</span> <span class="kw">new</span> <span class="fu">Room</span><span class="op">(),</span> <span class="kw">new</span> <span class="fu">Room</span><span class="op">()</span> <span class="op">};</span>  <span class="co">// Komposition 1..*</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> Garage<span class="op">?</span> _garage<span class="op">;</span>                             <span class="co">// Aggregation 0..1</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> Person<span class="op">[]</span> _persons<span class="op">;</span>                           <span class="co">// Aggregation 0..*</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2>7.3 Objektdiagramm</h2>
+<ul>
+<li><strong>Momentaufnahme des Speichers</strong> zu einem bestimmten
+Zeitpunkt: konkrete Objekte und Links</li>
+<li>Notation: <code>name : Klasse</code> bzw. <code>:Klasse</code>
+(anonym), <strong>unterstrichen</strong>; darunter
+<strong>Attributwerte</strong> <code>name = "Rex"</code></li>
+<li>Keine Methoden, keine Multiplizitäten, nur echte Verbindungen
+zwischen Objekten</li>
+</ul>
+</section><section class="chap"><h1 id="k8">8 Typische Test-Fallen
+(Checkliste)</h1>
+<ol type="1">
+<li><strong>Feld-Initialisierer-Reihenfolge</strong>: C# von
+<strong>unten nach oben</strong>, Konstruktor-Rümpfe von <strong>oben
+nach unten</strong>.</li>
+<li><strong><code>new</code> vs. <code>override</code></strong>: Mit
+<code>new</code> gilt der <strong>Variablentyp</strong>, mit
+<code>override</code> der <strong>Objekttyp</strong>.</li>
+<li><code>int[,].Length</code> = <strong>alle</strong> Elemente. Für
+Zeilen/Spalten → <code>GetLength(0)</code> /
+<code>GetLength(1)</code>.</li>
+<li><code>const</code> → implizit static, Wert bei Deklaration;
+<code>readonly</code> → auch im Konstruktor.</li>
+<li>Rückgabetyp und Parameternamen gehören <strong>nicht</strong> zur
+Signatur.</li>
+<li><strong>static lokale Methode</strong> sieht keine lokalen
+Variablen.</li>
+<li><code>init</code>: nach dem Object Initializer read-only.</li>
+<li><strong>Struct = Kopie</strong>, Class = gleiche Referenz. Methode
+bekommt Referenz-<strong>Kopie</strong>: <code>arr[0] = 1</code> wirkt
+außen, <code>arr = new ...</code> nicht!</li>
+<li>Downcast falsch → <code>InvalidCastException</code>; <code>as</code>
+→ <code>null</code>; <code>as</code> geht <strong>nur</strong> mit
+Referenz-/Nullable-Typen.</li>
+<li>Interface-Default-Methode <strong>nur über
+Interface-Referenz</strong> aufrufbar; explizite Implementierung
+<strong>ohne</strong> <code>public</code>.</li>
+<li>Flags-Enum: Werte <strong>Zweierpotenzen</strong>, kombiniert mit
+<code>|</code>, geprüft mit <code>&amp;</code>, getoggelt mit
+<code>^</code>.</li>
+<li>JavaFX: <code>GridPane.add(node, spalte, zeile)</code> (Spalte
+zuerst!). Gebundenes Property kann man nicht <code>set</code>ten.
+<code>initialize()</code> läuft nach <code>@FXML</code>-Injection.</li>
+<li>Nullable-Warnungen sind <strong>Warnungen</strong>, keine Fehler.
+<code>!</code> schützt nicht vor
+<code>NullReferenceException</code>.</li>
+</ol>
+</section></article>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-selbsttest" class="wrap hide">
+    <div class="test">
+      <div class="thead">
+        <div>
+          <h1>Selbsttest</h1>
+          <p>67 Wissensfragen, 10 Code-Ausgaben und 16 Fehler-finden-Aufgaben. Alle Ausgaben und Compilerfehler wurden mit .NET geprüft. Dein Fortschritt bleibt in diesem Browser gespeichert.</p>
+        </div>
+        <div>
+          <div class="stats" id="stats"></div>
+          <div class="legend" style="margin-top:6px"><i></i>richtig <b></b>falsch · zuletzt beantwortet</div>
+        </div>
+      </div>
+
+      <div class="ctrl" role="group" aria-label="Fragetyp">
+        <button data-mode="mc" aria-pressed="true">Wissensfragen</button>
+        <button data-mode="out" aria-pressed="false">Was gibt der Code aus?</button>
+        <button data-mode="err" aria-pressed="false">Kompiliert das?</button>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Themen"></div>
+
+      <div id="stage"></div>
+      <div class="row">
+        <button class="btn ghost" id="restart">Neue Runde mischen</button>
+        <button class="btn ghost" id="wrongonly">Nur Falsche wiederholen</button>
+        <button class="btn ghost" id="reset">Fortschritt löschen</button>
+      </div>
+    </div>
+  </div>
+  <div class="wrap foot">Basis: Folien SEW4 02–06 und SEW3 02 (Klassen-/Objektdiagramm), Übungen 4AHIT. Die PLF ist nur C#: Themen „C# Basics“, „Classes“ und „Inheritance“.</div>
+</main>
+
+<script>
+{
+const DATA = {"mc": [{"c": "fx", "q": "Was ist eine <b>Stage<\/b> in JavaFX?", "o": ["Das Fenster", "Der Fensterinhalt", "Ein Layout-Container", "Ein Event-Handler"], "a": 0, "e": "Stage = Fenster. Sie besitzt genau eine Scene (Inhalt), die den Scene Graph enthält."}, {"c": "fx", "q": "Welche Pane <b>bricht<\/b> am Rand automatisch um?", "o": ["HBox", "VBox", "FlowPane", "BorderPane"], "a": 2, "e": "FlowPane bricht um. HBox/VBox legen alles in genau eine Zeile bzw. Spalte."}, {"c": "fx", "q": "<code>gridPane.add(btn, 2, 0)<\/code>, wo landet der Button?", "o": ["Zeile 2, Spalte 0", "Spalte 2, Zeile 0", "Zelle 2 von links unten", "Fehler, falsche Reihenfolge"], "a": 1, "e": "GridPane.add(node, <b>columnIndex<\/b>, rowIndex): Die Spalte kommt zuerst."}, {"c": "fx", "q": "Wann wird die <code>initialize()<\/code>-Methode eines Controllers aufgerufen?", "o": ["Vor dem Laden der FXML", "Nach dem Injizieren aller @FXML-Felder", "Beim ersten Klick", "Nur wenn man sie selbst aufruft"], "a": 1, "e": "Der FXMLLoader ruft initialize() automatisch auf, sobald alle @FXML-Felder gesetzt sind. Darum registriert man dort Listener und Bindings."}, {"c": "fx", "q": "Was verbindet ein Element in der FXML mit einem Feld im Controller?", "o": ["fx:controller", "fx:id", "onAction", "styleClass"], "a": 1, "e": "fx:id=\"label\" ↔ @FXML private Label label; (gleicher Name). fx:controller verbindet die ganze Datei mit der Klasse."}, {"c": "fx", "q": "<code>label.textProperty().bind(tf.textProperty()); label.setText(\"x\");<\/code> Was passiert?", "o": ["Label zeigt \"x\"", "TextField zeigt \"x\"", "RuntimeException: A bound value cannot be set", "Nichts, setText wird ignoriert"], "a": 2, "e": "Ein gebundenes Property ist fremdgesteuert. set… wirft eine RuntimeException."}, {"c": "fx", "q": "Was ist der Unterschied zwischen <code>bind<\/code> und <code>bindBidirectional<\/code>?", "o": ["Keiner", "bind: Ziel folgt Quelle, bidirectional: beide Seiten gleichen sich gegenseitig ab", "bind ist nur für Strings", "bidirectional geht nur in FXML"], "a": 1, "e": "bind = einseitig. bindBidirectional = Änderungen auf beiden Seiten werden übernommen."}, {"c": "fx", "q": "Wofür eignet sich ein <b>AnimationTimer<\/b> am besten?", "o": ["Countdown von 10 bis 0 im Sekundentakt", "Game Loop / flüssige Canvas-Animation", "CSS laden", "Event-Handler registrieren"], "a": 1, "e": "AnimationTimer ruft handle(long now) bei jedem Frame auf (framebasiert). Für zeitbasierte Abläufe wie einen Countdown nimmt man eine Timeline."}, {"c": "fx", "q": "Welche Einheit hat <code>now<\/code> in <code>handle(long now)<\/code>?", "o": ["Millisekunden", "Sekunden", "Nanosekunden", "Frames"], "a": 2, "e": "now ist in Nanosekunden, wie System.nanoTime()."}, {"c": "fx", "q": "Wie fügt man einem Button per Code eine CSS-Klasse hinzu?", "o": ["btn.setStyle(\"my\")", "btn.getStyleClass().add(\"my\")", "btn.setId(\"my\")", "btn.addClass(\"my\")"], "a": 1, "e": "getStyleClass().add(...) → im CSS .my { }. setId → #my, setStyle → Inline-CSS."}, {"c": "fx", "q": "Womit beginnen JavaFX-CSS-Properties?", "o": ["--", "-fx-", "fx:", "javafx-"], "a": 1, "e": "z. B. -fx-background-color, -fx-text-fill, -fx-font-size."}, {"c": "fx", "q": "Welche Aussage zum Scene Graph stimmt?", "o": ["Leaf Nodes haben Kinder", "Shapes wie Circle sind Leaf Nodes", "Eine Stage kann mehrere Scenes gleichzeitig zeigen", "Panes sind Leaf Nodes"], "a": 1, "e": "Shape/Canvas erben nicht von Parent → Leaf. Panes sind Parent (Branch) Nodes."}, {"c": "fx", "q": "Warum soll man in Swing/JavaFX lange Berechnungen nicht im GUI-Thread machen?", "o": ["Weil sie dann falsch rechnen", "Weil die GUI einfriert", "Weil der Compiler das verbietet", "Weil CSS dann nicht lädt"], "a": 1, "e": "Der GUI-Thread (EDT bzw. JavaFX Application Thread) arbeitet alle Events ab. Blockiert er, reagiert die Oberfläche nicht mehr."}, {"c": "cs", "q": "Wie heißt in .NET das Gegenstück zur JVM?", "o": ["CIL", "CLR", "IL-JVM", "NuGet"], "a": 1, "e": "CLR = Common Language Runtime. CIL = Zwischencode (wie Java-Bytecode)."}, {"c": "cs", "q": "<code>int[,] r = new int[2,3];<\/code> Was liefert <code>r.Length<\/code>?", "o": ["2", "3", "6", "5"], "a": 2, "e": "Length = alle Elemente (2·3). Zeilen: GetLength(0) = 2, Spalten: GetLength(1) = 3."}, {"c": "cs", "q": "<code>int[][] j = new int[2][];<\/code> Was ist das?", "o": ["Rechteckiges Array", "Jagged Array (Array von Arrays)", "Compilerfehler", "Liste"], "a": 1, "e": "Jagged: jede Zeile ist ein eigenes Array und kann unterschiedlich lang sein."}, {"c": "cs", "q": "Was muss bei einem <code>out<\/code>-Parameter gelten?", "o": ["Muss vor dem Aufruf initialisiert sein", "Muss in der Methode zugewiesen werden", "Ist read-only", "Darf nur bei int verwendet werden"], "a": 1, "e": "out: Die Methode MUSS zuweisen. ref: muss VORHER initialisiert sein. in: read-only Referenz."}, {"c": "cs", "q": "Welche Aufrufe sind bei <code>int Sum(params int[] n)<\/code> gültig?", "o": ["Nur Sum(new[]{1,2})", "Sum(), Sum(1,2,3) und Sum(new[]{1,2})", "Nur Sum(1,2,3)", "Sum() ist ein Fehler"], "a": 1, "e": "params erlaubt beliebig viele Argumente (auch 0) oder direkt ein Array. Es muss der letzte Parameter sein."}, {"c": "cs", "q": "<code>void Print(bool h = true, char f = '.', char o = '#')<\/code>: Wie setzt man NUR o auf 'X'?", "o": ["Print('X')", "Print(, , 'X')", "Print(o: 'X')", "Geht nicht"], "a": 2, "e": "Mit benannten Argumenten überspringt man optionale Parameter."}, {"c": "cs", "q": "Was ist <code>var x;<\/code> (ohne Zuweisung)?", "o": ["Gültig, x ist object", "Compilerfehler", "Gültig, x ist dynamic", "Gültig, x ist null"], "a": 1, "e": "var braucht eine Initialisierung, sonst kann der Compiler den Typ nicht bestimmen."}, {"c": "cs", "q": "Welches Literal ist ein <code>decimal<\/code>?", "o": ["9.50", "9.50f", "9.50m", "9.50d"], "a": 2, "e": "m = decimal (Geld), f = float, d/ohne = double."}, {"c": "cs", "q": "Was ist die sicherste Art, eine Benutzereingabe in int umzuwandeln?", "o": ["int.Parse(s)", "Convert.ToInt32(s)", "int.TryParse(s, out int n)", "(int)s"], "a": 2, "e": "TryParse wirft keine Exception, sondern liefert false bei ungültiger Eingabe."}, {"c": "cs", "q": "Methode bekommt <code>int[] arr<\/code> und macht <code>arr = new int[]{7};<\/code>. Was passiert mit dem Array beim Aufrufer?", "o": ["Wird auf {7} geändert", "Bleibt unverändert", "Wird null", "Compilerfehler"], "a": 1, "e": "Die Methode hat nur eine KOPIE der Referenz. Umbiegen wirkt außen nicht, arr[0] = 7 dagegen schon."}, {"c": "cls", "q": "Was gilt für <code>const<\/code>?", "o": ["Darf im Konstruktor gesetzt werden", "Ist implizit static, Wert bei Deklaration", "Ist pro Objekt verschieden", "Kann jeden Typ haben"], "a": 1, "e": "const = Compile-Zeit, implizit static. readonly = Laufzeit, auch im Konstruktor setzbar, pro Objekt."}, {"c": "cls", "q": "Was gehört <b>nicht<\/b> zur Signatur einer Methode?", "o": ["Name", "Parametertypen", "Rückgabetyp", "ref/out der Parameter"], "a": 2, "e": "Auch Parameternamen, params und Zugriffsmodifier gehören nicht zur Signatur. Zwei Methoden, die sich nur im Rückgabetyp unterscheiden → Fehler."}, {"c": "cls", "q": "Wann erzeugt der Compiler einen Default-Konstruktor?", "o": ["Immer", "Nur wenn die Klasse gar keinen Konstruktor hat", "Nur bei static Klassen", "Nur wenn alle Felder public sind"], "a": 1, "e": "Sobald man einen eigenen Konstruktor schreibt, gibt es keinen automatischen parameterlosen mehr."}, {"c": "cls", "q": "<code>public Wine(decimal p, int y) : this(p) { }<\/code>, wie heißt das?", "o": ["Vererbung", "Constructor Chaining", "Overriding", "Deconstruction"], "a": 1, "e": "Mit : this(...) ruft man einen anderen Konstruktor derselben Klasse auf."}, {"c": "cls", "q": "Was gilt für einen <b>static Konstruktor<\/b>?", "o": ["Darf public sein und Parameter haben", "Läuft bei jedem new", "Läuft genau einmal, vor dem ersten Objekt/static-Zugriff", "Muss man selbst aufrufen"], "a": 2, "e": "Kein Modifier, keine Parameter, maximal einer pro Klasse, läuft einmal automatisch."}, {"c": "cls", "q": "<code>public int Pitch { get; init; }<\/code>: Wo darf Pitch gesetzt werden?", "o": ["Überall", "Nur im Konstruktor oder Object Initializer", "Nur in der Klasse", "Nirgends"], "a": 1, "e": "Danach ist es read-only: note.Pitch = 5; → Fehler CS8852."}, {"c": "cls", "q": "Was kann eine <b>static lokale Methode<\/b> NICHT?", "o": ["Parameter haben", "Einen Wert zurückgeben", "Auf lokale Variablen der umgebenden Methode zugreifen", "Rekursiv sein"], "a": 2, "e": "static lokale Funktionen sehen keine lokalen Variablen/Parameter der äußeren Methode (CS8421)."}, {"c": "cls", "q": "Was macht <code>var (w, h) = rect;<\/code>?", "o": ["Erzeugt ein Tupel-Objekt rect", "Ruft rect.Deconstruct(out w, out h) auf", "Kopiert rect zweimal", "Compilerfehler"], "a": 1, "e": "Die Klasse braucht eine Methode Deconstruct mit out-Parametern."}, {"c": "cls", "q": "Was gilt für eine <code>static class<\/code>?", "o": ["Kann vererbt werden", "Kann Instanzfelder haben", "Kein new möglich, nur static Member", "Braucht einen public Konstruktor"], "a": 2, "e": "Beispiele: Console, Math. Alternative: normale Klasse mit privatem Konstruktor."}, {"c": "cls", "q": "Object Initializer <code>new Bunny(\"Bugs\") { LikesCarrots = true }<\/code>: Wann wird LikesCarrots gesetzt?", "o": ["Vor dem Konstruktor", "Nach dem Konstruktor", "Statt dem Konstruktor", "Gar nicht"], "a": 1, "e": "Erst läuft der Konstruktor, dann werden die Properties aus den { } gesetzt."}, {"c": "cls", "q": "<code>public decimal Worth => _price * _shares;<\/code> ist …", "o": ["eine Methode", "eine berechnete read-only Property", "ein Feld", "ein Konstruktor"], "a": 1, "e": "Expression-bodied Property nur mit get, wird bei jedem Zugriff neu berechnet."}, {"c": "cls", "q": "Eine partial-Methode <b>ohne<\/b> Zugriffsmodifier …", "o": ["muss implementiert werden", "muss void sein, Implementierung optional", "darf out-Parameter haben", "ist public"], "a": 1, "e": "Ohne Modifier: void, kein out, implizit private, Implementierung optional. Mit Modifier: muss implementiert werden."}, {"c": "inh", "q": "Wie viele Basisklassen kann eine C#-Klasse haben?", "o": ["0", "1", "beliebig viele", "2"], "a": 1, "e": "Genau eine Basisklasse, aber beliebig viele Interfaces."}, {"c": "inh", "q": "<code>Asset a = new House(); Stock s = (Stock)a;<\/code> Was passiert?", "o": ["s ist null", "InvalidCastException", "Compilerfehler", "s ist ein Stock"], "a": 1, "e": "Expliziter Downcast auf den falschen Typ → InvalidCastException zur Laufzeit."}, {"c": "inh", "q": "<code>Stock? s = a as Stock;<\/code> (a ist ein House) → s = ?", "o": ["InvalidCastException", "null", "ein leerer Stock", "Compilerfehler"], "a": 1, "e": "as liefert null statt einer Exception."}, {"c": "inh", "q": "Methode in A ist <code>virtual<\/code>, in B <code>override<\/code>. <code>A x = new B(); x.M();<\/code> ruft …", "o": ["A.M()", "B.M()", "beide", "Fehler"], "a": 1, "e": "Bei override entscheidet der OBJEKT-Typ (zur Laufzeit) → B.M()."}, {"c": "inh", "q": "Methode in A ist normal, in B mit <code>new<\/code> verdeckt. <code>A x = new B(); x.M();<\/code> ruft …", "o": ["A.M()", "B.M()", "beide", "Fehler"], "a": 0, "e": "Bei new (Hiding) entscheidet der VARIABLEN-Typ → A.M()."}, {"c": "inh", "q": "Was gilt für einen <code>abstract<\/code> Member?", "o": ["Hat einen Rumpf", "Darf in jeder Klasse stehen", "Kein Rumpf, Klasse muss abstract sein, Unterklasse muss überschreiben", "Ist automatisch sealed"], "a": 2, "e": "Eine abstrakte Klasse darf aber auch 0 abstrakte Member haben. new geht bei abstrakten Klassen nicht."}, {"c": "inh", "q": "<code>public sealed override decimal Liability …<\/code> bedeutet:", "o": ["Klasse kann nicht vererbt werden", "Unterklassen dürfen Liability nicht mehr überschreiben", "Liability ist private", "Liability ist abstract"], "a": 1, "e": "sealed am Member stoppt weiteres Überschreiben. sealed an der Klasse verhindert Vererbung."}, {"c": "inh", "q": "Werden Konstruktoren vererbt?", "o": ["Ja, alle", "Nur der parameterlose", "Nein, Unterklassen rufen sie mit : base(...) auf", "Nur public"], "a": 2, "e": "Ohne : base(...) wird der parameterlose Basis-Konstruktor aufgerufen. Gibt es keinen → Compilerfehler."}, {"c": "inh", "q": "Reihenfolge bei <code>new C()<\/code> mit C : B : A in <b>C#<\/b>?", "o": ["Alles von oben nach unten", "Feld-Initialisierer C→B→A, dann Konstruktor-Rümpfe A→B→C", "Konstruktoren C→B→A, dann Felder", "Felder A→B→C, dann Rümpfe C→B→A"], "a": 1, "e": "C#: Feld-Initialisierer von UNTEN nach oben, Rümpfe von OBEN nach unten. In Java ist es anders!"}, {"c": "inh", "q": "Stock erbt von Asset. <code>Asset a = stock; a.SharesOwned<\/code> → ?", "o": ["Funktioniert", "Compilerfehler, Asset kennt SharesOwned nicht", "null", "InvalidCastException"], "a": 1, "e": "Über eine Asset-Referenz sieht man nur Asset-Member. Erst nach einem Downcast oder mit is Stock s."}, {"c": "typ", "q": "Welchen Wert hat <code>Fri<\/code> in <code>enum Day { Mon = 1, Tue, Wed, Thu = 10, Fri }<\/code>?", "o": ["5", "11", "4", "10"], "a": 1, "e": "Nach Thu = 10 wird weitergezählt → Fri = 11."}, {"c": "typ", "q": "Welche Werte braucht ein <code>[Flags]<\/code>-Enum?", "o": ["Fortlaufend 0,1,2,3", "Zweierpotenzen 1,2,4,8", "Nur negative", "Strings"], "a": 1, "e": "Nur Zweierpotenzen lassen sich mit | eindeutig kombinieren. Name im Plural."}, {"c": "typ", "q": "Wie prüft man, ob Flag Left in <code>sides<\/code> gesetzt ist?", "o": ["sides == Left", "(sides & BorderSides.Left) != 0", "sides | Left", "sides ^ Left"], "a": 1, "e": "& filtert das Bit heraus. Alternativ: sides.HasFlag(BorderSides.Left)."}, {"c": "typ", "q": "Was ist in einem <code>struct<\/code> NICHT erlaubt?", "o": ["Interfaces implementieren", "Methoden", "virtual Member und Vererbung", "Properties"], "a": 2, "e": "Kein Finalizer, kein virtual, kein protected und keine Vererbung. Interfaces gehen schon."}, {"c": "typ", "q": "<code>PointS a = b;<\/code> (PointS ist ein struct), dann <code>a.X = 5;<\/code>. Ändert sich b.X?", "o": ["Ja", "Nein, a ist eine Kopie", "Nur wenn X public ist", "Compilerfehler"], "a": 1, "e": "Struct = Werttyp → Zuweisung kopiert den Wert."}, {"c": "typ", "q": "Was darf ein Interface (C# 8+) NICHT enthalten?", "o": ["Default-Implementierungen", "Konstanten", "Instanzfelder", "static Methoden"], "a": 2, "e": "Auch Instanzkonstruktoren und Finalizer sind nicht erlaubt."}, {"c": "typ", "q": "Interface ILogger hat eine Default-Methode Log(). Klasse Logger : ILogger überschreibt sie nicht. <code>new Logger().Log()<\/code> →", "o": ["Ruft Log auf", "Compilerfehler, nur über Interface-Referenz aufrufbar", "NullReferenceException", "Ruft nichts auf"], "a": 1, "e": "Richtig: ((ILogger)logger).Log() oder ILogger l = new Logger(); l.Log();"}, {"c": "typ", "q": "Wie implementiert man <code>int I2.Help()<\/code> explizit?", "o": ["public int I2.Help() { }", "int I2.Help() { } (ohne public)", "override int Help()", "new int Help()"], "a": 1, "e": "Explizite Implementierung hat keinen Zugriffsmodifier und ist nur über eine I2-Referenz aufrufbar."}, {"c": "typ", "q": "Eine Klasse implementiert eine Interface-Methode. Was braucht man, damit Unterklassen sie überschreiben können?", "o": ["override im Interface", "Die Methode in der Klasse virtual machen", "sealed", "Nichts, geht automatisch"], "a": 1, "e": "Interface-Implementierungen sind standardmäßig sealed. Mit virtual (oder abstract) kann man sie überschreibbar machen."}, {"c": "typ", "q": "<code>default(Point2)<\/code> vs. <code>new Point2()<\/code> bei einem struct mit eigenem parameterlosen Konstruktor:", "o": ["Beides gleich", "new ruft den eigenen Konstruktor, default nicht (alles 0)", "default ruft den Konstruktor, new nicht", "Beides Compilerfehler"], "a": 1, "e": "default setzt immer alle Felder auf ihren Default-Wert."}, {"c": "nul", "q": "Was ergibt <code>string s2 = s1 ?? \"nothing\";<\/code> wenn s1 = null?", "o": ["null", "\"nothing\"", "Exception", "\"\""], "a": 1, "e": "?? nimmt die rechte Seite, wenn die linke null ist."}, {"c": "nul", "q": "Was macht <code>x ??= 5;<\/code>?", "o": ["x = 5 immer", "x = 5 nur wenn x null ist", "vergleicht x mit 5", "Fehler"], "a": 1, "e": "Null-Verbindungszuweisung."}, {"c": "nul", "q": "<code>Person? p = null; var n = p?.Name;<\/code> → ?", "o": ["NullReferenceException", "n ist null", "Compilerfehler", "n ist \"\""], "a": 1, "e": "?. bricht ab und liefert null, statt eine Exception zu werfen."}, {"c": "nul", "q": "Was bewirkt <code>!<\/code> in <code>Flower f = null!;<\/code>?", "o": ["Prüft auf null", "Unterdrückt nur die Compiler-Warnung", "Wirft eine Exception", "Negiert den Wert"], "a": 1, "e": "Null-forgiving: Zur Laufzeit ist f trotzdem null, eine NullReferenceException ist weiter möglich."}, {"c": "nul", "q": "<code>string s = null;<\/code> mit aktivierten Nullable Reference Types ist …", "o": ["ein Compilerfehler", "eine Warnung (CS8600)", "völlig ok", "eine Laufzeit-Exception"], "a": 1, "e": "Nullable-Verstöße sind Warnungen. Richtig: string? s = null;"}, {"c": "nul", "q": "Welcher Typ hat <code>p?.Name.Length<\/code>?", "o": ["int", "int?", "string", "object"], "a": 1, "e": "Ein ?. kann null liefern → aus int wird int?."}, {"c": "uml", "q": "Welche Sichtbarkeit bedeutet <code>#<\/code> im Klassendiagramm?", "o": ["public", "private", "protected", "package"], "a": 2, "e": "+ public, - private, # protected, ~ package/internal. static = unterstrichen."}, {"c": "uml", "q": "Leere Raute beim Ganzen bedeutet …", "o": ["Komposition", "Aggregation", "Vererbung", "Abhängigkeit"], "a": 1, "e": "Aggregation: Teile leben unabhängig. Gefüllte Raute = Komposition (existenzabhängig)."}, {"c": "uml", "q": "<code>private readonly Roof _roof = new Roof();<\/code> ist im Klassendiagramm eine …", "o": ["Aggregation", "Komposition", "Generalisierung", "Realisierung"], "a": 1, "e": "Das Ganze erzeugt das Teil selbst, und das Teil lebt nur mit dem Ganzen → Komposition."}, {"c": "uml", "q": "Gestrichelte Linie mit leerem Dreieck bedeutet …", "o": ["Vererbung", "Realisierung (Interface implementieren)", "Abhängigkeit", "Assoziation"], "a": 1, "e": "Durchgezogen + Dreieck = Vererbung, gestrichelt + Dreieck = Realisierung, gestrichelter Pfeil = Abhängigkeit."}, {"c": "uml", "q": "Was zeigt ein <b>Objektdiagramm<\/b>?", "o": ["Alle Methoden", "Eine Momentaufnahme: konkrete Objekte mit Attributwerten", "Den Programmablauf", "Die Vererbungshierarchie"], "a": 1, "e": "Namen unterstrichen (name : Klasse), keine Methoden, keine Multiplizitäten."}, {"c": "uml", "q": "Multiplizität <code>0..*<\/code> bedeutet …", "o": ["genau 0", "beliebig viele (auch keine)", "mindestens 1", "höchstens 1"], "a": 1, "e": "0..* = *, 1..* = mindestens eins, 0..1 = optional."}], "out": [{"c": "inh", "t": "Konstruktoren & Vererbung", "code": "class Animal\n{\n    protected string name = Log(\"Feld Animal\");\n    public Animal(string n) { Console.WriteLine($\"Animal({n})\"); name = n; }\n    protected static string Log(string s) { Console.WriteLine(s); return s; }\n}\nclass Dog : Animal\n{\n    int legs = Count(\"Feld Dog\");\n    public Dog(string n) : base(n.ToUpper()) { Console.WriteLine($\"Dog({n})\"); }\n    public Dog() : this(\"Rex\") { Console.WriteLine(\"Dog()\"); }\n    static int Count(string s) { Console.WriteLine(s); return 4; }\n}\nnew Dog();", "ans": "Feld Dog\nFeld Animal\nAnimal(REX)\nDog(Rex)\nDog()", "e": "Feld-Initialisierer von unten nach oben (Dog, Animal), dann Rümpfe von oben nach unten."}, {"c": "inh", "t": "override vs. new", "code": "class A { public virtual string Who() => \"A\";   public string Name() => \"A-Name\"; }\nclass B : A { public override string Who() => \"B\"; public new string Name() => \"B-Name\"; }\n\nB b = new B();\nA a = b;\nConsole.WriteLine(a.Who());\nConsole.WriteLine(b.Who());\nConsole.WriteLine(a.Name());\nConsole.WriteLine(b.Name());", "ans": "B\nB\nA-Name\nB-Name", "e": "override → Objekttyp entscheidet. new → Variablentyp entscheidet."}, {"c": "typ", "t": "struct vs. class", "code": "struct PointS { public int X; }\nclass  PointC { public int X; }\n\nPointS s1 = new PointS { X = 1 };  PointS s2 = s1;  s2.X = 99;\nPointC c1 = new PointC { X = 1 };  PointC c2 = c1;  c2.X = 99;\nConsole.WriteLine($\"{s1.X} {s2.X} {c1.X} {c2.X}\");", "ans": "1 99 99 99", "e": "Ein struct wird kopiert, bei der Klasse ist es dieselbe Referenz."}, {"c": "nul", "t": "Null-Operatoren", "code": "class Person { public string? Nick { get; set; } public Person? Partner { get; set; } }\n\nPerson p = new Person();\nConsole.WriteLine(p.Nick ?? \"kein Nick\");\nConsole.WriteLine(p.Partner?.Nick ?? \"kein Partner\");\np.Nick ??= \"Peda\";\np.Nick ??= \"Max\";\nConsole.WriteLine(p.Nick);\nConsole.WriteLine(p.Partner?.Nick?.Length ?? -1);\nstring? s = null;\nConsole.WriteLine($\"[{s?.ToUpper()}]\");", "ans": "kein Nick\nkein Partner\nPeda\n-1\n[]", "e": "Das zweite ??= tut nichts. null wird in der Interpolation zu einem leeren String."}, {"c": "cs", "t": "params, optionale & benannte Parameter", "code": "static int Sum(params int[] nums) { int s = 0; foreach (int n in nums) s += n; return s; }\nstatic string Greet(string name, string greeting = \"Hallo\", int times = 1)\n{\n    string r = \"\";\n    for (int i = 0; i < times; i++) r += $\"{greeting} {name}! \";\n    return r.Trim();\n}\nConsole.WriteLine(Sum());\nConsole.WriteLine(Sum(1, 2, 3));\nConsole.WriteLine(Sum(new[] { 10, 20 }));\nConsole.WriteLine(Greet(\"Anna\"));\nConsole.WriteLine(Greet(\"Ben\", times: 2));\nConsole.WriteLine(Greet(times: 1, greeting: \"Servus\", name: \"Cem\"));", "ans": "0\n6\n30\nHallo Anna!\nHallo Ben! Hallo Ben!\nServus Cem!", "e": ""}, {"c": "typ", "t": "Enums", "code": "enum Day { Mon = 1, Tue, Wed, Thu = 10, Fri }\n[Flags] enum Perm { None = 0, Read = 1, Write = 2, Exec = 4 }\n\nConsole.WriteLine((int)Day.Wed);\nConsole.WriteLine((int)Day.Fri);\nConsole.WriteLine((Day)2);\nPerm p = Perm.Read | Perm.Exec;\nConsole.WriteLine(p);\nConsole.WriteLine((int)p);\np ^= Perm.Read;\nConsole.WriteLine(p);\nConsole.WriteLine((p & Perm.Write) != 0);", "ans": "3\n11\nTue\nRead, Exec\n5\nExec\nFalse", "e": "Thu = 10 → Fri = 11. Read|Exec = 1+4 = 5. ^= toggelt Read weg."}, {"c": "cs", "t": "Parameterübergabe", "code": "static void A(int x) => x += 10;\nstatic void B(ref int x) => x += 10;\nstatic void C(out int x) => x = 5;\nstatic void D(int[] arr) => arr[0] = 42;\nstatic void E(int[] arr) => arr = new int[] { 7 };\n\nint n = 1;\nA(n);     Console.WriteLine(n);\nB(ref n); Console.WriteLine(n);\nC(out n); Console.WriteLine(n);\nint[] a = { 1, 2 };\nD(a); Console.WriteLine(a[0]);\nE(a); Console.WriteLine(a[0]);", "ans": "1\n11\n5\n42\n42", "e": "A arbeitet mit einer Kopie. E biegt nur die lokale Referenz-Kopie um."}, {"c": "inh", "t": "Casting mit as / is", "code": "class Asset { public string Name { get; set; } = \"\"; }\nclass Stock : Asset { public int Shares { get; set; } }\nclass House : Asset { public decimal Mortgage { get; set; } }\n\nAsset[] assets = { new Stock { Name = \"MSFT\", Shares = 100 },\n                   new House { Name = \"Villa\", Mortgage = 5000 },\n                   new Asset { Name = \"Gold\" } };\nforeach (Asset a in assets)\n{\n    Stock? s = a as Stock;\n    Console.Write(s == null ? \"null \" : $\"{s.Shares} \");\n    if (a is House h) Console.Write($\"H:{h.Mortgage} \");\n    Console.WriteLine(a is Asset);\n}\ntry { Stock x = (Stock)assets[1]; Console.WriteLine(\"ok\"); }\ncatch (InvalidCastException) { Console.WriteLine(\"InvalidCastException\"); }", "ans": "100 True\nnull H:5000 True\nnull True\nInvalidCastException", "e": ""}, {"c": "cls", "t": "static Konstruktor & readonly", "code": "class Counter\n{\n    public static int Created;\n    public readonly int Id;\n    static Counter() { Console.WriteLine(\"static ctor\"); }\n    public Counter() { Created++; Id = Created; Console.WriteLine($\"ctor {Id}\"); }\n}\nConsole.WriteLine(\"Start\");\nvar a = new Counter();\nvar b = new Counter();\nConsole.WriteLine($\"{a.Id} {b.Id} {Counter.Created}\");", "ans": "Start\nstatic ctor\nctor 1\nctor 2\n1 2 2", "e": "Der static-Konstruktor läuft genau einmal, vor dem ersten Objekt."}, {"c": "typ", "t": "Interfaces & explizite Implementierung", "code": "interface IShape     { double Area { get; } string Describe() => $\"Fläche {Area}\"; }\ninterface IPrintable { string Describe(); }\nabstract class Shape : IShape, IPrintable\n{\n    public abstract double Area { get; }\n    public virtual string Describe() => \"Shape\";\n    string IShape.Describe() => $\"IShape: {Area}\";\n}\nclass Square : Shape\n{\n    public double Side { get; init; }\n    public override double Area => Side * Side;\n    public override string Describe() => \"Square \" + base.Describe();\n}\nSquare sq = new Square { Side = 3 };\nShape s = sq;\nConsole.WriteLine(sq.Describe());\nConsole.WriteLine(s.Describe());\nConsole.WriteLine(((IShape)sq).Describe());\nConsole.WriteLine(((IPrintable)sq).Describe());", "ans": "Square Shape\nSquare Shape\nIShape: 9\nSquare Shape", "e": "IShape nutzt die explizite Implementierung, IPrintable die virtuelle Methode → Override in Square."}], "err": [{"c": "cls", "code": "class Octopus {\n    public readonly int Legs = 8;\n    public Octopus() { Legs = 10; }\n}", "a": 0, "e": "readonly darf im Konstruktor gesetzt werden."}, {"c": "cls", "code": "class Octopus {\n    public readonly int Legs = 8;\n    public void Grow() { Legs = 9; }\n}", "a": 1, "e": "CS0191: readonly außerhalb des Konstruktors zuweisen."}, {"c": "inh", "code": "class Shape { public abstract double Area(); }", "a": 1, "e": "CS0513: abstrakter Member in nicht-abstrakter Klasse."}, {"c": "inh", "code": "class Animal { public string Sound() => \"...\"; }\nclass Cat : Animal { public override string Sound() => \"Miau\"; }", "a": 1, "e": "CS0506: Sound ist nicht virtual/abstract."}, {"c": "typ", "code": "struct P { }\nstruct Q : P { }", "a": 1, "e": "CS0527: structs können nicht erben."}, {"c": "cls", "code": "class Note { public int Pitch { get; init; } }\nvar n = new Note { Pitch = 5 };", "a": 0, "e": "init darf im Object Initializer gesetzt werden."}, {"c": "cls", "code": "class Note { public int Pitch { get; init; } }\nvar n = new Note { Pitch = 5 };\nn.Pitch = 7;", "a": 1, "e": "CS8852: init-only Property nachträglich ändern."}, {"c": "cs", "code": "int a;\nConsole.WriteLine(a);", "a": 1, "e": "CS0165: lokale Variable nicht zugewiesen."}, {"c": "cls", "code": "int value = 3;\nstatic int Cube() => value * value * value;", "a": 1, "e": "CS8421: static lokale Funktion greift auf lokale Variable zu."}, {"c": "cls", "code": "static class Helper { public static int X = 1; }\nvar h = new Helper();", "a": 1, "e": "CS0712: keine Instanz einer static class."}, {"c": "nul", "code": "string s = null;", "a": 2, "e": "CS8600 ist nur eine Warnung. Richtig: string? s = null;"}, {"c": "cls", "code": "int Twice(int x) => x * 2;\ndouble Twice(int y) => y * 2.0;", "a": 1, "e": "CS0128: Unterschied nur im Rückgabetyp/Parameternamen → keine gültige Überladung."}, {"c": "cls", "code": "class Kind { public const int Max; }", "a": 1, "e": "CS0145: const braucht einen Wert bei der Deklaration."}, {"c": "inh", "code": "class Base { public Base(int x) { } }\nclass Sub : Base { public Sub() { } }", "a": 1, "e": "CS7036: Ohne : base(...) wird Base() gesucht, das gibt es aber nicht."}, {"c": "typ", "code": "interface I { int Count = 0; }", "a": 1, "e": "CS0525: Interfaces dürfen keine Instanzfelder haben (nur static/const)."}, {"c": "inh", "code": "abstract class Shape { }\nvar s = new Shape();", "a": 1, "e": "CS0144: von einer abstrakten Klasse kann man kein Objekt erzeugen."}]};
+const CAT = {fx:"JavaFX",cs:"C# Basics",cls:"Classes",inh:"Inheritance",typ:"More Types",nul:"Nullability",uml:"UML"};
+const PLF = ["cs","cls","inh"];
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+let store = {};
+try { store = JSON.parse(localStorage.getItem("sew4-test") || "{}"); } catch (e) { store = {}; }
+const save = () => { try { localStorage.setItem("sew4-test", JSON.stringify(store)); } catch (e) {} };
+
+/* ---------- Views */
+function route() {
+  const v = location.hash === "#selbsttest" ? "selbsttest" : "lernen";
+  $("#v-lernen").classList.toggle("hide", v !== "lernen");
+  $("#v-selbsttest").classList.toggle("hide", v !== "selbsttest");
+  $("#nav-lernen").setAttribute("aria-current", v === "lernen");
+  $("#nav-selbsttest").setAttribute("aria-current", v === "selbsttest");
+  if (v === "selbsttest") renderStats();
+}
+window.addEventListener("hashchange", route);
+
+/* Tabellen scrollbar machen */
+document.querySelectorAll("#content table").forEach(t => {
+  const w = document.createElement("div"); w.className = "tblw";
+  t.parentNode.insertBefore(w, t); w.appendChild(t);
+});
+
+/* Inhaltsverzeichnis: scrollen ohne Hash zu ändern */
+document.querySelectorAll("#toc a").forEach(a => a.addEventListener("click", e => {
+  e.preventDefault();
+  if (location.hash === "#selbsttest") { location.hash = "lernen"; }
+  document.getElementById(a.dataset.go).scrollIntoView({behavior: "smooth"});
+}));
+const chaps = [...document.querySelectorAll(".chap h1")];
+const tocObs = new IntersectionObserver(es => {
+  es.forEach(en => { if (en.isIntersecting) {
+    document.querySelectorAll("#toc a").forEach(a => a.classList.toggle("on", a.dataset.go === en.target.id));
+  }});
+}, {rootMargin: "-120px 0px -70% 0px"});
+chaps.forEach(h => tocObs.observe(h));
+
+/* Suche: blendet Absätze/Codeblöcke ohne Treffer aus */
+const blocks = [...document.querySelectorAll("#content .chap > *:not(h1)")];
+$("#find").addEventListener("input", e => {
+  const t = e.target.value.trim().toLowerCase();
+  let n = 0;
+  document.querySelectorAll(".chap").forEach(ch => {
+    let any = false;
+    [...ch.children].forEach(el => {
+      if (el.tagName === "H1") return;
+      const hit = !t || el.textContent.toLowerCase().includes(t);
+      el.classList.toggle("hide", !hit);
+      if (hit && t) { any = true; n++; }
+    });
+    ch.classList.toggle("hide", t && !any);
+  });
+  const info = $("#findinfo");
+  info.classList.toggle("hide", !t);
+  info.textContent = t ? (n ? `${n} Abschnitte mit „${t}“` : `Nichts gefunden für „${t}“`) : "";
+});
+
+/* ---------- Selbsttest */
+const keyOf = (mode, i) => mode + i;
+let mode = "mc", cats = new Set(Object.keys(CAT)), pool = [], pos = 0, round = {};
+
+function chipsRender() {
+  const all = cats.size === Object.keys(CAT).length;
+  const plf = cats.size === 3 && PLF.every(c => cats.has(c));
+  $("#chips").innerHTML =
+    `<button class="chip" data-c="all" aria-pressed="${all}">Alle Themen</button>` +
+    `<button class="chip" data-c="plf" aria-pressed="${plf}">Nur PLF (C#-Programm)</button>` +
+    Object.entries(CAT).map(([k, v]) => `<button class="chip" data-c="${k}" aria-pressed="${!all && !plf && cats.has(k)}">${v}</button>`).join("");
+}
+$("#chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  const c = b.dataset.c;
+  if (c === "all") cats = new Set(Object.keys(CAT));
+  else if (c === "plf") cats = new Set(PLF);
+  else cats = new Set([c]);
+  chipsRender(); newRound();
+});
+document.querySelectorAll(".ctrl button").forEach(b => b.addEventListener("click", () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll(".ctrl button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  newRound();
+}));
+
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function newRound(onlyWrong) {
+  pool = DATA[mode].map((q, i) => i).filter(i => cats.has(DATA[mode][i].c));
+  if (onlyWrong) pool = pool.filter(i => store[keyOf(mode, i)] === 0);
+  shuffle(pool); pos = 0; round = {};
+  draw();
+}
+
+function track() {
+  return `<div class="track" aria-hidden="true">${pool.map((i, k) => {
+    const r = round[i]; return `<span class="${r === 1 ? "ok" : r === 0 ? "no" : ""}${k === pos ? " cur" : ""}"></span>`;
+  }).join("")}</div>`;
+}
+function meta(q) {
+  return `<div class="meta"><span class="num">${pos + 1} / ${pool.length}</span><span>${CAT[q.c]}</span></div>${track()}`;
+}
+
+function draw() {
+  const st = $("#stage");
+  if (!pool.length) {
+    st.innerHTML = `<div class="card in"><p class="q">Keine Fragen in dieser Auswahl.</p><p>Bei „Nur Falsche wiederholen“ heißt das: Du hast hier nichts falsch. Wähle ein anderes Thema oder mische eine neue Runde.</p></div>`;
+    return;
+  }
+  if (pos >= pool.length) {
+    const ok = Object.values(round).filter(v => v === 1).length, n = Object.keys(round).length;
+    const pct = n ? Math.round(100 * ok / n) : 0;
+    const grade = pct >= 90 ? 1 : pct >= 80 ? 2 : pct >= 65 ? 3 : pct >= 50 ? 4 : 5;
+    st.innerHTML = `<div class="card in done"><div class="big">${pct}%</div>
+      <p class="q">${ok} von ${n} richtig · das wäre ein ${grade}er</p>
+      <p>${pct >= 80 ? "Stark. Mach eine Runde in einem anderen Fragetyp." : "Wiederhole die falschen Fragen und lies das passende Kapitel im Lernstoff nach."}</p>
+      <div class="row"><button class="btn" id="again">Nochmal mischen</button><button class="btn red" id="again2">Nur Falsche wiederholen</button></div></div>`;
+    $("#again").onclick = () => newRound();
+    $("#again2").onclick = () => newRound(true);
+    renderStats();
+    return;
+  }
+  const i = pool[pos], q = DATA[mode][i];
+  if (mode === "mc") drawMC(st, q, i);
+  else if (mode === "out") drawOut(st, q, i);
+  else drawErr(st, q, i);
+  st.firstElementChild.classList.add("in");
+}
+
+function record(i, ok) {
+  round[i] = ok ? 1 : 0;
+  store[keyOf(mode, i)] = ok ? 1 : 0; save(); renderStats();
+  const tr = document.querySelector("#stage .track");
+  if (tr) tr.outerHTML = track();
+}
+function nextBtn() {
+  return `<div class="row"><button class="btn" id="next">${pos + 1 < pool.length ? "Weiter" : "Auswertung"}</button></div>`;
+}
+function bindNext() { const b = $("#next"); b.onclick = () => { pos++; draw(); window.scrollTo({top: $("#stage").offsetTop - 130}); }; b.focus({preventScroll: true}); }
+
+function drawMC(st, q, i) {
+  const order = shuffle(q.o.map((t, k) => k));
+  st.innerHTML = `<div class="card">${meta(q)}<p class="q">${q.q}</p>
+    <div class="opts">${order.map((k, n) => `<button class="opt" data-k="${"ABCD"[n]}" data-i="${k}">${esc(q.o[k])}</button>`).join("")}</div>
+    <div id="after"></div></div>`;
+  st.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const ok = +b.dataset.i === q.a;
+    st.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (+x.dataset.i === q.a) x.classList.add("right"); });
+    if (!ok) b.classList.add("wrong");
+    $("#after").innerHTML = `<div class="ex ${ok ? "okk" : "bad"}"><strong>${ok ? "Richtig." : "Leider falsch."}</strong>${q.e}</div>${nextBtn()}`;
+    record(i, ok); bindNext();
+  });
+}
+
+function drawOut(st, q, i) {
+  st.innerHTML = `<div class="card">${meta(q)}<p class="q">${esc(q.t)}: Was steht auf der Konsole?</p>
+    <pre><code>${esc(q.code)}</code></pre>
+    <label for="guess" class="legend" style="margin-left:0">Deine Ausgabe (eine Zeile pro Console.WriteLine):</label>
+    <textarea id="guess" spellcheck="false"></textarea>
+    <div class="row"><button class="btn" id="show">Lösung zeigen</button></div><div id="after"></div></div>`;
+  $("#show").onclick = () => {
+    const g = $("#guess").value.trim().replace(/\r/g, "").split("\n").map(s => s.trim()).join("\n");
+    const auto = g === q.ans;
+    $("#show").parentElement.remove();
+    $("#after").innerHTML = `<div class="cols" style="margin-top:14px"><div><h4>Deine Antwort</h4><pre><code>${esc(g || "(leer)")}</code></pre></div>
+      <div><h4>Richtige Ausgabe</h4><pre><code>${esc(q.ans)}</code></pre></div></div>
+      ${q.e ? `<div class="ex"><strong>Warum?</strong>${esc(q.e)}</div>` : ""}
+      ${auto ? `<div class="ex okk"><strong>Exakt richtig.</strong>Wird als richtig gezählt.</div>${nextBtn()}`
+        : `<div class="row"><span>Hattest du es richtig?</span><button class="btn ghost" id="yes">Ja, richtig</button><button class="btn red" id="no">Nein, falsch</button></div>`}`;
+    if (auto) { record(i, true); bindNext(); }
+    else {
+      const fin = ok => { record(i, ok); $("#yes").parentElement.outerHTML = nextBtn(); bindNext(); };
+      $("#yes").onclick = () => fin(true); $("#no").onclick = () => fin(false);
+    }
+  };
+}
+
+function drawErr(st, q, i) {
+  const L = ["Kompiliert", "Compilerfehler", "Nur Warnung"];
+  st.innerHTML = `<div class="card">${meta(q)}<p class="q">Kompiliert dieser Code?</p>
+    <pre><code>${esc(q.code)}</code></pre>
+    <div class="opts">${L.map((t, k) => `<button class="opt" data-k="${"ABC"[k]}" data-i="${k}">${t}</button>`).join("")}</div>
+    <div id="after"></div></div>`;
+  st.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const ok = +b.dataset.i === q.a;
+    st.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (+x.dataset.i === q.a) x.classList.add("right"); });
+    if (!ok) b.classList.add("wrong");
+    $("#after").innerHTML = `<div class="ex ${ok ? "okk" : "bad"}"><strong>${ok ? "Richtig." : "Leider falsch."}</strong>${esc(q.e)}</div>${nextBtn()}`;
+    record(i, ok); bindNext();
+  });
+}
+
+function renderStats() {
+  $("#stats").innerHTML = Object.entries(CAT).map(([c, name]) => {
+    let tot = 0, ok = 0, no = 0;
+    ["mc", "out", "err"].forEach(m => DATA[m].forEach((q, i) => {
+      if (q.c !== c) return; tot++;
+      const v = store[keyOf(m, i)]; if (v === 1) ok++; else if (v === 0) no++;
+    }));
+    return `<div class="st"><span>${name}</span><span class="tr"><i style="width:${100 * ok / tot}%"></i><b style="left:${100 * ok / tot}%;width:${100 * no / tot}%"></b></span><span class="n">${ok}/${tot}</span></div>`;
+  }).join("");
+}
+
+$("#restart").onclick = () => newRound();
+$("#wrongonly").onclick = () => newRound(true);
+let armed = false;
+$("#reset").onclick = e => {
+  if (!armed) { armed = true; e.target.textContent = "Wirklich löschen?"; setTimeout(() => { armed = false; e.target.textContent = "Fortschritt löschen"; }, 3000); return; }
+  store = {}; save(); armed = false; e.target.textContent = "Fortschritt löschen"; renderStats(); newRound();
+};
+
+chipsRender(); newRound(); route();
+}
+</script>
+</body>
+</html>
