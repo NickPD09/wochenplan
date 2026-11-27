@@ -818,7 +818,7 @@ function render(){
   $("filter").innerHTML=VIEWS.map(([v,l])=>'<button type="button" data-view="'+v+'" aria-pressed="'+(view===v)+'">'+l+"<small>"+cnt[v]+"</small></button>").join("");
   const scope=sel?IT:view==="arch"?past:active;
   const base=view==="own"?scope.filter(isOwn):view==="pub"?scope.filter(c=>!isOwn(c)):scope;
-  const shown=ids?base.filter(c=>ids.has(c.id)):base;
+  const shown=(ids?base.filter(c=>ids.has(c.id)):base).slice().sort((a,b)=>view==="arch"&&!sel?b.due.localeCompare(a.due):a.due.localeCompare(b.due));
   let all=0,done=0;
   IT.forEach(c=>{all+=c.tasks.length;done+=doneN(c)});
   const sorted=shown.slice().sort((a,b)=>view==="arch"&&!sel?b.due.localeCompare(a.due):a.due.localeCompare(b.due));
